@@ -1,0 +1,46 @@
+@import "tailwindcss";
+
+@layer base {
+  :root {
+    --font-mechanik: 'Archivo', 'Plus Jakarta Sans', 'Space Grotesk', -apple-system, BlinkMacSystemFont, sans-serif;
+    --font-sans: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+    --font-mono: 'Space Grotesk', 'JetBrains Mono', monospace;
+  }
+
+  html {
+    scroll-behavior: auto;
+  }
+
+  body {
+    font-family: var(--font-sans);
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+
+  h1, h2, h3, h4, .font-display, .font-mechanik {
+    font-family: var(--font-mechanik);
+    font-feature-settings: "ss01" 1, "ss02" 1, "tnum" 1;
+    letter-spacing: -0.032em;
+  }
+
+  .font-mono-tabular {
+    font-family: var(--font-mono);
+    font-variant-numeric: tabular-nums;
+  }
+}
+
+.gpu-layer {
+  transform: translate3d(0, 0, 0);
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+.contain-paint {
+  contain: layout paint;
+}
+
+.balance-text {
+  text-wrap: balance;
+}
