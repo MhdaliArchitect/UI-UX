@@ -1969,55 +1969,55 @@ ${dossier.specifications.map((s) => `- ${s.label}: ${s.value}`).join('\n')}
 
                   <div className="flex flex-wrap items-center justify-between gap-2 p-3 rounded-lg bg-[#090D16] border border-[#F8FAFC]/15">
                     <code className="text-xs text-[#DAF462] break-all font-mono">
-                      https://storive.in
+                      https://ui-ux-git-main-mhdaliarchitect.vercel.app
                     </code>
                     <button
                       type="button"
                       onClick={() =>
                         navigator.clipboard.writeText(
-                          'https://storive.in'
+                          'https://ui-ux-git-main-mhdaliarchitect.vercel.app'
                         )
                       }
                       className="px-3 py-1.5 rounded bg-[#DAF462] text-[#141413] font-mono text-xs font-semibold cursor-pointer"
                     >
-                      Copy Live Link
+                      Copy Vercel Link
                     </button>
                   </div>
 
                   <div className="flex flex-wrap items-center justify-between gap-2 p-3 rounded-lg bg-[#090D16] border border-[#F8FAFC]/15">
                     <code className="text-xs text-[#60A5FA] break-all font-mono">
-                      https://starlit-creponne-c41889.netlify.app
+                      https://ais-pre-7j3wsnftor5suogjpqkbf6-225707887467.asia-east1.run.app
                     </code>
                     <button
                       type="button"
                       onClick={() =>
                         navigator.clipboard.writeText(
-                          'https://starlit-creponne-c41889.netlify.app'
+                          'https://ais-pre-7j3wsnftor5suogjpqkbf6-225707887467.asia-east1.run.app'
                         )
                       }
                       className="px-3 py-1.5 rounded bg-[#F8FAFC]/10 hover:bg-[#F8FAFC]/20 text-[#F8FAFC] font-mono text-xs cursor-pointer"
                     >
-                      Copy Netlify Link
+                      Copy Cloud Run Link
                     </button>
                   </div>
                 </div>
 
                 <div className="space-y-3">
                   <h4 className="font-mechanik font-semibold text-[#FAF9F5] text-base">
-                    2. storive.in DNS Records in GoDaddy (Customer ID 926584664)
+                    2. Fix www.storive.in in GoDaddy DNS (Customer ID 926584664)
                   </h4>
                   <p className="text-xs text-[#94A3B8]">
-                    Go to <strong>GoDaddy → My Products → storive.in → DNS → DNS Records</strong> and make sure these 2 records point to Netlify:
+                    Go to <strong>GoDaddy → My Products → storive.in → DNS → DNS Records</strong> and add/update these 2 records:
                   </p>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-2.5">
                     <div className="p-3 rounded-lg bg-[#0F172A] border border-[#F8FAFC]/10 flex items-center justify-between gap-2">
                       <div className="font-mono text-[11px]">
                         <div className="text-[#94A3B8]">TYPE: <span className="text-[#FAF9F5]">A</span> · NAME: <span className="text-[#FAF9F5]">@</span></div>
-                        <div className="text-[#DAF462] font-semibold mt-0.5">75.2.60.5</div>
+                        <div className="text-[#DAF462] font-semibold mt-0.5">76.76.21.21</div>
                       </div>
                       <button
                         type="button"
-                        onClick={() => navigator.clipboard.writeText('75.2.60.5')}
+                        onClick={() => navigator.clipboard.writeText('76.76.21.21')}
                         className="px-2.5 py-1.5 rounded bg-[#F8FAFC]/10 hover:bg-[#F8FAFC]/20 text-[10px] font-mono uppercase cursor-pointer"
                       >
                         Copy IP
@@ -2026,11 +2026,11 @@ ${dossier.specifications.map((s) => `- ${s.label}: ${s.value}`).join('\n')}
                     <div className="p-3 rounded-lg bg-[#0F172A] border border-[#F8FAFC]/10 flex items-center justify-between gap-2">
                       <div className="font-mono text-[11px]">
                         <div className="text-[#94A3B8]">TYPE: <span className="text-[#FAF9F5]">CNAME</span> · NAME: <span className="text-[#FAF9F5]">www</span></div>
-                        <div className="text-[#DAF462] font-semibold mt-0.5">starlit-creponne-c41889.netlify.app</div>
+                        <div className="text-[#DAF462] font-semibold mt-0.5">cname.vercel-dns.com</div>
                       </div>
                       <button
                         type="button"
-                        onClick={() => navigator.clipboard.writeText('starlit-creponne-c41889.netlify.app')}
+                        onClick={() => navigator.clipboard.writeText('cname.vercel-dns.com')}
                         className="px-2.5 py-1.5 rounded bg-[#F8FAFC]/10 hover:bg-[#F8FAFC]/20 text-[10px] font-mono uppercase cursor-pointer"
                       >
                         Copy CNAME
