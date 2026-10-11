@@ -8,7 +8,7 @@ import keynoteImg from '../assets/images/hmos_keynote_benchmark_card_17916520055
 export const LINKEDIN_URL =
   'https://www.linkedin.com/in/mhdali-palsaniya-68233923b?utm_source=share_via&utm_content=profile&utm_medium=member_android';
 
-export const STORIVE_URL = 'https://storive.in';
+export const STORIVE_URL = 'https://www.storive.in';
 
 export interface ChapterItem {
   id: string;

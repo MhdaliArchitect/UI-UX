@@ -2,7 +2,7 @@
 
 Official architectural showcase and interactive 3D/kinetic web studio for **HMOS® (Hybrid Master Operating System)**, founded and architected by **Mahammadali Palsaniya** (*Founder & Principal Systems Architect, HMOS · DeepTech & Sovereign AI Infrastructure, India*).
 
-- **Official Domain:** [https://storive.in](https://storive.in)
+- **Official Live Domain (Netlify):** [https://www.storive.in](https://www.storive.in)
 - **Direct Cloud Run Live URL:** [https://ais-pre-7j3wsnftor5suogjpqkbf6-225707887467.asia-east1.run.app](https://ais-pre-7j3wsnftor5suogjpqkbf6-225707887467.asia-east1.run.app)
 - **Founder LinkedIn:** [Mahammadali Palsaniya](https://www.linkedin.com/in/mhdali-palsaniya-68233923b)
 

@@ -1328,7 +1328,7 @@ ${dossier.specifications.map((s) => `- ${s.label}: ${s.value}`).join('\n')}
                   rel="noopener noreferrer"
                   className="hover:underline font-medium"
                 >
-                  storive.in
+                  www.storive.in
                 </a>{' '}
                 · Global Sovereign Operations
                 <br />
@@ -1596,13 +1596,13 @@ ${dossier.specifications.map((s) => `- ${s.label}: ${s.value}`).join('\n')}
                   <div className="flex flex-wrap gap-2.5">
                     <a
                       href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(
-                        window.location.origin
+                        STORIVE_URL
                       )}`}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg bg-[#0A66C2] text-white text-xs font-mechanik font-medium cursor-pointer hover:opacity-90"
                     >
-                      <span>Post Live Link on LinkedIn</span>
+                      <span>Post www.storive.in on LinkedIn</span>
                       <ExternalLink className="w-3.5 h-3.5" />
                     </a>
                     <a
@@ -1969,13 +1969,13 @@ ${dossier.specifications.map((s) => `- ${s.label}: ${s.value}`).join('\n')}
 
                   <div className="flex flex-wrap items-center justify-between gap-2 p-3 rounded-lg bg-[#090D16] border border-[#F8FAFC]/15">
                     <code className="text-xs text-[#DAF462] break-all font-mono">
-                      https://storive.in
+                      https://www.storive.in
                     </code>
                     <button
                       type="button"
                       onClick={() =>
                         navigator.clipboard.writeText(
-                          'https://storive.in'
+                          'https://www.storive.in'
                         )
                       }
                       className="px-3 py-1.5 rounded bg-[#DAF462] text-[#141413] font-mono text-xs font-semibold cursor-pointer"
