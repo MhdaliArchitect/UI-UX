@@ -1,5 +1,14 @@
+import visionImg from '../assets/images/hmos_vision_architecture_1791646745243.jpg';
+import sovereigntyImg from '../assets/images/hmos_sovereignty_monolith_1791646768169.jpg';
+import architectureImg from '../assets/images/hmos_diamond_core_pavilion_1791646782021.jpg';
+import ecosystemImg from '../assets/images/hmos_ecosystem_infrastructure_1791646794737.jpg';
+import monolithImg from '../assets/images/hmos_monolith_sculpture_1791646805793.jpg';
+import keynoteImg from '../assets/images/hmos_keynote_benchmark_card_1791652005530.jpg';
+
 export const LINKEDIN_URL =
   'https://www.linkedin.com/in/mhdali-palsaniya-68233923b?utm_source=share_via&utm_content=profile&utm_medium=member_android';
+
+export const STORIVE_URL = 'https://storive.in';
 
 export interface ChapterItem {
   id: string;
@@ -49,12 +58,12 @@ export interface CollectionItem {
 }
 
 export const IMAGES = {
-  vision: '/src/assets/images/hmos_vision_architecture_1791646745243.jpg',
-  sovereignty: '/src/assets/images/hmos_sovereignty_monolith_1791646768169.jpg',
-  architecture: '/src/assets/images/hmos_diamond_core_pavilion_1791646782021.jpg',
-  ecosystem: '/src/assets/images/hmos_ecosystem_infrastructure_1791646794737.jpg',
-  monolith: '/src/assets/images/hmos_monolith_sculpture_1791646805793.jpg',
-  keynote: '/src/assets/images/hmos_keynote_benchmark_card_1791652005530.jpg',
+  vision: visionImg,
+  sovereignty: sovereigntyImg,
+  architecture: architectureImg,
+  ecosystem: ecosystemImg,
+  monolith: monolithImg,
+  keynote: keynoteImg,
 };
 
 export const LOCALE_STRINGS: Record<

@@ -4,6 +4,7 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import Lenis from 'lenis';
 import {
   LINKEDIN_URL,
+  STORIVE_URL,
   CHAPTERS,
   MANIFESTO_TEXT,
   INSIGHTS,
@@ -180,7 +181,7 @@ export default function App() {
   const [selectedInsight, setSelectedInsight] = useState<InsightArticle | null>(null);
   const [selectedCollectionModal, setSelectedCollectionModal] = useState<CollectionItem | null>(null);
   const [codeModalOpen, setCodeModalOpen] = useState(false);
-  const [activeCodeTab, setActiveCodeTab] = useState<'html' | 'css'>('html');
+  const [activeCodeTab, setActiveCodeTab] = useState<'storive' | 'html' | 'css'>('storive');
   const [copiedCode, setCopiedCode] = useState<'html' | 'css' | null>(null);
 
   // Saved Wishlist state
@@ -1315,7 +1316,15 @@ ${dossier.specifications.map((s) => `- ${s.label}: ${s.value}`).join('\n')}
                 <br />
                 8-Invariant SHA-256 Audit (7ms)
                 <br />
-                India · Global Sovereign Operations
+                <a
+                  href={STORIVE_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:underline font-medium"
+                >
+                  storive.in
+                </a>{' '}
+                · Global Sovereign Operations
                 <br />
                 <a
                   href={LINKEDIN_URL}
@@ -1546,12 +1555,13 @@ ${dossier.specifications.map((s) => `- ${s.label}: ${s.value}`).join('\n')}
                     type="button"
                     onClick={() => {
                       setMenuDrawerOpen(false);
+                      setActiveCodeTab('storive');
                       setCodeModalOpen(true);
                     }}
                     className="inline-flex items-center gap-2 px-4 py-2.5 rounded-full bg-[#1D4ED8] text-[#FAF9F5] text-xs font-mechanik font-medium uppercase tracking-wider cursor-pointer"
                   >
                     <Code2 className="w-4 h-4" />
-                    <span>Export .HTML &amp; .CSS Code</span>
+                    <span>Deploy to storive.in / Code</span>
                   </button>
 
                   <button
@@ -1857,7 +1867,7 @@ ${dossier.specifications.map((s) => `- ${s.label}: ${s.value}`).join('\n')}
               <div className="flex items-center gap-2.5">
                 <FileCode className="w-5 h-5 text-[#DAF462]" />
                 <h3 className="font-mechanik text-lg font-medium">
-                  HMOS® Standalone .HTML &amp; .CSS Code Bundle
+                  HMOS® — Deploy Repo to storive.in &amp; Standalone Code Bundle
                 </h3>
               </div>
               <button
@@ -1871,6 +1881,17 @@ ${dossier.specifications.map((s) => `- ${s.label}: ${s.value}`).join('\n')}
 
             <div className="flex flex-wrap items-center justify-between gap-3 my-4">
               <div className="flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={() => setActiveCodeTab('storive')}
+                  className={`px-4 py-2 rounded-lg text-xs font-mono uppercase cursor-pointer ${
+                    activeCodeTab === 'storive'
+                      ? 'bg-[#DAF462] text-[#141413] font-semibold'
+                      : 'bg-[#090D16] text-[#94A3B8]'
+                  }`}
+                >
+                  Deploy to storive.in
+                </button>
                 <button
                   type="button"
                   onClick={() => setActiveCodeTab('html')}
@@ -1895,45 +1916,110 @@ ${dossier.specifications.map((s) => `- ${s.label}: ${s.value}`).join('\n')}
                 </button>
               </div>
 
-              <div className="flex items-center gap-2">
-                <button
-                  type="button"
-                  onClick={() => handleCopyCode(activeCodeTab)}
-                  className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg bg-[#F8FAFC]/10 hover:bg-[#F8FAFC]/20 text-xs font-mono cursor-pointer"
-                >
-                  {copiedCode === activeCodeTab ? (
-                    <>
-                      <Check className="w-3.5 h-3.5 text-[#10B981]" />
-                      <span>Copied!</span>
-                    </>
-                  ) : (
-                    <>
-                      <Copy className="w-3.5 h-3.5" />
-                      <span>Copy {activeCodeTab.toUpperCase()}</span>
-                    </>
-                  )}
-                </button>
+              {activeCodeTab !== 'storive' && (
+                <div className="flex items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={() => handleCopyCode(activeCodeTab)}
+                    className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg bg-[#F8FAFC]/10 hover:bg-[#F8FAFC]/20 text-xs font-mono cursor-pointer"
+                  >
+                    {copiedCode === activeCodeTab ? (
+                      <>
+                        <Check className="w-3.5 h-3.5 text-[#10B981]" />
+                        <span>Copied!</span>
+                      </>
+                    ) : (
+                      <>
+                        <Copy className="w-3.5 h-3.5" />
+                        <span>Copy {activeCodeTab.toUpperCase()}</span>
+                      </>
+                    )}
+                  </button>
 
-                <button
-                  type="button"
-                  onClick={() =>
-                    handleDownloadFile(
-                      activeCodeTab === 'html' ? 'index.html' : 'styles.css',
-                      activeCodeTab === 'html' ? STANDALONE_HTML : STANDALONE_CSS,
-                      activeCodeTab === 'html' ? 'text/html' : 'text/css'
-                    )
-                  }
-                  className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-[#1D4ED8] hover:bg-[#2563EB] text-xs font-mono cursor-pointer"
-                >
-                  <Download className="w-3.5 h-3.5" />
-                  <span>Download {activeCodeTab === 'html' ? 'index.html' : 'styles.css'}</span>
-                </button>
-              </div>
+                  <button
+                    type="button"
+                    onClick={() =>
+                      handleDownloadFile(
+                        activeCodeTab === 'html' ? 'index.html' : 'styles.css',
+                        activeCodeTab === 'html' ? STANDALONE_HTML : STANDALONE_CSS,
+                        activeCodeTab === 'html' ? 'text/html' : 'text/css'
+                      )
+                    }
+                    className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-[#1D4ED8] hover:bg-[#2563EB] text-xs font-mono cursor-pointer"
+                  >
+                    <Download className="w-3.5 h-3.5" />
+                    <span>Download {activeCodeTab === 'html' ? 'index.html' : 'styles.css'}</span>
+                  </button>
+                </div>
+              )}
             </div>
 
-            <pre className="flex-1 overflow-auto rounded-xl bg-[#090D16] p-4 text-xs font-mono text-[#CBD5E1] leading-relaxed border border-[#F8FAFC]/10">
-              <code>{activeCodeTab === 'html' ? STANDALONE_HTML : STANDALONE_CSS}</code>
-            </pre>
+            {activeCodeTab === 'storive' ? (
+              <div className="flex-1 overflow-auto rounded-xl bg-[#090D16] p-5 text-sm text-[#CBD5E1] space-y-5 border border-[#F8FAFC]/10">
+                <div className="p-4 rounded-xl bg-[#0F172A] border border-[#DAF462]/40">
+                  <div className="text-xs font-mono uppercase tracking-wider text-[#DAF462] mb-1.5">
+                    1. Your Real Live Working Link (Copy This into GoDaddy Forwarding)
+                  </div>
+                  <div className="flex flex-wrap items-center justify-between gap-2 p-3 rounded-lg bg-[#090D16] border border-[#F8FAFC]/15">
+                    <code className="text-xs text-[#DAF462] break-all font-mono">
+                      https://ais-pre-7j3wsnftor5suogjpqkbf6-225707887467.asia-east1.run.app
+                    </code>
+                    <button
+                      type="button"
+                      onClick={() =>
+                        navigator.clipboard.writeText(
+                          'https://ais-pre-7j3wsnftor5suogjpqkbf6-225707887467.asia-east1.run.app'
+                        )
+                      }
+                      className="px-3 py-1.5 rounded bg-[#DAF462] text-[#141413] font-mono text-xs font-semibold cursor-pointer"
+                    >
+                      Copy Live Link
+                    </button>
+                  </div>
+                  <p className="text-xs text-[#94A3B8] mt-2 leading-relaxed">
+                    In GoDaddy (Customer ID <code className="text-[#FAF9F5]">926584664</code>) → <strong>My Products → storive.in → DNS → Forwarding → Domain → Add Forwarding</strong> → paste the exact link above. Your <strong>storive.in</strong> domain will open this live site immediately.
+                  </p>
+                </div>
+
+                <div className="space-y-3">
+                  <h4 className="font-mechanik font-semibold text-[#FAF9F5] text-base">
+                    2. If Connecting via Vercel Custom Domain DNS Instead (GoDaddy DNS Records)
+                  </h4>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-2.5">
+                    <div className="p-3 rounded-lg bg-[#0F172A] border border-[#F8FAFC]/10 flex items-center justify-between gap-2">
+                      <div className="font-mono text-[11px]">
+                        <div className="text-[#94A3B8]">TYPE: <span className="text-[#FAF9F5]">A</span> · NAME: <span className="text-[#FAF9F5]">@</span></div>
+                        <div className="text-[#DAF462] font-semibold mt-0.5">76.76.21.21</div>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => navigator.clipboard.writeText('76.76.21.21')}
+                        className="px-2.5 py-1.5 rounded bg-[#F8FAFC]/10 hover:bg-[#F8FAFC]/20 text-[10px] font-mono uppercase cursor-pointer"
+                      >
+                        Copy IP
+                      </button>
+                    </div>
+                    <div className="p-3 rounded-lg bg-[#0F172A] border border-[#F8FAFC]/10 flex items-center justify-between gap-2">
+                      <div className="font-mono text-[11px]">
+                        <div className="text-[#94A3B8]">TYPE: <span className="text-[#FAF9F5]">CNAME</span> · NAME: <span className="text-[#FAF9F5]">www</span></div>
+                        <div className="text-[#DAF462] font-semibold mt-0.5">cname.vercel-dns.com</div>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => navigator.clipboard.writeText('cname.vercel-dns.com')}
+                        className="px-2.5 py-1.5 rounded bg-[#F8FAFC]/10 hover:bg-[#F8FAFC]/20 text-[10px] font-mono uppercase cursor-pointer"
+                      >
+                        Copy CNAME
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ) : (
+              <pre className="flex-1 overflow-auto rounded-xl bg-[#090D16] p-4 text-xs font-mono text-[#CBD5E1] leading-relaxed border border-[#F8FAFC]/10">
+                <code>{activeCodeTab === 'html' ? STANDALONE_HTML : STANDALONE_CSS}</code>
+              </pre>
+            )}
           </div>
         </div>
       )}
