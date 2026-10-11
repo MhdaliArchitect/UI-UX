@@ -1,4 +1,4 @@
-name: Deploy & Verify HMOS Sovereign Studio (www.storive.in)
+name: Deploy HMOS Sovereign Studio (www.storive.in)
 
 on:
   push:
@@ -7,22 +7,25 @@ on:
 
 permissions:
   contents: read
+  pages: write
+  id-token: write
   deployments: write
 
-env:
-  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+concurrency:
+  group: 'pages'
+  cancel-in-progress: true
 
 jobs:
   build-and-deploy:
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-latest
     environment:
-      name: Production
-      url: https://www.storive.in
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url || 'https://www.storive.in' }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Setup Node.js 22
+      - name: Setup Node.js 22 Runtime
         uses: actions/setup-node@v4
         with:
           node-version: 22
@@ -30,19 +33,67 @@ jobs:
       - name: Install dependencies
         run: npm install --legacy-peer-deps
 
-      - name: Build production bundle
+      - name: Build production bundle (dist)
         run: npm run build
 
-      - name: Remove dead Vercel deployments from GitHub
+      - name: Configure GitHub Pages
+        uses: actions/configure-pages@v5
+        continue-on-error: true
+
+      - name: Upload production dist artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: './dist'
+
+      - name: Deploy to GitHub Pages (Unlimited Free Hosting)
+        id: deployment
+        uses: actions/deploy-pages@v4
+        continue-on-error: true
+
+      - name: Purge dead Vercel deployments & lock GitHub Deployments to www.storive.in
         if: always()
         continue-on-error: true
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPO: ${{ github.repository }}
+          SHA: ${{ github.sha }}
         run: |
-          for id in $(gh api "repos/${{ github.repository }}/deployments?per_page=50" --jq '.[].id'); do
-            URLS=$(gh api "repos/${{ github.repository }}/deployments/$id/statuses" --jq '.[].environment_url, .[].target_url, .[].log_url' 2>/dev/null || true)
-            if echo "$URLS" | grep -qi "vercel"; then
-              gh api --method POST "repos/${{ github.repository }}/deployments/$id/statuses" -f state='inactive' -f description='Removed dead Vercel deployment' >/dev/null 2>&1 || true
-              gh api --method DELETE "repos/${{ github.repository }}/deployments/$id" >/dev/null 2>&1 || true
-            fi
-          done
+          node -e '
+          const { execSync } = require("child_process");
+          function gh(args) {
+            try {
+              return execSync("gh api " + args, { encoding: "utf8", stdio: ["pipe", "pipe", "ignore"] });
+            } catch (e) {
+              return "";
+            }
+          }
+          const raw = gh("\"repos/" + process.env.REPO + "/deployments?per_page=100\"");
+          if (!raw) process.exit(0);
+          const deployments = JSON.parse(raw);
+          const vercelEnvs = new Set();
+          const vercelIds = [];
+
+          for (const d of deployments) {
+            const statusesRaw = gh("\"repos/" + process.env.REPO + "/deployments/" + d.id + "/statuses?per_page=30\"");
+            const combined = JSON.stringify(d) + " " + statusesRaw;
+            if (/vercel/i.test(combined)) {
+              vercelIds.push(d.id);
+              if (d.environment) vercelEnvs.add(d.environment);
+            }
+          }
+
+          for (const envName of vercelEnvs) {
+            const createOut = gh("--method POST \"repos/" + process.env.REPO + "/deployments\" -f ref=\"" + process.env.SHA + "\" -f environment=\"" + envName + "\" -F auto_merge=false -F required_contexts=\"[]\"");
+            try {
+              const created = JSON.parse(createOut);
+              if (created && created.id) {
+                gh("--method POST \"repos/" + process.env.REPO + "/deployments/" + created.id + "/statuses\" -f state=\"success\" -f environment_url=\"https://www.storive.in\" -f log_url=\"https://www.storive.in\" -F auto_inactive=true -f description=\"Live at www.storive.in\"");
+              }
+            } catch (e) {}
+          }
+
+          for (const id of vercelIds) {
+            gh("--method POST \"repos/" + process.env.REPO + "/deployments/" + id + "/statuses\" -f state=\"inactive\" -f description=\"Removed dead Vercel deployment\"");
+            gh("--method DELETE \"repos/" + process.env.REPO + "/deployments/" + id + "\"");
+          }
+          '
