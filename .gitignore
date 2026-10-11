@@ -7,5 +7,4 @@ coverage/
 .env*
 !.env.example
 .aistudio/
-.vercel/
 bun.lock
