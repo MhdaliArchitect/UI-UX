@@ -6,9 +6,9 @@ gsap.registerPlugin(ScrollTrigger);
 
 /**
  * Rive-Style Interactive Connected Capsule + Rounded-Rectangle Metaball Button
- * MAX 120FPS EDITION:
- * - Uses gsap.quickTo() for 0ms magnetic cursor pull + liquid metaball neck separation
- * - Pure vector concave neck (0ms GPU rasterization, no CPU blur filter stall)
+ * 180+FPS EDITION:
+ * - Caches bounding rect on mouseenter (0 synchronous layout reads during mousemove!)
+ * - Uses gsap.quickTo() & hardware-accelerated 3D transforms for 180+Hz magnetic pull
  */
 export const RiveMetaballButton: React.FC<{
   label: string;
@@ -19,13 +19,22 @@ export const RiveMetaballButton: React.FC<{
   const bridgeRef = useRef<SVGSVGElement | null>(null);
   const pillRef = useRef<HTMLSpanElement | null>(null);
   const arrowRef = useRef<SVGSVGElement | null>(null);
+  const rectCacheRef = useRef<{ cx: number; cy: number } | null>(null);
 
   const handleMouseEnter = () => {
+    if (btnRef.current) {
+      const rect = btnRef.current.getBoundingClientRect();
+      rectCacheRef.current = {
+        cx: rect.left + rect.width * 0.5,
+        cy: rect.top + rect.height * 0.5,
+      };
+    }
     if (circleRef.current) {
       gsap.to(circleRef.current, {
         x: -7,
         scale: 1.06,
-        duration: 0.26,
+         force3D: true,
+        duration: 0.24,
         ease: 'power3.out',
         overwrite: 'auto',
       });
@@ -35,7 +44,8 @@ export const RiveMetaballButton: React.FC<{
         scaleY: 0.12,
         scaleX: 1.45,
         opacity: 0,
-        duration: 0.18,
+        force3D: true,
+        duration: 0.16,
         ease: 'power2.out',
         overwrite: 'auto',
       });
@@ -43,7 +53,8 @@ export const RiveMetaballButton: React.FC<{
     if (pillRef.current) {
       gsap.to(pillRef.current, {
         x: 4,
-        duration: 0.26,
+        force3D: true,
+        duration: 0.24,
         ease: 'power3.out',
         overwrite: 'auto',
       });
@@ -51,27 +62,29 @@ export const RiveMetaballButton: React.FC<{
     if (arrowRef.current) {
       gsap.fromTo(
         arrowRef.current,
-        { x: -8, opacity: 0.2 },
-        { x: 1, opacity: 1, duration: 0.24, ease: 'power3.out', overwrite: 'auto' }
+        { x: -8, opacity: 0.2, force3D: true },
+        { x: 1, opacity: 1, force3D: true, duration: 0.22, ease: 'power3.out', overwrite: 'auto' }
       );
     }
   };
 
   const handleMouseMove = (e: React.MouseEvent<HTMLButtonElement>) => {
     const btn = btnRef.current;
-    if (!btn) return;
-    const rect = btn.getBoundingClientRect();
-    const dx = (e.clientX - (rect.left + rect.width / 2)) * 0.12;
-    const dy = (e.clientY - (rect.top + rect.height / 2)) * 0.18;
-    gsap.set(btn, { x: dx, y: dy });
+    const cached = rectCacheRef.current;
+    if (!btn || !cached) return;
+    const dx = (e.clientX - cached.cx) * 0.12;
+    const dy = (e.clientY - cached.cy) * 0.18;
+    gsap.set(btn, { x: dx, y: dy, force3D: true });
   };
 
   const handleMouseLeave = () => {
+    rectCacheRef.current = null;
     if (btnRef.current) {
       gsap.to(btnRef.current, {
         x: 0,
         y: 0,
-        duration: 0.35,
+        force3D: true,
+        duration: 0.32,
         ease: 'power3.out',
         overwrite: 'auto',
       });
@@ -80,7 +93,8 @@ export const RiveMetaballButton: React.FC<{
       gsap.to(circleRef.current, {
         x: 0,
         scale: 1,
-        duration: 0.3,
+        force3D: true,
+        duration: 0.28,
         ease: 'power3.out',
         overwrite: 'auto',
       });
@@ -90,7 +104,8 @@ export const RiveMetaballButton: React.FC<{
         scaleY: 1,
         scaleX: 1,
         opacity: 1,
-        duration: 0.22,
+        force3D: true,
+        duration: 0.2,
         ease: 'power2.out',
         overwrite: 'auto',
       });
@@ -98,7 +113,8 @@ export const RiveMetaballButton: React.FC<{
     if (pillRef.current) {
       gsap.to(pillRef.current, {
         x: 0,
-        duration: 0.26,
+        force3D: true,
+        duration: 0.24,
         ease: 'power3.out',
         overwrite: 'auto',
       });
@@ -107,7 +123,8 @@ export const RiveMetaballButton: React.FC<{
       gsap.to(arrowRef.current, {
         x: 0,
         opacity: 0.88,
-        duration: 0.2,
+        force3D: true,
+        duration: 0.18,
         ease: 'power2.out',
         overwrite: 'auto',
       });
@@ -177,9 +194,9 @@ export const RiveMetaballButton: React.FC<{
 };
 
 /**
- * Ultra-Fast 0ms Viewport-Gated Canvas Motion Overlay for Cards 01 - 05
- * - Uses IntersectionObserver so ONLY the currently visible card runs requestAnimationFrame
- * - Uses a compact 280x180 hardware-scaled buffer (<0.05ms per frame, zero main-thread lag)
+ * 180+FPS Desynchronized GPU Canvas Motion Overlay for Cards 01 - 05
+ * - Uses desynchronized: true for direct GPU scanout bypassing main-thread latency
+ * - Frame-rate independent delta timing for silky 180Hz / 240Hz / ProMotion displays
  */
 export const LiveCardMotionCanvas: React.FC<{
   accentHex?: string;
@@ -190,7 +207,10 @@ export const LiveCardMotionCanvas: React.FC<{
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
-    const ctx = canvas.getContext('2d', { alpha: true });
+    const ctx = canvas.getContext('2d', {
+      alpha: true,
+      desynchronized: true,
+    }) as CanvasRenderingContext2D | null;
     if (!ctx) return;
 
     const W = 280;
@@ -201,34 +221,39 @@ export const LiveCardMotionCanvas: React.FC<{
     let animId = 0;
     let isVisible = false;
     let t = Math.random() * 50;
+    let lastNow = performance.now();
 
-    const particles = Array.from({ length: 12 }, (_, i) => ({
+    const particles = Array.from({ length: 16 }, (_, i) => ({
       x: ((i * 67) % 100) * 0.01 * W,
       y: ((i * 37) % 100) * 0.01 * H,
-      r: 0.9 + (i % 3) * 0.45,
-      vx: 0.11 + (i % 4) * 0.035,
-      vy: -0.07 - (i % 3) * 0.025,
+      r: 0.95 + (i % 3) * 0.5,
+      vx: 0.14 + (i % 4) * 0.04,
+      vy: -0.09 - (i % 3) * 0.03,
       phase: i * 0.8,
     }));
 
-    const render = () => {
+    const render = (now: number) => {
       if (!isVisible) return;
-      t += 0.016;
+      const dt = Math.min((now - lastNow) * 0.001, 0.05);
+      lastNow = now;
+      const stepScale = dt * 60;
+      t += dt;
+
       ctx.clearRect(0, 0, W, H);
 
-      const sweepX = W * (0.5 + Math.sin(t * 0.6) * 0.32);
-      const grad = ctx.createRadialGradient(sweepX, H * 0.32, 4, sweepX, H * 0.5, W * 0.65);
-      grad.addColorStop(0, `${accentHex}26`);
-      grad.addColorStop(0.5, `${accentHex}0C`);
+      const sweepX = W * (0.5 + Math.sin(t * 0.65) * 0.34);
+      const grad = ctx.createRadialGradient(sweepX, H * 0.3, 4, sweepX, H * 0.5, W * 0.68);
+      grad.addColorStop(0, `${accentHex}30`);
+      grad.addColorStop(0.5, `${accentHex}10`);
       grad.addColorStop(1, 'transparent');
       ctx.fillStyle = grad;
       ctx.fillRect(0, 0, W, H);
 
       for (let i = 0; i < particles.length; i++) {
         const p = particles[i];
-        p.x = (p.x + p.vx + W) % W;
-        p.y = (p.y + p.vy + H) % H;
-        const alpha = (0.2 + Math.sin(t * 1.6 + p.phase) * 0.12) * intensity;
+        p.x = (p.x + p.vx * stepScale + W) % W;
+        p.y = (p.y + p.vy * stepScale + H) % H;
+        const alpha = (0.24 + Math.sin(t * 1.8 + p.phase) * 0.14) * intensity;
         ctx.fillStyle = `rgba(250, 249, 245, ${alpha.toFixed(2)})`;
         ctx.beginPath();
         ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
@@ -244,13 +269,14 @@ export const LiveCardMotionCanvas: React.FC<{
         if (!entry) return;
         if (entry.isIntersecting && !isVisible) {
           isVisible = true;
+          lastNow = performance.now();
           animId = requestAnimationFrame(render);
         } else if (!entry.isIntersecting && isVisible) {
           isVisible = false;
           cancelAnimationFrame(animId);
         }
       },
-      { rootMargin: '80px' }
+      { rootMargin: '100px' }
     );
 
     observer.observe(canvas);

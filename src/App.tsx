@@ -204,12 +204,18 @@ export default function App() {
     setImgErrors((prev) => ({ ...prev, [key]: true }));
   };
 
-  // 1. Initialize Lenis Smooth Inertia Scrolling & sync 1:1 with GSAP Ticker (MAX 120fps / 0ms latency)
+  // 1. Initialize Lenis Smooth Inertia Scrolling & sync 1:1 with GSAP Ticker (MAX 180+FPS / 0ms latency)
   useEffect(() => {
+    ScrollTrigger.config({
+      limitCallbacks: true,
+      ignoreMobileResize: true,
+    });
+
     const lenis = new Lenis({
-      lerp: 0.12,
+      lerp: 0.14,
       smoothWheel: true,
-      wheelMultiplier: 1.0,
+      syncTouch: false,
+      wheelMultiplier: 1.05,
     });
 
     lenis.on('scroll', ScrollTrigger.update);
@@ -1956,12 +1962,30 @@ ${dossier.specifications.map((s) => `- ${s.label}: ${s.value}`).join('\n')}
 
             {activeCodeTab === 'storive' ? (
               <div className="flex-1 overflow-auto rounded-xl bg-[#090D16] p-5 text-sm text-[#CBD5E1] space-y-5 border border-[#F8FAFC]/10">
-                <div className="p-4 rounded-xl bg-[#0F172A] border border-[#DAF462]/40">
-                  <div className="text-xs font-mono uppercase tracking-wider text-[#DAF462] mb-1.5">
-                    1. Your Real Live Working Link (Copy This into GoDaddy Forwarding)
+                <div className="p-4 rounded-xl bg-[#0F172A] border border-[#DAF462]/40 space-y-3">
+                  <div className="text-xs font-mono uppercase tracking-wider text-[#DAF462]">
+                    1. Your Live Working Links (Ready Right Now)
                   </div>
+
                   <div className="flex flex-wrap items-center justify-between gap-2 p-3 rounded-lg bg-[#090D16] border border-[#F8FAFC]/15">
                     <code className="text-xs text-[#DAF462] break-all font-mono">
+                      https://ui-ux-git-main-mhdaliarchitect.vercel.app
+                    </code>
+                    <button
+                      type="button"
+                      onClick={() =>
+                        navigator.clipboard.writeText(
+                          'https://ui-ux-git-main-mhdaliarchitect.vercel.app'
+                        )
+                      }
+                      className="px-3 py-1.5 rounded bg-[#DAF462] text-[#141413] font-mono text-xs font-semibold cursor-pointer"
+                    >
+                      Copy Vercel Link
+                    </button>
+                  </div>
+
+                  <div className="flex flex-wrap items-center justify-between gap-2 p-3 rounded-lg bg-[#090D16] border border-[#F8FAFC]/15">
+                    <code className="text-xs text-[#60A5FA] break-all font-mono">
                       https://ais-pre-7j3wsnftor5suogjpqkbf6-225707887467.asia-east1.run.app
                     </code>
                     <button
@@ -1971,20 +1995,20 @@ ${dossier.specifications.map((s) => `- ${s.label}: ${s.value}`).join('\n')}
                           'https://ais-pre-7j3wsnftor5suogjpqkbf6-225707887467.asia-east1.run.app'
                         )
                       }
-                      className="px-3 py-1.5 rounded bg-[#DAF462] text-[#141413] font-mono text-xs font-semibold cursor-pointer"
+                      className="px-3 py-1.5 rounded bg-[#F8FAFC]/10 hover:bg-[#F8FAFC]/20 text-[#F8FAFC] font-mono text-xs cursor-pointer"
                     >
-                      Copy Live Link
+                      Copy Cloud Run Link
                     </button>
                   </div>
-                  <p className="text-xs text-[#94A3B8] mt-2 leading-relaxed">
-                    In GoDaddy (Customer ID <code className="text-[#FAF9F5]">926584664</code>) → <strong>My Products → storive.in → DNS → Forwarding → Domain → Add Forwarding</strong> → paste the exact link above. Your <strong>storive.in</strong> domain will open this live site immediately.
-                  </p>
                 </div>
 
                 <div className="space-y-3">
                   <h4 className="font-mechanik font-semibold text-[#FAF9F5] text-base">
-                    2. If Connecting via Vercel Custom Domain DNS Instead (GoDaddy DNS Records)
+                    2. Fix www.storive.in in GoDaddy DNS (Customer ID 926584664)
                   </h4>
+                  <p className="text-xs text-[#94A3B8]">
+                    Go to <strong>GoDaddy → My Products → storive.in → DNS → DNS Records</strong> and add/update these 2 records:
+                  </p>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-2.5">
                     <div className="p-3 rounded-lg bg-[#0F172A] border border-[#F8FAFC]/10 flex items-center justify-between gap-2">
                       <div className="font-mono text-[11px]">
