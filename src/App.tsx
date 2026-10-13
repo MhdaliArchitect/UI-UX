@@ -1326,7 +1326,7 @@ export default function App() {
               <p className="text-[#141413]">
                 Cryptographic verification
                 <br />
-                8-invariant SHA-256 audit
+                8-invariant cryptographic audit
                 <br />
                 <a
                   href={STORIVE_URL}
@@ -1477,7 +1477,7 @@ export default function App() {
             <span>HMOS® 35/35 STEPS</span>
             <span>STAGE 05 GUARD PARITY</span>
             <span>STAGE 07 QUORUM LOCK</span>
-            <span>SHA-256 · INDIA</span>
+            <span>ZERO-TRUST · INDIA</span>
           </div>
         </div>
       </footer>

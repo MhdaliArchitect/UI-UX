@@ -11,10 +11,10 @@ Official architectural showcase and interactive 3D/kinetic web studio for **HMOS
 ## Verified Architectural Benchmarks
 
 1. **35-Step Production Survival (`35/35 · 100.0%`):**
-   Eliminates the `0.98^35 = 49.3%` compound failure decay of probabilistic prompt wrappers at **310ms** execution latency (**15.5x faster** than `4,820ms` baseline).
+   Eliminates the `0.98^35 = 49.3%` compound failure decay of probabilistic prompt wrappers.
 2. **Stage 05 AST De-Bloat & Guard-Parity Compiler:**
    Strips **37.7% – 41.7%** of redundant OOP wrapper lines (`0` executable classes) while mathematically proving **100% safety guard-clause retention**.
 3. **Stage 07 Distributed Entropy & Quorum Lock:**
    Enforces monotonic Lamport Vector Clocks and a strict **Shannon Entropy ceiling (`<= 0.250 bits`)** across 5 distributed worker nodes.
 4. **8-Invariant On-Disk Cryptographic Verification:**
-   Verifies all 8 core architecture invariants via **SHA-256 digests** with an 8-Pillar Zero-Trust lock (`status == 'verified'`, no delete / no merge).
+   Verifies all 8 core architecture invariants via **on-disk cryptographic digests** with an 8-Pillar Zero-Trust lock (`status == 'verified'`, no delete / no merge).

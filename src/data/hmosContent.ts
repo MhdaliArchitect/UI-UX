@@ -4,7 +4,7 @@ import ecosystemImg from '../assets/images/hmos_ecosystem_infrastructure_1791646
 import monolithImg from '../assets/images/hmos_monolith_sculpture_1791646805793.jpg';
 import keynoteImg from '../assets/images/hmos_keynote_benchmark_card_1791652005530.jpg';
 import kernelImg from '../assets/images/hmos_kernel_engine_die_1792000000001.jpg';
-import shaGateImg from '../assets/images/hmos_sha256_secure_gate_1792000000002.jpg';
+import secureGateImg from '../assets/images/hmos_secure_gate_1792000000002.jpg';
 import hardwareImg from '../assets/images/hmos_sovereign_hardware_hsc_1792000000003.jpg';
 
 export const LINKEDIN_URL =
@@ -64,7 +64,7 @@ export interface CollectionItem {
 export const IMAGES = {
   vision: visionImg,
   kernel: kernelImg,
-  sovereignty: shaGateImg,
+  sovereignty: secureGateImg,
   hardware: hardwareImg,
   architecture: architectureImg,
   ecosystem: ecosystemImg,
@@ -134,10 +134,10 @@ export const CHAPTERS: ChapterItem[] = [
     image: IMAGES.kernel,
     defaultScrollMode: 'expanded',
     summary:
-      'HMOS Vision sets the design language for sovereign computing: a deterministic kernel that completes all 35 steps of an enterprise workflow (35/35) in 310ms.',
+      'HMOS Vision sets the design language for sovereign computing: a deterministic kernel that completes all 35 steps of an enterprise workflow (35/35).',
     specifications: [
       { label: 'Workflow Survival', value: '100.0% (35/35 steps)' },
-      { label: 'Execution Latency', value: '310ms (15.5x faster than 4,820ms)' },
+      { label: 'Probabilistic Baseline', value: '49.3% survival (0.98^35)' },
       { label: 'Design Language', value: 'Slate & Cobalt' },
       { label: 'Principal Architect', value: 'Mahammadali Palsaniya' },
     ],
@@ -158,9 +158,9 @@ export const CHAPTERS: ChapterItem[] = [
     image: IMAGES.sovereignty,
     defaultScrollMode: 'progress-line',
     summary:
-      'Built for institutions that need complete operational independence. Every state transition is locked by an on-disk SHA-256 proof.',
+      'Built for institutions that need complete operational independence. Every state transition is locked by an on-disk cryptographic proof.',
     specifications: [
-      { label: 'Verification', value: 'On-disk SHA-256' },
+      { label: 'Verification', value: 'On-disk cryptographic proof' },
       { label: 'Database Lock', value: '8-pillar zero-trust lock' },
       { label: 'Entropy Ceiling', value: '≤ 0.250 bits' },
       { label: 'Quorum', value: '5 nodes · Lamport vector clocks' },
@@ -208,7 +208,7 @@ export const CHAPTERS: ChapterItem[] = [
     summary:
       'A unified family of deterministic execution nodes and precision interfaces, kept in sync by monotonic Lamport vector clocks across 5 worker nodes.',
     specifications: [
-      { label: 'Speedup', value: '15.5x (310ms vs 4,820ms)' },
+      { label: 'Worker Nodes', value: '5' },
       { label: 'Synchronization', value: 'Monotonic vector clocks' },
       { label: 'Entropy Bound', value: '≤ 0.250 bits (Shannon ceiling)' },
       { label: 'Design Intent', value: 'Long-lived deployments' },
@@ -234,7 +234,7 @@ export const CHAPTERS: ChapterItem[] = [
       'Every chamfer, fastener and cryptographic seal is specified for human clarity and zero-trust durability, in both the hardware and the software.',
     specifications: [
       { label: 'Fabrication', value: 'Anodized cobalt & slate carbon' },
-      { label: 'Invariant Audit', value: '8 / 8 SHA-256 verified' },
+      { label: 'Invariant Audit', value: '8 / 8 verified' },
       { label: 'Split-Brain Protection', value: 'Quorum lock' },
       { label: 'Design Origin', value: 'HMOS Sovereign Studio, India' },
     ],
@@ -253,10 +253,10 @@ export const INSIGHTS: InsightArticle[] = [
     readTime: '4 min read',
     image: IMAGES.keynote,
     excerpt:
-      'How small per-step errors compound across a 35-step enterprise workflow, and how the HMOS Deterministic Kernel completes 35/35 steps in 310ms.',
+      'How small per-step errors compound across a 35-step enterprise workflow, and how the HMOS Deterministic Kernel completes 35/35 steps.',
     body: [
       'Enterprise infrastructure built on probabilistic wrappers inherits silent, compounding failure. At 98% single-step reliability, a 35-step workflow survives only 49.3% of the time (0.98^35 = 49.3%), typically failing around Step 14 because of loose optional state and race conditions.',
-      'HMOS® (Hybrid Master Operating System) replaces probabilistic luck with a deterministic kernel lock. Across all 35 production steps it achieves 100.0% survival at 310ms against a 4,820ms baseline, a 15.5x speedup.',
+      'HMOS® (Hybrid Master Operating System) replaces probabilistic luck with a deterministic kernel lock. Across all 35 production steps it achieves 100.0% survival.',
       'Founded and architected by Mahammadali Palsaniya, HMOS applies the same discipline to software and to physical hardware: no unnecessary wrapper code, 100% safety guard parity, and cryptographic proof at every state boundary.',
     ],
   },
@@ -272,7 +272,7 @@ export const INSIGHTS: InsightArticle[] = [
     body: [
       'Good architecture is defined by what you can remove without compromising safety. The Stage 05 AST De-Bloat Compiler strips 37.7% to 41.7% of redundant OOP wrapper lines (0 executable classes) while mathematically proving that 100% of safety guard clauses are retained.',
       'In distributed multi-agent execution, Stage 07 prevents split-brain corruption with monotonic Lamport vector clocks and a strict Shannon entropy ceiling of ≤ 0.250 bits across 5 worker nodes.',
-      'Backed by 8-invariant, on-disk SHA-256 verification, every state transition is auditable and tamper-evident.',
+      'Backed by 8-invariant, on-disk cryptographic verification, every state transition is auditable and tamper-evident.',
     ],
   },
 ];
@@ -292,10 +292,10 @@ export const COLLECTIONS: CollectionItem[] = [
     monolithImage: IMAGES.monolith,
     tagline: '35-step deterministic workflow survival',
     description:
-      'Sovereign kernel modules engineered for 100.0% workflow survival at 310ms execution latency, 15.5x faster than the 4,820ms baseline.',
+      'Sovereign kernel modules engineered for 100.0% workflow survival across a 35-step enterprise workflow.',
     metrics: [
       { label: 'Workflow Survival', value: '35 / 35 steps (100%)' },
-      { label: 'Execution Time', value: '310ms vs 4,820ms baseline' },
+      { label: 'Probabilistic Baseline', value: '49.3% survival' },
     ],
   },
   {
@@ -311,9 +311,9 @@ export const COLLECTIONS: CollectionItem[] = [
     monolithImage: IMAGES.monolith,
     tagline: '8-invariant zero-trust cryptographic lock',
     description:
-      'On-disk SHA-256 verification of all 8 invariants, backed by an 8-pillar zero-trust database lock (status == verified; no delete, no merge).',
+      'On-disk cryptographic verification of all 8 invariants, backed by an 8-pillar zero-trust database lock (status == verified; no delete, no merge).',
     metrics: [
-      { label: 'Invariant Lock', value: '8 / 8 SHA-256 verified' },
+      { label: 'Invariant Lock', value: '8 / 8 verified' },
       { label: 'Audit Method', value: 'On-disk proof' },
     ],
   },
@@ -372,7 +372,7 @@ export const CRAFT_STEPS = [
   },
   {
     step: 'We implement',
-    description: 'Every deployment is locked by on-disk SHA-256 verification, so nothing drifts from its verified state',
+    description: 'Every deployment is locked by on-disk cryptographic verification, so nothing drifts from its verified state',
     image: IMAGES.ecosystem,
     caption: 'Precision Anodized Cobalt & Slate Assembly — Sovereign Craftsmanship',
   },
