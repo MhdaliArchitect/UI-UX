@@ -2,7 +2,6 @@ import visionImg from '../assets/images/hmos_vision_architecture_1791646745243.j
 import architectureImg from '../assets/images/hmos_diamond_core_pavilion_1791646782021.jpg';
 import ecosystemImg from '../assets/images/hmos_ecosystem_infrastructure_1791646794737.jpg';
 import monolithImg from '../assets/images/hmos_monolith_sculpture_1791646805793.jpg';
-import keynoteImg from '../assets/images/hmos_keynote_benchmark_card_1791652005530.jpg';
 import kernelImg from '../assets/images/hmos_kernel_engine_die_1792000000001.jpg';
 import secureGateImg from '../assets/images/hmos_secure_gate_1792000000002.jpg';
 import hardwareImg from '../assets/images/hmos_sovereign_hardware_hsc_1792000000003.jpg';
@@ -69,7 +68,6 @@ export const IMAGES = {
   architecture: architectureImg,
   ecosystem: ecosystemImg,
   monolith: monolithImg,
-  keynote: keynoteImg,
 };
 
 export const LOCALE_STRINGS: Record<
@@ -251,7 +249,7 @@ export const INSIGHTS: InsightArticle[] = [
     date: 'October 2026',
     location: 'HMOS Sovereign Research Studio',
     readTime: '4 min read',
-    image: IMAGES.keynote,
+    image: IMAGES.monolith,
     excerpt:
       'How small per-step errors compound across a 35-step enterprise workflow, and how the HMOS Deterministic Kernel completes 35/35 steps.',
     body: [

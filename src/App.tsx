@@ -707,7 +707,7 @@ export default function App() {
           >
             <h1
               ref={heroWordsRef}
-              className="font-mechanik font-medium text-[35px] sm:text-[54px] md:text-[64px] leading-[1.06] tracking-[-0.035em] balance-text"
+              className="font-mechanik font-medium text-[25px] sm:text-[54px] md:text-[64px] leading-[1.06] tracking-[-0.035em] balance-text"
             >
               {heroWords.map((w, i) => (
                 <React.Fragment key={i}>
@@ -1045,11 +1045,11 @@ export default function App() {
 
             <div className="group/list flex flex-col items-center gap-4 sm:gap-6">
               {/* Row 1: [Icon] Vision + Tall Monolith Studio Thumbnail + Kernel (35) */}
-              <div className="gpu-layer collection-kinetic-row flex items-center justify-center gap-2.5 sm:gap-4 whitespace-nowrap will-change-transform group-hover/list:opacity-45 hover:!opacity-100 transition-opacity duration-200">
+              <div className="gpu-layer collection-kinetic-row flex items-center justify-center gap-2.5 sm:gap-4 max-[339px]:flex-wrap max-[339px]:gap-y-1 whitespace-nowrap max-[339px]:whitespace-normal will-change-transform group-hover/list:opacity-45 hover:!opacity-100 transition-opacity duration-200">
                 <button
                   type="button"
                   onClick={() => setSelectedCollectionModal(COLLECTIONS[0])}
-                  className="inline-flex items-center gap-2 font-mechanik font-medium text-[25px] min-[340px]:text-[30px] min-[370px]:text-[32px] min-[390px]:text-[36px] sm:text-[54px] md:text-[64px] leading-none tracking-[-0.035em] cursor-pointer"
+                  className="inline-flex items-center gap-2 font-mechanik font-medium text-[35px] min-[340px]:text-[30px] min-[370px]:text-[32px] min-[390px]:text-[36px] sm:text-[54px] md:text-[64px] leading-none tracking-[-0.035em] cursor-pointer"
                 >
                   <CategoryIcon type="vision" className="w-7 h-7 sm:w-9 sm:h-9" />
                   <span>Vision</span>
@@ -1067,18 +1067,18 @@ export default function App() {
                 <button
                   type="button"
                   onClick={() => setSelectedCollectionModal(COLLECTIONS[0])}
-                  className="font-mechanik font-medium text-[25px] min-[340px]:text-[30px] min-[370px]:text-[32px] min-[390px]:text-[36px] sm:text-[54px] md:text-[64px] leading-none tracking-[-0.035em] cursor-pointer"
+                  className="font-mechanik font-medium text-[35px] min-[340px]:text-[30px] min-[370px]:text-[32px] min-[390px]:text-[36px] sm:text-[54px] md:text-[64px] leading-none tracking-[-0.035em] cursor-pointer"
                 >
                   Kernel (35)
                 </button>
               </div>
 
               {/* Row 2: [Recycle Icon] Sovereignty (08) + Slatted Vault Studio Thumbnail */}
-              <div className="gpu-layer collection-kinetic-row flex items-center justify-center gap-2.5 sm:gap-4 whitespace-nowrap will-change-transform group-hover/list:opacity-45 hover:!opacity-100 transition-opacity duration-200">
+              <div className="gpu-layer collection-kinetic-row flex items-center justify-center gap-2.5 sm:gap-4 max-[339px]:flex-wrap max-[339px]:gap-y-1 whitespace-nowrap max-[339px]:whitespace-normal will-change-transform group-hover/list:opacity-45 hover:!opacity-100 transition-opacity duration-200">
                 <button
                   type="button"
                   onClick={() => setSelectedCollectionModal(COLLECTIONS[1])}
-                  className="inline-flex items-center gap-2 font-mechanik font-medium text-[25px] min-[340px]:text-[30px] min-[370px]:text-[32px] min-[390px]:text-[36px] sm:text-[54px] md:text-[64px] leading-none tracking-[-0.035em] cursor-pointer"
+                  className="inline-flex items-center gap-2 font-mechanik font-medium text-[35px] min-[340px]:text-[30px] min-[370px]:text-[32px] min-[390px]:text-[36px] sm:text-[54px] md:text-[64px] leading-none tracking-[-0.035em] cursor-pointer"
                 >
                   <CategoryIcon type="sovereignty" className="w-7 h-7 sm:w-9 sm:h-9" />
                   <span>Sovereignty (08)</span>
@@ -1095,7 +1095,7 @@ export default function App() {
               </div>
 
               {/* Row 3: Clock Totem Studio Thumbnail + [Flag Icon] Ecosystem (41) */}
-              <div className="gpu-layer collection-kinetic-row flex items-center justify-center gap-2.5 sm:gap-4 whitespace-nowrap will-change-transform group-hover/list:opacity-45 hover:!opacity-100 transition-opacity duration-200">
+              <div className="gpu-layer collection-kinetic-row flex items-center justify-center gap-2.5 sm:gap-4 max-[339px]:flex-wrap max-[339px]:gap-y-1 whitespace-nowrap max-[339px]:whitespace-normal will-change-transform group-hover/list:opacity-45 hover:!opacity-100 transition-opacity duration-200">
                 <button
                   type="button"
                   onClick={() => setSelectedCollectionModal(COLLECTIONS[2])}
@@ -1108,7 +1108,7 @@ export default function App() {
                 <button
                   type="button"
                   onClick={() => setSelectedCollectionModal(COLLECTIONS[2])}
-                  className="inline-flex items-center gap-2 font-mechanik font-medium text-[25px] min-[340px]:text-[30px] min-[370px]:text-[32px] min-[390px]:text-[36px] sm:text-[54px] md:text-[64px] leading-none tracking-[-0.035em] cursor-pointer"
+                  className="inline-flex items-center gap-2 font-mechanik font-medium text-[35px] min-[340px]:text-[30px] min-[370px]:text-[32px] min-[390px]:text-[36px] sm:text-[54px] md:text-[64px] leading-none tracking-[-0.035em] cursor-pointer"
                 >
                   <CategoryIcon type="ecosystem" className="w-7 h-7 sm:w-9 sm:h-9" />
                   <span>Ecosystem (41)</span>
@@ -1116,11 +1116,11 @@ export default function App() {
               </div>
 
               {/* Row 4: [Details Icon] Details + Bespoke Engraved Plaque Studio Thumbnail + (00) */}
-              <div className="gpu-layer collection-kinetic-row flex items-center justify-center gap-2.5 sm:gap-4 whitespace-nowrap will-change-transform group-hover/list:opacity-45 hover:!opacity-100 transition-opacity duration-200">
+              <div className="gpu-layer collection-kinetic-row flex items-center justify-center gap-2.5 sm:gap-4 max-[339px]:flex-wrap max-[339px]:gap-y-1 whitespace-nowrap max-[339px]:whitespace-normal will-change-transform group-hover/list:opacity-45 hover:!opacity-100 transition-opacity duration-200">
                 <button
                   type="button"
                   onClick={() => setSelectedCollectionModal(COLLECTIONS[3])}
-                  className="inline-flex items-center gap-2 font-mechanik font-medium text-[25px] min-[340px]:text-[30px] min-[370px]:text-[32px] min-[390px]:text-[36px] sm:text-[54px] md:text-[64px] leading-none tracking-[-0.035em] cursor-pointer"
+                  className="inline-flex items-center gap-2 font-mechanik font-medium text-[35px] min-[340px]:text-[30px] min-[370px]:text-[32px] min-[390px]:text-[36px] sm:text-[54px] md:text-[64px] leading-none tracking-[-0.035em] cursor-pointer"
                 >
                   <CategoryIcon type="details" className="w-7 h-7 sm:w-9 sm:h-9" />
                   <span>Details</span>
@@ -1138,7 +1138,7 @@ export default function App() {
                 <button
                   type="button"
                   onClick={() => setSelectedCollectionModal(COLLECTIONS[3])}
-                  className="font-mechanik font-medium text-[25px] min-[340px]:text-[30px] min-[370px]:text-[32px] min-[390px]:text-[36px] sm:text-[54px] md:text-[64px] leading-none tracking-[-0.035em] cursor-pointer"
+                  className="font-mechanik font-medium text-[35px] min-[340px]:text-[30px] min-[370px]:text-[32px] min-[390px]:text-[36px] sm:text-[54px] md:text-[64px] leading-none tracking-[-0.035em] cursor-pointer"
                 >
                   (00)
                 </button>
@@ -1236,7 +1236,7 @@ export default function App() {
           className={`contain-paint relative z-10 ${canvasBg} ${canvasText} pt-2 pb-16 sm:pb-24 px-4 sm:px-8`}
         >
           <div className="max-w-5xl mx-auto">
-            <h2 className="font-mechanik font-medium text-[35px] sm:text-[52px] leading-[1.06] tracking-[-0.035em] mb-5 whitespace-pre-line">
+            <h2 className="font-mechanik font-medium text-[25px] sm:text-[52px] leading-[1.06] tracking-[-0.035em] mb-5 whitespace-pre-line">
               {t.enduranceHeadline}
             </h2>
 
