@@ -1,7 +1,7 @@
 import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import gsap from 'gsap';
 import { Search, X, Bookmark, Download, ExternalLink, ArrowUpRight } from 'lucide-react';
-import { HmosEmblem } from './HmosVectors';
+import { HmosEmblem, TransparentRibbonEmblem } from './HmosVectors';
 import type { ChapterItem } from '../data/hmosContent';
 
 /**
@@ -212,8 +212,8 @@ export const MenuDrawer: React.FC<MenuDrawerProps> = ({
           {/* Top bar */}
           <div className="relative flex items-center justify-between pb-7">
             <div data-d="fade" className="flex items-center gap-3">
-              <HmosEmblem size={30} className="text-[#FAF9F5]" />
-              <span className="text-2xl font-mechanik font-medium tracking-tight">HMOS®</span>
+              <TransparentRibbonEmblem size={32} className="shrink-0" />
+              <span className="text-2xl font-mechanik font-medium tracking-tight">HMOS</span>
             </div>
             <button
               type="button"

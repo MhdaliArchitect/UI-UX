@@ -585,7 +585,6 @@ export default function App() {
           className={`pointer-events-auto inline-flex items-baseline text-[29px] sm:text-[33px] font-mechanik font-medium tracking-[-0.04em] whitespace-nowrap shrink-0 leading-none transition-colors duration-200 ${headerTextColor}`}
         >
           <span>HMOS</span>
-          <span className="text-[14px] sm:text-[15px] font-normal ml-[1px]">®</span>
         </a>
 
         <div className="flex items-center gap-3 sm:gap-4 shrink-0 pointer-events-auto">
@@ -984,7 +983,7 @@ export default function App() {
                     className="w-48 h-80 mx-auto flex items-center justify-center rounded-xl bg-[#27272A] text-[#FAF9F5] shadow-2xl cursor-pointer"
                   >
                     <span className="font-mechanik text-sm">
-                      HMOS® {activeStageCollection.name} Monolith
+                      HMOS {activeStageCollection.name} Monolith
                     </span>
                   </button>
                 }
@@ -1141,12 +1140,12 @@ export default function App() {
           <div className="max-w-5xl mx-auto">
             <div className="max-w-xl space-y-5 text-[18px] sm:text-[21px] leading-[1.34] mb-14 sm:mb-20 font-mechanik font-medium">
               <p className="text-[#FAF9F5]">
-                HMOS® (Hybrid Master Operating System) builds sovereign deep-tech
+                HMOS (Hybrid Master Operating System) builds sovereign deep-tech
                 infrastructure around a deterministic execution kernel, so mission-critical
                 systems behave the same way every time.
               </p>
               <p className="text-[#8FA89E]">
-                Founded and architected by Mahammadali Palsaniya in India, HMOS® pairs
+                Founded and architected by Mahammadali Palsaniya in India, HMOS pairs
                 cryptographic verification with zero-trust design for institutions that need
                 their systems to last.
               </p>
@@ -1159,16 +1158,16 @@ export default function App() {
 
             <CurtainRevealImage
               src={IMAGES.vision}
-              alt="HMOS® architectural concept study"
+              alt="HMOS architectural concept study"
               curtainColor={curtainAndFooterHex}
               aspectClass="aspect-[1/1] sm:aspect-[16/10]"
-              revealStart="top 74%"
-              revealEnd="top 24%"
-              initialCoverRatio={0.91}
+              revealStart="top 92%"
+              revealEnd="top 45%"
+              initialCoverRatio={0.5}
             >
               <div className="absolute inset-0 bg-gradient-to-t from-[#090D16]/65 via-transparent to-transparent pointer-events-none" />
               <figcaption className="absolute bottom-3.5 left-3.5 sm:bottom-5 sm:left-5 text-[13px] sm:text-[14px] font-mechanik font-medium text-[#FAF9F5] leading-snug z-10">
-                HMOS® architectural
+                HMOS architectural
                 <br />
                 concept study
               </figcaption>
@@ -1332,7 +1331,7 @@ export default function App() {
             <div>
               <h4 className="font-normal text-[#687528] mb-0.5">Headquarters</h4>
               <p className="text-[#687528]">
-                HMOS® Sovereign Systems Studio
+                HMOS Sovereign Systems Studio
                 <br />
                 DeepTech &amp; Sovereign AI
                 <br />

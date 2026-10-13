@@ -1,4 +1,70 @@
-import React from 'react';
+import React, { useRef, useEffect, useState } from 'react';
+import ribbonEmblemImg from '../assets/images/hmos_ribbon_emblem_1791916508407.jpg';
+
+/**
+ * 0% Edited Exact 3D Cerulean Interlocking Ribbon Emblem
+ * Transparent background keying for flawless rendering on any surface
+ */
+export const TransparentRibbonEmblem: React.FC<{
+  size?: number;
+  className?: string;
+}> = ({ size = 32, className = '' }) => {
+  const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  const [loaded, setLoaded] = useState(false);
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const img = new Image();
+    img.crossOrigin = 'anonymous';
+    img.src = ribbonEmblemImg;
+    img.onload = () => {
+      const W = 160;
+      const H = 160;
+      canvas.width = W;
+      canvas.height = H;
+      const ctx = canvas.getContext('2d');
+      if (!ctx) return;
+      ctx.drawImage(img, 0, 0, W, H);
+      const imgData = ctx.getImageData(0, 0, W, H);
+      const d = imgData.data;
+      for (let i = 0; i < d.length; i += 4) {
+        const r = d[i];
+        const g = d[i + 1];
+        const b = d[i + 2];
+        const maxVal = Math.max(r, g, b);
+        if (maxVal < 26) {
+          d[i + 3] = 0;
+        } else if (maxVal < 65) {
+          d[i + 3] = Math.round(((maxVal - 26) / 39) * 255);
+        }
+      }
+      ctx.putImageData(imgData, 0, 0);
+      setLoaded(true);
+    };
+  }, []);
+
+  return (
+    <div
+      style={{ width: size, height: size }}
+      className={`relative inline-flex items-center justify-center shrink-0 select-none ${className}`}
+    >
+      <canvas
+        ref={canvasRef}
+        style={{ width: size, height: size }}
+        className={`w-full h-full object-contain ${loaded ? 'opacity-100' : 'opacity-0'} transition-opacity duration-200`}
+        aria-label="HMOS Sovereign Interlocking Ribbon Emblem"
+      />
+      {!loaded && (
+        <img
+          src={ribbonEmblemImg}
+          alt="HMOS Emblem"
+          className="absolute inset-0 w-full h-full object-contain mix-blend-screen"
+        />
+      )}
+    </div>
+  );
+};
 
 export const HmosEmblem: React.FC<{ className?: string; size?: number }> = ({
   className = '',
@@ -251,102 +317,125 @@ export const CollectionStudioThumb: React.FC<{
  * Includes realistic left vertical book spine crease, top page-edge highlight,
  * soft book shadow, and hover 3D tilt!
  */
+/**
+ * 3D Hardcover Book Catalogue Cover matching the official
+ * HMOS® Vision & Sovereignty Charter PDF Files:
+ * - Details (File 01/05): Sovereign Navy (#1C2536)
+ * - Vision (File 02/05): Wine/Crimson Burgundy (#6E1B24)
+ * - Ecosystem (File 03/05): Deep Forest Emerald (#144334)
+ * - Sovereignty (File 04/05): Deep Royal Cobalt (#143265)
+ * - Architecture/Continuity (File 05/05): Royal Violet/Purple (#3B1F54)
+ */
 export const CatalogueBookCover: React.FC<{
   type: 'vision' | 'sovereignty' | 'architecture' | 'ecosystem' | 'details';
 }> = ({ type }) => {
-  if (type === 'vision') {
-    // 1:1 with 00:04 Red-Orange Catalogue Hardcover Book
-    return (
-      <div className="relative w-[80px] h-[110px] sm:w-[86px] sm:h-[118px] rounded-[2px] bg-[#E54D2E] text-[#141413] p-2 pl-3 flex flex-col justify-between overflow-hidden shadow-[4px_6px_14px_rgba(0,0,0,0.22)] group-hover:rotate-[-2deg] group-hover:scale-[1.03] transition-transform duration-300 shrink-0 select-none">
-        {/* Realistic Left Book Spine Crease */}
-        <div className="absolute left-0 top-0 bottom-0 w-[6px] bg-gradient-to-r from-black/25 via-black/10 to-white/15" />
-        <div className="text-[7px] font-mechanik font-semibold tracking-tight text-[#141413] relative z-10">
-          HMOS®
-        </div>
-        <svg
-          viewBox="0 0 80 80"
-          className="w-16 h-16 self-end -mr-2 -mb-2 text-[#141413] relative z-10"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="4.5"
-        >
-          <path d="M12 76V18L44 8V76" />
-          <path d="M44 34L74 26V76" />
-          <rect x="20" y="24" width="6" height="8" fill="currentColor" stroke="none" />
-          <rect x="30" y="21" width="6" height="8" fill="currentColor" stroke="none" />
-          <rect x="20" y="38" width="6" height="8" fill="currentColor" stroke="none" />
-          <rect x="30" y="35" width="6" height="8" fill="currentColor" stroke="none" />
-          <rect x="20" y="52" width="16" height="7" fill="currentColor" stroke="none" />
-          <line x1="52" y1="44" x2="66" y2="44" strokeWidth="4" />
-          <line x1="52" y1="56" x2="66" y2="56" strokeWidth="4" />
-        </svg>
-      </div>
-    );
-  }
+  const metaByType = {
+    details: {
+      fileNumber: '01 / 05',
+      title: 'Details',
+      bgHex: '#1C2536',
+      accentBorder: 'rgba(241, 238, 223, 0.25)',
+      textColor: '#F1EEDF',
+      watermarkColor: 'rgba(255, 255, 255, 0.08)',
+    },
+    vision: {
+      fileNumber: '02 / 05',
+      title: 'Vision',
+      bgHex: '#6E1B24',
+      accentBorder: 'rgba(255, 255, 255, 0.22)',
+      textColor: '#FAF9F5',
+      watermarkColor: 'rgba(255, 255, 255, 0.08)',
+    },
+    ecosystem: {
+      fileNumber: '03 / 05',
+      title: 'Ecosystem',
+      bgHex: '#144334',
+      accentBorder: 'rgba(255, 255, 255, 0.22)',
+      textColor: '#FAF9F5',
+      watermarkColor: 'rgba(255, 255, 255, 0.08)',
+    },
+    sovereignty: {
+      fileNumber: '04 / 05',
+      title: 'Sovereignty',
+      bgHex: '#143265',
+      accentBorder: 'rgba(255, 255, 255, 0.22)',
+      textColor: '#FAF9F5',
+      watermarkColor: 'rgba(255, 255, 255, 0.08)',
+    },
+    architecture: {
+      fileNumber: '05 / 05',
+      title: 'Continuity',
+      bgHex: '#3B1F54',
+      accentBorder: 'rgba(255, 255, 255, 0.22)',
+      textColor: '#FAF9F5',
+      watermarkColor: 'rgba(255, 255, 255, 0.08)',
+    },
+  };
 
-  if (type === 'ecosystem') {
-    // 1:1 with 00:07 Sage-Mint Catalogue Hardcover Book
-    return (
-      <div className="relative w-[80px] h-[110px] sm:w-[86px] sm:h-[118px] rounded-[2px] bg-[#C5E8B7] text-[#141413] p-2 pl-3 flex flex-col justify-between overflow-hidden shadow-[4px_6px_14px_rgba(0,0,0,0.22)] group-hover:rotate-[-2deg] group-hover:scale-[1.03] transition-transform duration-300 shrink-0 select-none">
-        <div className="absolute left-0 top-0 bottom-0 w-[6px] bg-gradient-to-r from-black/20 via-black/10 to-white/20" />
-        <div className="text-[7px] font-mechanik font-semibold tracking-tight text-[#141413] relative z-10">
-          HMOS®
-        </div>
-        <svg
-          viewBox="0 0 80 80"
-          className="w-16 h-16 self-end -mr-1 -mb-1 text-[#141413] relative z-10"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="4.5"
-        >
-          <line x1="30" y1="8" x2="30" y2="72" />
-          <polygon points="30,10 60,24 30,38" fill="currentColor" stroke="none" />
-          <circle cx="58" cy="54" r="6.5" fill="currentColor" stroke="none" />
-          <path d="M6 68C22 60 46 60 76 68" strokeWidth="4" />
-        </svg>
-      </div>
-    );
-  }
-
-  if (type === 'details') {
-    // 1:1 with 00:09 Warm Silver-Grey Details Catalogue Hardcover Book
-    return (
-      <div className="relative w-[80px] h-[110px] sm:w-[86px] sm:h-[118px] rounded-[2px] bg-[#D1D1CD] text-[#141413] p-2 pl-3 flex flex-col justify-between overflow-hidden shadow-[4px_6px_14px_rgba(0,0,0,0.22)] group-hover:rotate-[-2deg] group-hover:scale-[1.03] transition-transform duration-300 shrink-0 select-none">
-        <div className="absolute left-0 top-0 bottom-0 w-[6px] bg-gradient-to-r from-black/20 via-black/10 to-white/20" />
-        <div className="text-[7px] font-mechanik font-semibold tracking-tight text-[#141413] relative z-10">
-          HMOS®
-        </div>
-        <svg
-          viewBox="0 0 80 80"
-          className="w-16 h-16 self-end -mr-1 -mb-1 text-[#141413] relative z-10"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="5"
-        >
-          <path d="M62 36V14H14V62H36" />
-          <circle cx="50" cy="50" r="14" />
-          <line x1="60" y1="60" x2="74" y2="74" />
-        </svg>
-      </div>
-    );
-  }
+  const meta = metaByType[type] || metaByType.details;
 
   return (
-    <div className="relative w-[80px] h-[110px] sm:w-[86px] sm:h-[118px] rounded-[2px] bg-[#60A5FA] text-[#141413] p-2 pl-3 flex flex-col justify-between overflow-hidden shadow-[4px_6px_14px_rgba(0,0,0,0.22)] group-hover:rotate-[-2deg] group-hover:scale-[1.03] transition-transform duration-300 shrink-0 select-none">
-      <div className="absolute left-0 top-0 bottom-0 w-[6px] bg-gradient-to-r from-black/20 via-black/10 to-white/20" />
-      <div className="text-[7px] font-mechanik font-semibold tracking-tight text-[#141413] relative z-10">
-        HMOS®
+    <div
+      style={{ backgroundColor: meta.bgHex, color: meta.textColor }}
+      className="relative w-[84px] h-[116px] sm:w-[92px] sm:h-[126px] rounded-[3px] p-2 pl-2.5 flex flex-col justify-between overflow-hidden shadow-[4px_8px_18px_rgba(0,0,0,0.32)] border border-white/10 group-hover:rotate-[-2deg] group-hover:scale-[1.04] transition-all duration-300 shrink-0 select-none"
+    >
+      {/* Realistic Left Book Spine Crease & Shadow */}
+      <div className="absolute left-0 top-0 bottom-0 w-[5px] bg-gradient-to-r from-black/40 via-black/15 to-white/10 pointer-events-none z-20" />
+
+      {/* Top Header Row: HMOS Mark + FILE XX / 05 */}
+      <div className="flex items-start justify-between relative z-10">
+        {/* HMOS Four-Corner Symmetrical Diamond Mark */}
+        <svg
+          viewBox="0 0 24 24"
+          className="w-4 h-4 text-current shrink-0"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="1.6"
+        >
+          <rect x="2" y="2" width="20" height="20" stroke={meta.accentBorder} strokeWidth="1.2" />
+          <polygon points="12,4 20,12 12,20 4,12" stroke="currentColor" strokeWidth="1.4" />
+          <circle cx="12" cy="12" r="1.8" fill="currentColor" stroke="none" />
+        </svg>
+
+        <div className="text-right">
+          <span className="block text-[6.5px] font-mono tracking-widest opacity-80 uppercase leading-none">
+            FILE {meta.fileNumber}
+          </span>
+          <span className="block text-[5.5px] font-mono tracking-wider opacity-60 uppercase mt-[1px]">
+            DRAFT V0.3
+          </span>
+        </div>
       </div>
+
+      {/* Faint Background Diamond Watermark */}
       <svg
-        viewBox="0 0 80 80"
-        className="w-16 h-16 self-end -mr-1 -mb-1 text-[#141413] relative z-10"
+        viewBox="0 0 100 100"
+        className="absolute right-[-15px] bottom-[15px] w-24 h-24 pointer-events-none z-0"
         fill="none"
-        stroke="currentColor"
-        strokeWidth="4.5"
+        stroke={meta.watermarkColor}
+        strokeWidth="1.2"
       >
-        <polygon points="40,10 70,40 40,70 10,40" />
-        <polygon points="40,24 56,40 40,56 24,40" fill="currentColor" stroke="none" />
+        <circle cx="50" cy="50" r="38" />
+        <polygon points="50,12 88,50 50,88 12,50" />
+        <rect x="25" y="25" width="50" height="50" />
       </svg>
+
+      {/* Center Title Zone */}
+      <div className="my-auto relative z-10 py-1">
+        <span className="block text-[5.5px] font-mono tracking-[0.14em] uppercase opacity-70 leading-none mb-0.5">
+          CHARTER
+        </span>
+        <h4 className="font-serif text-[15px] sm:text-[17px] font-normal tracking-[-0.02em] leading-none text-current">
+          {meta.title}
+        </h4>
+      </div>
+
+      {/* Bottom Off-White Banner Pill */}
+      <div className="relative z-10 w-full rounded-[1px] bg-[#FAF9F5] text-[#141413] px-1.5 py-[2px] shadow-sm">
+        <span className="block text-[5px] sm:text-[5.5px] font-medium tracking-tight whitespace-nowrap overflow-hidden text-ellipsis leading-tight font-mechanik">
+          Systems for Sovereignty
+        </span>
+      </div>
     </div>
   );
 };
