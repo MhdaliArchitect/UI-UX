@@ -135,7 +135,7 @@ export const CHAPTERS: ChapterItem[] = [
     dossierCode: 'FILE 02 / 05',
     image: IMAGES.kernel,
     defaultScrollMode: 'expanded',
-    catalogPdf: '/catalogs/HMOS_Details_Catalog_Navy.pdf',
+    catalogPdf: '/catalogs/HMOS_2_Vision_Maroon.pdf',
     summary:
       'HMOS Vision sets the design language for sovereign computing: a deterministic kernel that completes all 35 steps of an enterprise workflow (35/35).',
     specifications: [
@@ -160,7 +160,7 @@ export const CHAPTERS: ChapterItem[] = [
     dossierCode: 'FILE 04 / 05',
     image: IMAGES.sovereignty,
     defaultScrollMode: 'progress-line',
-    catalogPdf: '/catalogs/HMOS_Details_Catalog_Navy.pdf',
+    catalogPdf: '/catalogs/HMOS_4_Sovereignty_Blue.pdf',
     summary:
       'Built for institutions that need complete operational independence. Every state transition is locked by an on-disk cryptographic proof.',
     specifications: [
@@ -185,7 +185,7 @@ export const CHAPTERS: ChapterItem[] = [
     dossierCode: 'FILE 05 / 05',
     image: IMAGES.monolith,
     defaultScrollMode: 'progress-line',
-    catalogPdf: '/catalogs/HMOS_Details_Catalog_Navy.pdf',
+    catalogPdf: '/catalogs/HMOS_5_Continuity_Purple.pdf',
     summary:
       'Anchored by a 45° faceted diamond core, HMOS Architecture removes 37.7–41.7% of redundant wrapper code and mathematically proves that 100% of safety guard clauses are retained.',
     specifications: [
@@ -210,7 +210,7 @@ export const CHAPTERS: ChapterItem[] = [
     dossierCode: 'FILE 03 / 05',
     image: IMAGES.hardware,
     defaultScrollMode: 'expanded',
-    catalogPdf: '/catalogs/HMOS_Details_Catalog_Navy.pdf',
+    catalogPdf: '/catalogs/HMOS_3_Ecosystem_Green.pdf',
     summary:
       'A unified family of deterministic execution nodes and precision interfaces, kept in sync by monotonic Lamport vector clocks across 5 worker nodes.',
     specifications: [
@@ -235,7 +235,7 @@ export const CHAPTERS: ChapterItem[] = [
     dossierCode: 'FILE 01 / 05',
     image: IMAGES.details,
     defaultScrollMode: 'expanded',
-    catalogPdf: '/catalogs/HMOS_Details_Catalog_Navy.pdf',
+    catalogPdf: '/catalogs/HMOS_1_Details_Charcoal.pdf',
     summary:
       'Every chamfer, fastener and cryptographic seal is specified for human clarity and zero-trust durability, in both the hardware and the software.',
     specifications: [
