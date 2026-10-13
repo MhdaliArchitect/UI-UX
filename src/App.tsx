@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, lazy, Suspense } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import Lenis from 'lenis';
@@ -16,7 +16,6 @@ import {
   InsightArticle,
   CollectionItem,
 } from './data/hmosContent';
-import { STANDALONE_HTML, STANDALONE_CSS } from './data/standaloneExport';
 import {
   HmosEmblem,
   CategoryIcon,
@@ -24,7 +23,14 @@ import {
   CatalogueBookCover,
   TrayDownloadIcon,
 } from './components/HmosVectors';
-import { ThreeMonolithScene } from './components/ThreeMonolithScene';
+import { StageErrorBoundary } from './components/StageErrorBoundary';
+
+// Three.js is only needed by the 3D monolith stage far below the fold, so it loads as its own
+// chunk right after first paint instead of inside the main bundle.
+const ThreeMonolithScene = lazy(() =>
+  import('./components/ThreeMonolithScene').then((m) => ({ default: m.ThreeMonolithScene }))
+);
+import { MenuDrawer } from './components/MenuDrawer';
 import {
   RiveMetaballButton,
   LiveCardMotionCanvas,
@@ -34,14 +40,9 @@ import {
 import {
   Search,
   X,
-  Download,
   ArrowRight,
   Check,
-  Copy,
-  Code2,
-  FileCode,
   ChevronDown,
-  Bookmark,
   ExternalLink,
 } from 'lucide-react';
 
@@ -180,9 +181,6 @@ export default function App() {
   const [selectedDossier, setSelectedDossier] = useState<ChapterItem | null>(null);
   const [selectedInsight, setSelectedInsight] = useState<InsightArticle | null>(null);
   const [selectedCollectionModal, setSelectedCollectionModal] = useState<CollectionItem | null>(null);
-  const [codeModalOpen, setCodeModalOpen] = useState(false);
-  const [activeCodeTab, setActiveCodeTab] = useState<'storive' | 'html' | 'css'>('storive');
-  const [copiedCode, setCopiedCode] = useState<'html' | 'css' | null>(null);
 
   // Saved Wishlist state
   const [wishlist, setWishlist] = useState<string[]>(['vision', 'ecosystem']);
@@ -204,6 +202,8 @@ export default function App() {
     setImgErrors((prev) => ({ ...prev, [key]: true }));
   };
 
+  const lenisRef = useRef<Lenis | null>(null);
+
   // 1. Initialize Lenis Smooth Inertia Scrolling & sync 1:1 with GSAP Ticker (MAX 180+FPS / 0ms latency)
   useEffect(() => {
     ScrollTrigger.config({
@@ -218,6 +218,7 @@ export default function App() {
       wheelMultiplier: 1.05,
     });
 
+    lenisRef.current = lenis;
     lenis.on('scroll', ScrollTrigger.update);
 
     const updateTicker = (time: number) => {
@@ -229,8 +230,48 @@ export default function App() {
     return () => {
       gsap.ticker.remove(updateTicker);
       lenis.destroy();
+      lenisRef.current = null;
     };
   }, []);
+
+  // Freeze the page (and any Lenis inertia still running) while the menu drawer or a modal
+  // is open, so the wheel never scrolls the site behind it. Overlays scroll natively
+  // (data-lenis-prevent) when their own content is taller than the screen.
+  const overlayOpen =
+    menuDrawerOpen || !!selectedDossier || !!selectedInsight || !!selectedCollectionModal;
+  useEffect(() => {
+    const lenis = lenisRef.current;
+    if (!lenis) return;
+    if (overlayOpen) lenis.stop();
+    else lenis.start();
+  }, [overlayOpen]);
+
+  // Escape closes whichever modal is open (the menu drawer handles its own Escape).
+  useEffect(() => {
+    if (!selectedDossier && !selectedInsight && !selectedCollectionModal) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key !== 'Escape') return;
+      setSelectedDossier(null);
+      setSelectedInsight(null);
+      setSelectedCollectionModal(null);
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [selectedDossier, selectedInsight, selectedCollectionModal]);
+
+  // Menu links: close the drawer, then glide to the section with the same Lenis engine.
+  const handleMenuNavigate = (hash: string) => {
+    setMenuDrawerOpen(false);
+    const lenis = lenisRef.current;
+    lenis?.start();
+    const target = document.querySelector<HTMLElement>(hash);
+    if (!target) return;
+    if (lenis) {
+      lenis.scrollTo(target, { duration: 1.5, easing: (t: number) => 1 - Math.pow(1 - t, 4) });
+    } else {
+      target.scrollIntoView();
+    }
+  };
 
   // 2. Auto-cycle the 00:12 Three.js 3D Monolith Stage badge every 3.8s
   useEffect(() => {
@@ -265,6 +306,24 @@ export default function App() {
           start: 'top 44px',
           end: 'bottom 44px',
           onToggle: (self) => updateDarkHeader(self.isActive),
+        });
+      }
+
+      // A2. The hero is `sticky` so the first showcase can slide over it like a curtain. Once that
+      // showcase covers the screen the hero is invisible, but a sticky element still forces a
+      // layout pass on every scroll frame. Release it at that exact point (nothing visible changes)
+      // and re-pin it when scrolling back up.
+      if (showcasesRef.current && heroSectionRef.current) {
+        const hero = heroSectionRef.current;
+        ScrollTrigger.create({
+          trigger: showcasesRef.current,
+          start: 'top top',
+          onEnter: () => {
+            hero.style.position = 'relative';
+          },
+          onLeaveBack: () => {
+            hero.style.position = '';
+          },
         });
       }
 
@@ -460,50 +519,23 @@ export default function App() {
 
     return () => {
       ctx.revert();
+      if (heroSectionRef.current) heroSectionRef.current.style.position = '';
     };
   }, []);
 
-  const handleCopyCode = (type: 'html' | 'css') => {
-    const content = type === 'html' ? STANDALONE_HTML : STANDALONE_CSS;
-    navigator.clipboard.writeText(content);
-    setCopiedCode(type);
-    setTimeout(() => setCopiedCode(null), 2200);
-  };
-
-  const handleDownloadFile = (filename: string, content: string, mimeType: string) => {
-    const blob = new Blob([content], { type: mimeType });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = filename;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
-  };
-
-  const handleDownloadDossierSpec = (dossier: ChapterItem) => {
-    const specContent = `HMOS® SOVEREIGN ARCHITECTURAL DOSSIER
-============================================================
-Title: ${dossier.dossierTitle} (${dossier.dossierCode})
-Pillar: ${dossier.number} — ${dossier.badgeLabel}
-Founder & Principal Systems Architect: Mahammadali Palsaniya
-LinkedIn: ${LINKEDIN_URL}
-Organization: HMOS · DeepTech & Sovereign AI Infrastructure, India
-
-HEADLINE
-${dossier.headline}
-
-EXECUTIVE SUMMARY
-${dossier.summary}
-
-VERIFIED ARCHITECTURAL SPECIFICATIONS
-${dossier.specifications.map((s) => `- ${s.label}: ${s.value}`).join('\n')}
-============================================================
-© 2026 HMOS®. Made to last, designed to endure.
-`;
-    handleDownloadFile(`${dossier.id}-catalogue-hmos.txt`, specContent, 'text/plain;charset=utf-8');
-  };
+  // 3b. Looping icon animations (pulse / spin) only run while their section is on screen.
+  // Off-screen they would still invalidate style every frame during scroll.
+  useEffect(() => {
+    const blocks = document.querySelectorAll<HTMLElement>('main article, main section');
+    const io = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((e) => e.target.classList.toggle('is-offscreen', !e.isIntersecting));
+      },
+      { rootMargin: '120px 0px' }
+    );
+    blocks.forEach((b) => io.observe(b));
+    return () => io.disconnect();
+  }, []);
 
   const handleNewsletterSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -578,7 +610,7 @@ ${dossier.specifications.map((s) => `- ${s.label}: ${s.value}`).join('\n')}
             <button
               type="button"
               onClick={() => setLangMenuOpen((prev) => !prev)}
-              className={`flex items-center gap-1 text-[13px] sm:text-[14px] font-mechanik font-normal px-1.5 py-1 rounded whitespace-nowrap shrink-0 cursor-pointer transition-colors duration-200 ${headerTextColor}`}
+              className={`flex items-center gap-1 text-[13px] sm:text-[14px] font-mechanik font-medium px-1.5 py-1 rounded whitespace-nowrap shrink-0 cursor-pointer transition-colors duration-200 ${headerTextColor}`}
               aria-label="Select Language"
             >
               <span>{locale}</span>
@@ -675,7 +707,7 @@ ${dossier.specifications.map((s) => `- ${s.label}: ${s.value}`).join('\n')}
           >
             <h1
               ref={heroWordsRef}
-              className="font-mechanik font-normal text-[35px] sm:text-[54px] md:text-[64px] leading-[1.06] tracking-[-0.035em] balance-text"
+              className="font-mechanik font-medium text-[35px] sm:text-[54px] md:text-[64px] leading-[1.06] tracking-[-0.035em] balance-text"
             >
               {heroWords.map((w, i) => (
                 <React.Fragment key={i}>
@@ -715,6 +747,8 @@ ${dossier.specifications.map((s) => `- ${s.label}: ${s.value}`).join('\n')}
                       src={chap.image}
                       alt={chap.headline}
                       decoding="async"
+                      loading={idx < 2 ? undefined : 'lazy'}
+                      fetchPriority={idx === 0 ? 'high' : undefined}
                       referrerPolicy="no-referrer"
                       onError={() => handleImgError(chap.id)}
                       className="gpu-layer gsap-parallax-bg w-full h-full object-cover will-change-transform"
@@ -751,7 +785,7 @@ ${dossier.specifications.map((s) => `- ${s.label}: ${s.value}`).join('\n')}
                             : chap.badgeColor,
                           color: isEditorial ? chap.floemaBadgeText : chap.badgeTextColor,
                         }}
-                        className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-[6px] text-[13px] font-mechanik font-normal shadow-sm"
+                        className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-[6px] text-[13px] font-mechanik font-medium shadow-sm"
                       >
                         <CategoryIcon type={chap.iconType} className="w-3.5 h-3.5" />
                         <span>{chap.badgeLabel}</span>
@@ -763,7 +797,7 @@ ${dossier.specifications.map((s) => `- ${s.label}: ${s.value}`).join('\n')}
                       onClick={() => toggleCardCollapse(chap.id)}
                       className="text-[11px] font-mechanik uppercase tracking-wider text-[#FAF9F5]/65 hover:text-[#FAF9F5] px-2.5 py-1 rounded-full border border-[#FAF9F5]/20 bg-[#090D16]/40 cursor-pointer transition-colors"
                     >
-                      {isCollapsed ? '+ Expand Card' : '— Progress View'}
+                      {isCollapsed ? '+ Expand' : '— Collapse'}
                     </button>
                   </div>
 
@@ -774,7 +808,7 @@ ${dossier.specifications.map((s) => `- ${s.label}: ${s.value}`).join('\n')}
 
                   {/* Ghosted Section Title below the progress line (1:1 with 00:05 "Sovereignty" watermark) */}
                   <div className="flex items-center justify-between">
-                    <span className="font-mechanik font-normal text-[28px] sm:text-[38px] tracking-[-0.03em] text-[#FAF9F5]/40 select-none">
+                    <span className="font-mechanik font-medium text-[28px] sm:text-[38px] tracking-[-0.03em] text-[#FAF9F5]/40 select-none">
                       {chap.badgeLabel}
                     </span>
                   </div>
@@ -783,7 +817,7 @@ ${dossier.specifications.map((s) => `- ${s.label}: ${s.value}`).join('\n')}
                 {/* BOTTOM ZONE: Live Scroll-Animated Headline + Rive Metaball Button + #F5F4EE 3D Hardcover Catalogue Card */}
                 {!isCollapsed && (
                   <div className="relative z-10 max-w-5xl w-full mx-auto px-4 sm:px-8 pt-16 sm:pt-24 pb-8 sm:pb-12">
-                    <h2 className="gpu-layer gsap-card-headline font-mechanik font-normal text-[33px] sm:text-[46px] md:text-[52px] leading-[1.06] tracking-[-0.03em] text-[#FAF9F5] max-w-xl mb-7 balance-text will-change-transform">
+                    <h2 className="gpu-layer gsap-card-headline font-mechanik font-medium text-[33px] sm:text-[46px] md:text-[52px] leading-[1.06] tracking-[-0.03em] text-[#FAF9F5] max-w-xl mb-7 balance-text will-change-transform">
                       {chap.headline}
                     </h2>
 
@@ -812,14 +846,27 @@ ${dossier.specifications.map((s) => `- ${s.label}: ${s.value}`).join('\n')}
                           <span className="block text-[10px] font-mono uppercase tracking-widest text-[#787772] mb-0.5">
                             {chap.number} · {chap.dossierCode}
                           </span>
-                          <h3 className="font-mechanik font-normal text-[19px] sm:text-[20px] tracking-[-0.02em] text-[#141413]">
+                          <h3 className="font-mechanik font-medium text-[19px] sm:text-[20px] tracking-[-0.02em] text-[#141413]">
                             {chap.dossierTitle}
                           </h3>
                         </div>
-                        <span className="inline-flex items-center gap-2 text-[14px] font-mechanik font-normal text-[#141413] group-hover:translate-x-1 transition-transform">
-                          <span>Download Now</span>
-                          <TrayDownloadIcon className="w-4 h-4" />
-                        </span>
+                        {chap.catalogPdf ? (
+                          <a
+                            href={chap.catalogPdf}
+                            download
+                            onClick={(e) => e.stopPropagation()}
+                            onKeyDown={(e) => e.stopPropagation()}
+                            className="inline-flex items-center gap-2 text-[14px] font-mechanik font-medium text-[#141413] group-hover:translate-x-1 hover:underline transition-transform"
+                          >
+                            <span>Download PDF</span>
+                            <TrayDownloadIcon className="w-4 h-4" />
+                          </a>
+                        ) : (
+                          <span className="inline-flex items-center gap-2 text-[14px] font-mechanik font-medium text-[#141413] group-hover:translate-x-1 transition-transform">
+                            <span>View Dossier</span>
+                            <ArrowRight className="w-4 h-4" />
+                          </span>
+                        )}
                       </div>
                       <CatalogueBookCover type={chap.iconType} />
                     </div>
@@ -841,7 +888,7 @@ ${dossier.specifications.map((s) => `- ${s.label}: ${s.value}`).join('\n')}
           <div className="max-w-5xl mx-auto">
             <p
               ref={manifestoRef}
-              className="font-mechanik font-normal text-[30px] sm:text-[42px] md:text-[48px] leading-[1.13] tracking-[-0.03em] mb-12 sm:mb-16"
+              className="font-mechanik font-medium text-[30px] sm:text-[42px] md:text-[48px] leading-[1.13] tracking-[-0.03em] mb-12 sm:mb-16"
             >
               {words.map((word, idx) => (
                 <React.Fragment key={idx}>
@@ -855,7 +902,7 @@ ${dossier.specifications.map((s) => `- ${s.label}: ${s.value}`).join('\n')}
             <div className="mb-6">
               <a
                 href="#news-feed"
-                className="inline-flex items-center gap-1 text-[12px] font-mechanik font-normal hover:opacity-70 transition-opacity"
+                className="inline-flex items-center gap-1 text-[12px] font-mechanik font-medium hover:opacity-70 transition-opacity"
               >
                 <span>{t.recentNewsLabel}</span>
               </a>
@@ -893,7 +940,7 @@ ${dossier.specifications.map((s) => `- ${s.label}: ${s.value}`).join('\n')}
                       )}
                     </div>
 
-                    <h3 className="font-mechanik font-normal text-[19px] sm:text-[22px] leading-[1.22] tracking-[-0.02em] mb-6 group-hover:opacity-75 transition-opacity">
+                    <h3 className="font-mechanik font-medium text-[19px] sm:text-[22px] leading-[1.22] tracking-[-0.02em] mb-6 group-hover:opacity-75 transition-opacity">
                       {article.title}
                     </h3>
                   </div>
@@ -923,7 +970,7 @@ ${dossier.specifications.map((s) => `- ${s.label}: ${s.value}`).join('\n')}
                   backgroundColor: activeStageCollection.badgeBg,
                   color: activeStageCollection.badgeText,
                 }}
-                className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-[6px] text-[13px] font-mechanik font-normal cursor-pointer whitespace-nowrap shrink-0 transition-colors shadow-sm"
+                className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-[6px] text-[13px] font-mechanik font-medium cursor-pointer whitespace-nowrap shrink-0 transition-colors shadow-sm"
               >
                 <CategoryIcon type={activeStageCollection.iconType} className="w-3.5 h-3.5" />
                 <span>{activeStageCollection.name}</span>
@@ -947,13 +994,31 @@ ${dossier.specifications.map((s) => `- ${s.label}: ${s.value}`).join('\n')}
             </div>
 
             <div className="flex flex-col items-center justify-center">
-              <ThreeMonolithScene
-                activePillarIndex={activeStageIndex}
-                plaqueNumber={activeStageCollection.plaqueNumber}
-                pillarName={activeStageCollection.name}
-                accentColor={activeStageCollection.badgeBg}
-                onSelectPillar={() => setSelectedCollectionModal(activeStageCollection)}
-              />
+              <StageErrorBoundary
+                fallback={
+                  <button
+                    type="button"
+                    onClick={() => setSelectedCollectionModal(activeStageCollection)}
+                    className="w-48 h-80 mx-auto flex items-center justify-center rounded-xl bg-[#27272A] text-[#FAF9F5] shadow-2xl cursor-pointer"
+                  >
+                    <span className="font-mechanik text-sm">
+                      HMOS® {activeStageCollection.name} Monolith
+                    </span>
+                  </button>
+                }
+              >
+                <Suspense
+                  fallback={<div className="relative w-full max-w-[360px] h-[340px] sm:h-[380px] mx-auto" />}
+                >
+                  <ThreeMonolithScene
+                    activePillarIndex={activeStageIndex}
+                    plaqueNumber={activeStageCollection.plaqueNumber}
+                    pillarName={activeStageCollection.name}
+                    accentColor={activeStageCollection.badgeBg}
+                    onSelectPillar={() => setSelectedCollectionModal(activeStageCollection)}
+                  />
+                </Suspense>
+              </StageErrorBoundary>
 
               <button
                 type="button"
@@ -975,7 +1040,7 @@ ${dossier.specifications.map((s) => `- ${s.label}: ${s.value}`).join('\n')}
           className={`contain-paint relative z-10 ${canvasBg} ${canvasText} py-16 sm:py-24 px-2 sm:px-6 overflow-hidden`}
         >
           <div className="max-w-5xl mx-auto text-center">
-            <p className="text-[12px] font-mechanik font-normal mb-12 sm:mb-16">
+            <p className="text-[12px] font-mechanik font-medium mb-12 sm:mb-16">
               {t.theCollectionsLabel}
             </p>
 
@@ -985,16 +1050,16 @@ ${dossier.specifications.map((s) => `- ${s.label}: ${s.value}`).join('\n')}
                 <button
                   type="button"
                   onClick={() => setSelectedCollectionModal(COLLECTIONS[0])}
-                  className="inline-flex items-center gap-2 font-mechanik font-normal text-[36px] sm:text-[54px] md:text-[64px] leading-none tracking-[-0.035em] cursor-pointer"
+                  className="inline-flex items-center gap-2 font-mechanik font-medium text-[28px] max-[359px]:text-[24px] min-[400px]:text-[36px] sm:text-[54px] md:text-[64px] leading-none tracking-[-0.035em] cursor-pointer"
                 >
-                  <CategoryIcon type="vision" className="w-7 h-7 sm:w-9 sm:h-9" />
+                  <CategoryIcon type="vision" className="w-6 h-6 max-[359px]:w-5 max-[359px]:h-5 min-[400px]:w-7 min-[400px]:h-7 sm:w-9 sm:h-9" />
                   <span>Vision</span>
                 </button>
 
                 <button
                   type="button"
                   onClick={() => setSelectedCollectionModal(COLLECTIONS[0])}
-                  className="w-[68px] h-[94px] sm:w-[86px] sm:h-[116px] rounded-[2px] overflow-hidden shadow-md shrink-0 cursor-pointer hover:scale-110 transition-transform duration-300"
+                  className="w-[56px] h-[78px] max-[359px]:w-[48px] max-[359px]:h-[66px] min-[400px]:w-[68px] min-[400px]:h-[94px] sm:w-[86px] sm:h-[116px] rounded-[2px] overflow-hidden shadow-md shrink-0 cursor-pointer hover:scale-110 transition-transform duration-300"
                   aria-label="Inspect Vision Monolith Collection"
                 >
                   <CollectionStudioThumb type="monolith-post" />
@@ -1003,7 +1068,7 @@ ${dossier.specifications.map((s) => `- ${s.label}: ${s.value}`).join('\n')}
                 <button
                   type="button"
                   onClick={() => setSelectedCollectionModal(COLLECTIONS[0])}
-                  className="font-mechanik font-normal text-[36px] sm:text-[54px] md:text-[64px] leading-none tracking-[-0.035em] cursor-pointer"
+                  className="font-mechanik font-medium text-[28px] max-[359px]:text-[24px] min-[400px]:text-[36px] sm:text-[54px] md:text-[64px] leading-none tracking-[-0.035em] cursor-pointer"
                 >
                   Kernel (35)
                 </button>
@@ -1014,16 +1079,16 @@ ${dossier.specifications.map((s) => `- ${s.label}: ${s.value}`).join('\n')}
                 <button
                   type="button"
                   onClick={() => setSelectedCollectionModal(COLLECTIONS[1])}
-                  className="inline-flex items-center gap-2 font-mechanik font-normal text-[36px] sm:text-[54px] md:text-[64px] leading-none tracking-[-0.035em] cursor-pointer"
+                  className="inline-flex items-center gap-2 font-mechanik font-medium text-[28px] max-[359px]:text-[24px] min-[400px]:text-[36px] sm:text-[54px] md:text-[64px] leading-none tracking-[-0.035em] cursor-pointer"
                 >
-                  <CategoryIcon type="sovereignty" className="w-7 h-7 sm:w-9 sm:h-9" />
+                  <CategoryIcon type="sovereignty" className="w-6 h-6 max-[359px]:w-5 max-[359px]:h-5 min-[400px]:w-7 min-[400px]:h-7 sm:w-9 sm:h-9" />
                   <span>Sovereignty (08)</span>
                 </button>
 
                 <button
                   type="button"
                   onClick={() => setSelectedCollectionModal(COLLECTIONS[1])}
-                  className="w-[84px] h-[90px] sm:w-[106px] sm:h-[114px] rounded-[2px] overflow-hidden shadow-md shrink-0 cursor-pointer hover:scale-110 transition-transform duration-300"
+                  className="w-[68px] h-[73px] max-[359px]:w-[56px] max-[359px]:h-[60px] min-[400px]:w-[84px] min-[400px]:h-[90px] sm:w-[106px] sm:h-[114px] rounded-[2px] overflow-hidden shadow-md shrink-0 cursor-pointer hover:scale-110 transition-transform duration-300"
                   aria-label="Inspect Sovereignty Collection"
                 >
                   <CollectionStudioThumb type="slatted-planter" />
@@ -1035,7 +1100,7 @@ ${dossier.specifications.map((s) => `- ${s.label}: ${s.value}`).join('\n')}
                 <button
                   type="button"
                   onClick={() => setSelectedCollectionModal(COLLECTIONS[2])}
-                  className="w-[70px] h-[94px] sm:w-[90px] sm:h-[118px] rounded-[2px] overflow-hidden shadow-md shrink-0 cursor-pointer hover:scale-110 transition-transform duration-300"
+                  className="w-[58px] h-[78px] max-[359px]:w-[50px] max-[359px]:h-[66px] min-[400px]:w-[70px] min-[400px]:h-[94px] sm:w-[90px] sm:h-[118px] rounded-[2px] overflow-hidden shadow-md shrink-0 cursor-pointer hover:scale-110 transition-transform duration-300"
                   aria-label="Inspect Clock Totem Collection"
                 >
                   <CollectionStudioThumb type="clock-totem" />
@@ -1044,9 +1109,9 @@ ${dossier.specifications.map((s) => `- ${s.label}: ${s.value}`).join('\n')}
                 <button
                   type="button"
                   onClick={() => setSelectedCollectionModal(COLLECTIONS[2])}
-                  className="inline-flex items-center gap-2 font-mechanik font-normal text-[36px] sm:text-[54px] md:text-[64px] leading-none tracking-[-0.035em] cursor-pointer"
+                  className="inline-flex items-center gap-2 font-mechanik font-medium text-[28px] max-[359px]:text-[24px] min-[400px]:text-[36px] sm:text-[54px] md:text-[64px] leading-none tracking-[-0.035em] cursor-pointer"
                 >
-                  <CategoryIcon type="ecosystem" className="w-7 h-7 sm:w-9 sm:h-9" />
+                  <CategoryIcon type="ecosystem" className="w-6 h-6 max-[359px]:w-5 max-[359px]:h-5 min-[400px]:w-7 min-[400px]:h-7 sm:w-9 sm:h-9" />
                   <span>Ecosystem (41)</span>
                 </button>
               </div>
@@ -1056,16 +1121,16 @@ ${dossier.specifications.map((s) => `- ${s.label}: ${s.value}`).join('\n')}
                 <button
                   type="button"
                   onClick={() => setSelectedCollectionModal(COLLECTIONS[3])}
-                  className="inline-flex items-center gap-2 font-mechanik font-normal text-[36px] sm:text-[54px] md:text-[64px] leading-none tracking-[-0.035em] cursor-pointer"
+                  className="inline-flex items-center gap-2 font-mechanik font-medium text-[28px] max-[359px]:text-[24px] min-[400px]:text-[36px] sm:text-[54px] md:text-[64px] leading-none tracking-[-0.035em] cursor-pointer"
                 >
-                  <CategoryIcon type="details" className="w-7 h-7 sm:w-9 sm:h-9" />
+                  <CategoryIcon type="details" className="w-6 h-6 max-[359px]:w-5 max-[359px]:h-5 min-[400px]:w-7 min-[400px]:h-7 sm:w-9 sm:h-9" />
                   <span>Details</span>
                 </button>
 
                 <button
                   type="button"
                   onClick={() => setSelectedCollectionModal(COLLECTIONS[3])}
-                  className="w-[82px] h-[96px] sm:w-[104px] sm:h-[120px] rounded-[2px] overflow-hidden shadow-md shrink-0 cursor-pointer hover:scale-110 transition-transform duration-300"
+                  className="w-[66px] h-[77px] max-[359px]:w-[54px] max-[359px]:h-[64px] min-[400px]:w-[82px] min-[400px]:h-[96px] sm:w-[104px] sm:h-[120px] rounded-[2px] overflow-hidden shadow-md shrink-0 cursor-pointer hover:scale-110 transition-transform duration-300"
                   aria-label="Inspect Details Plaque Collection"
                 >
                   <CollectionStudioThumb type="custom-plaque" />
@@ -1074,7 +1139,7 @@ ${dossier.specifications.map((s) => `- ${s.label}: ${s.value}`).join('\n')}
                 <button
                   type="button"
                   onClick={() => setSelectedCollectionModal(COLLECTIONS[3])}
-                  className="font-mechanik font-normal text-[36px] sm:text-[54px] md:text-[64px] leading-none tracking-[-0.035em] cursor-pointer"
+                  className="font-mechanik font-medium text-[28px] max-[359px]:text-[24px] min-[400px]:text-[36px] sm:text-[54px] md:text-[64px] leading-none tracking-[-0.035em] cursor-pointer"
                 >
                   (00)
                 </button>
@@ -1092,27 +1157,27 @@ ${dossier.specifications.map((s) => `- ${s.label}: ${s.value}`).join('\n')}
           className={`contain-paint relative z-10 ${storyBg} text-[#FAF9F5] py-16 sm:py-24 px-4 sm:px-8`}
         >
           <div className="max-w-5xl mx-auto">
-            <div className="max-w-xl space-y-5 text-[18px] sm:text-[21px] leading-[1.34] mb-14 sm:mb-20 font-mechanik font-normal">
+            <div className="max-w-xl space-y-5 text-[18px] sm:text-[21px] leading-[1.34] mb-14 sm:mb-20 font-mechanik font-medium">
               <p className="text-[#FAF9F5]">
-                HMOS® (Hybrid Master Operating System) architects sovereign deep-tech
-                infrastructure and deterministic execution kernels that eliminate probabilistic
-                drift across mission-critical environments.
+                HMOS® (Hybrid Master Operating System) builds sovereign deep-tech
+                infrastructure around a deterministic execution kernel, so mission-critical
+                systems behave the same way every time.
               </p>
               <p className="text-[#8FA89E]">
-                Founded and architected by Mahammadali Palsaniya in India, our systems establish a
-                new benchmark for institutional permanence, cryptographic verification, and
-                zero-trust resilience.
+                Founded and architected by Mahammadali Palsaniya in India, HMOS® pairs
+                cryptographic verification with zero-trust design for institutions that need
+                their systems to last.
               </p>
             </div>
 
-            <blockquote className="font-mechanik font-normal text-[33px] sm:text-[46px] md:text-[54px] leading-[1.06] tracking-[-0.03em] text-[#FAF9F5] mb-10 sm:mb-14 balance-text">
-              “We believe sovereign systems should be mathematically certain, architecturally pure,
-              and built to endure for decades”
+            <blockquote className="font-mechanik font-medium text-[33px] sm:text-[46px] md:text-[54px] leading-[1.06] tracking-[-0.03em] text-[#FAF9F5] mb-10 sm:mb-14 balance-text">
+              “Sovereign systems should be mathematically certain, architecturally pure, and
+              built to last”
             </blockquote>
 
             <CurtainRevealImage
               src={IMAGES.vision}
-              alt="HMOS Sovereign Architecture Studio, India"
+              alt="HMOS® architectural concept study"
               curtainColor={curtainAndFooterHex}
               aspectClass="aspect-[1/1] sm:aspect-[16/10]"
               revealStart="top 74%"
@@ -1120,10 +1185,10 @@ ${dossier.specifications.map((s) => `- ${s.label}: ${s.value}`).join('\n')}
               initialCoverRatio={0.91}
             >
               <div className="absolute inset-0 bg-gradient-to-t from-[#090D16]/65 via-transparent to-transparent pointer-events-none" />
-              <figcaption className="absolute bottom-3.5 left-3.5 sm:bottom-5 sm:left-5 text-[13px] sm:text-[14px] font-mechanik font-normal text-[#FAF9F5] leading-snug z-10">
-                HMOS® Sovereign Sanctuary,
+              <figcaption className="absolute bottom-3.5 left-3.5 sm:bottom-5 sm:left-5 text-[13px] sm:text-[14px] font-mechanik font-medium text-[#FAF9F5] leading-snug z-10">
+                HMOS® architectural
                 <br />
-                India
+                concept study
               </figcaption>
             </CurtainRevealImage>
           </div>
@@ -1151,11 +1216,11 @@ ${dossier.specifications.map((s) => `- ${s.label}: ${s.value}`).join('\n')}
                 </div>
 
                 <div className="grid grid-cols-12 gap-4 items-start pt-1">
-                  <h3 className="col-span-5 sm:col-span-4 font-mechanik font-normal text-[17px] sm:text-[20px] tracking-[-0.02em] leading-tight">
+                  <h3 className="col-span-5 sm:col-span-4 font-mechanik font-medium text-[17px] sm:text-[20px] tracking-[-0.02em] leading-tight">
                     {item.step}
                   </h3>
                   <p
-                    className={`col-span-7 sm:col-span-8 font-mechanik font-normal text-[17px] sm:text-[20px] leading-[1.28] ${canvasMuted}`}
+                    className={`col-span-7 sm:col-span-8 font-mechanik font-medium text-[17px] sm:text-[20px] leading-[1.28] ${canvasMuted}`}
                   >
                     {item.description}
                   </p>
@@ -1172,11 +1237,11 @@ ${dossier.specifications.map((s) => `- ${s.label}: ${s.value}`).join('\n')}
           className={`contain-paint relative z-10 ${canvasBg} ${canvasText} pt-2 pb-16 sm:pb-24 px-4 sm:px-8`}
         >
           <div className="max-w-5xl mx-auto">
-            <h2 className="font-mechanik font-normal text-[35px] sm:text-[52px] leading-[1.06] tracking-[-0.035em] mb-5 whitespace-pre-line">
+            <h2 className="font-mechanik font-medium text-[35px] sm:text-[52px] leading-[1.06] tracking-[-0.035em] mb-5 whitespace-pre-line">
               {t.enduranceHeadline}
             </h2>
 
-            <p className="font-mechanik font-normal text-[19px] sm:text-[23px] leading-[1.3] mb-7 whitespace-pre-line">
+            <p className="font-mechanik font-medium text-[19px] sm:text-[23px] leading-[1.3] mb-7 whitespace-pre-line">
               {t.communitySub}
             </p>
 
@@ -1307,20 +1372,20 @@ ${dossier.specifications.map((s) => `- ${s.label}: ${s.value}`).join('\n')}
                 <span>Founder &amp; Principal Systems Architect</span>
               </p>
               <p className="text-[#687528] text-[14px]">
-                35/35 Deterministic Kernel · Zero-Trust Lock
+                35/35 steps verified · Zero-trust lock
               </p>
             </div>
 
             <div>
-              <p className="text-[#687528]">Stage 05 &amp; Stage 07 Research</p>
-              <p className="text-[#141413]">AST Guard-Parity &amp; Lamport Quorum Lab</p>
+              <p className="text-[#687528]">Research · Stage 05 &amp; Stage 07</p>
+              <p className="text-[#141413]">AST guard-parity compiler · Lamport quorum lock</p>
             </div>
 
             <div>
               <p className="text-[#141413]">
-                Sovereign Cryptographic Verification
+                Cryptographic verification
                 <br />
-                8-Invariant SHA-256 Audit (7ms)
+                8-invariant cryptographic audit
                 <br />
                 <a
                   href={STORIVE_URL}
@@ -1330,7 +1395,7 @@ ${dossier.specifications.map((s) => `- ${s.label}: ${s.value}`).join('\n')}
                 >
                   www.storive.in
                 </a>{' '}
-                · Global Sovereign Operations
+                · India
                 <br />
                 <a
                   href={LINKEDIN_URL}
@@ -1346,15 +1411,15 @@ ${dossier.specifications.map((s) => `- ${s.label}: ${s.value}`).join('\n')}
 
           <div className="w-full h-[1px] bg-[#141413]/35 my-7" />
 
-          <nav className="flex flex-col gap-1.5 text-[19px] sm:text-[21px] font-mechanik font-normal mb-8 text-[#141413]">
+          <nav className="flex flex-col gap-1.5 text-[19px] sm:text-[21px] font-mechanik font-medium mb-8 text-[#141413]">
             <a href="#showcases" className="hover:opacity-65 transition-opacity w-fit">
-              Products
+              Pillars
             </a>
             <a href="#about" className="hover:opacity-65 transition-opacity w-fit">
               About
             </a>
             <a href="#collections" className="hover:opacity-65 transition-opacity w-fit">
-              Sovereignty
+              Collections
             </a>
             <a href="#journal" className="hover:opacity-65 transition-opacity w-fit">
               Journal
@@ -1368,7 +1433,7 @@ ${dossier.specifications.map((s) => `- ${s.label}: ${s.value}`).join('\n')}
               rel="noopener noreferrer"
               className="text-left hover:underline w-fit cursor-pointer"
             >
-              Founder LinkedIn Profile
+              Founder on LinkedIn
             </a>
             <button
               type="button"
@@ -1461,219 +1526,46 @@ ${dossier.specifications.map((s) => `- ${s.label}: ${s.value}`).join('\n')}
               href={LINKEDIN_URL}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-[13px] font-mechanik font-normal text-[#141413] hover:underline"
+              className="text-[13px] font-mechanik font-medium text-[#141413] hover:underline"
             >
               Architected by Mahammadali Palsaniya
             </a>
           </div>
 
           <div className="flex flex-wrap items-center justify-between gap-4 pt-3 text-[9px] font-mechanik font-semibold tracking-wider text-[#141413]/70 uppercase">
-            <span>HMOS® 35/35 SURVIVAL</span>
+            <span>HMOS® 35/35 STEPS</span>
             <span>STAGE 05 GUARD PARITY</span>
             <span>STAGE 07 QUORUM LOCK</span>
-            <span>SHA-256 7MS VERIFIED · INDIA</span>
+            <span>ZERO-TRUST · INDIA</span>
           </div>
         </div>
       </footer>
 
       {/* =====================================================================
           INTERACTIVE OVERLAY 1: FULL-SCREEN MENU, SEARCH & WISHLIST DRAWER (≡ Q)
+          Curtain-wipe open / reverse close, see components/MenuDrawer.tsx
          ===================================================================== */}
-      {menuDrawerOpen && (
-        <div className="fixed inset-0 z-50 bg-[#090D16]/95 text-[#FAF9F5] backdrop-blur-xl flex flex-col justify-between p-6 sm:p-10 overflow-y-auto">
-          <div className="max-w-4xl w-full mx-auto">
-            <div className="flex items-center justify-between pb-8 border-b border-[#FAF9F5]/15">
-              <div className="flex items-center gap-3">
-                <HmosEmblem size={30} />
-                <span className="text-2xl font-mechanik font-semibold tracking-tight">
-                  HMOS®
-                </span>
-              </div>
-              <button
-                type="button"
-                onClick={() => setMenuDrawerOpen(false)}
-                className="w-11 h-11 rounded-full bg-[#FAF9F5] text-[#090D16] flex items-center justify-center hover:bg-[#DAF462] transition-colors cursor-pointer"
-                aria-label="Close Menu"
-              >
-                <X className="w-5 h-5" />
-              </button>
-            </div>
-
-            <div className="my-8 relative">
-              <Search className="w-5 h-5 text-[#94A3B8] absolute left-5 top-1/2 -translate-y-1/2" />
-              <input
-                type="text"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Search HMOS pillars, catalogues, Three.js monoliths..."
-                className="w-full rounded-full bg-[#0F172A] border border-[#FAF9F5]/20 pl-13 pr-6 py-4 text-base text-[#FAF9F5] placeholder:text-[#94A3B8] focus:outline-none focus:border-[#DAF462]"
-              />
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
-              <div>
-                <p className="text-xs font-mono uppercase tracking-widest text-[#94A3B8] mb-4">
-                  Navigation &amp; Founder Profile
-                </p>
-                <nav className="flex flex-col gap-3 text-3xl font-mechanik">
-                  <a
-                    href="#showcases"
-                    onClick={() => setMenuDrawerOpen(false)}
-                    className="hover:text-[#DAF462] transition-colors"
-                  >
-                    01 — Sovereign Pillars
-                  </a>
-                  <a
-                    href="#collections"
-                    onClick={() => setMenuDrawerOpen(false)}
-                    className="hover:text-[#DAF462] transition-colors"
-                  >
-                    02 — The Collections
-                  </a>
-                  <a
-                    href="#about"
-                    onClick={() => setMenuDrawerOpen(false)}
-                    className="hover:text-[#DAF462] transition-colors"
-                  >
-                    03 — Brand Story
-                  </a>
-                  <a
-                    href="#journal"
-                    onClick={() => setMenuDrawerOpen(false)}
-                    className="hover:text-[#DAF462] transition-colors"
-                  >
-                    04 — Journal &amp; Benchmarks
-                  </a>
-                </nav>
-
-                <div className="mt-8 flex flex-wrap gap-3">
-                  <a
-                    href={LINKEDIN_URL}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 px-4 py-2.5 rounded-full bg-[#DAF462] text-[#141413] text-xs font-mechanik font-semibold uppercase tracking-wider cursor-pointer"
-                  >
-                    <span>LinkedIn · Mahammadali Palsaniya</span>
-                    <ExternalLink className="w-3.5 h-3.5" />
-                  </a>
-
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setMenuDrawerOpen(false);
-                      setActiveCodeTab('storive');
-                      setCodeModalOpen(true);
-                    }}
-                    className="inline-flex items-center gap-2 px-4 py-2.5 rounded-full bg-[#1D4ED8] text-[#FAF9F5] text-xs font-mechanik font-medium uppercase tracking-wider cursor-pointer"
-                  >
-                    <Code2 className="w-4 h-4" />
-                    <span>Deploy to storive.in / Code</span>
-                  </button>
-
-                  <button
-                    type="button"
-                    onClick={() =>
-                      setPaletteMode((prev) =>
-                        prev === 'editorial' ? 'dark-slate' : 'editorial'
-                      )
-                    }
-                    className="inline-flex items-center gap-2 px-4 py-2.5 rounded-full border border-[#FAF9F5]/25 text-xs font-mechanik font-medium uppercase tracking-wider cursor-pointer"
-                  >
-                    <span>
-                      Palette: {isEditorial ? 'Editorial Contrast' : 'HMOS Dark Slate'}
-                    </span>
-                  </button>
-                </div>
-
-                {/* LinkedIn Live Launch Kit (1-Click Share Live URL + Download 16:9 Visual) */}
-                <div className="mt-7 p-4 rounded-2xl bg-[#0F172A] border border-[#DAF462]/30 space-y-3">
-                  <div className="flex items-center justify-between">
-                    <span className="text-[11px] font-mono uppercase tracking-widest text-[#DAF462]">
-                      LinkedIn Live Launch Studio
-                    </span>
-                    <span className="text-[11px] font-mono text-[#94A3B8]">16:9 + Live Link</span>
-                  </div>
-                  <div className="flex flex-wrap gap-2.5">
-                    <a
-                      href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(
-                        STORIVE_URL
-                      )}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg bg-[#0A66C2] text-white text-xs font-mechanik font-medium cursor-pointer hover:opacity-90"
-                    >
-                      <span>Post www.storive.in on LinkedIn</span>
-                      <ExternalLink className="w-3.5 h-3.5" />
-                    </a>
-                    <a
-                      href={IMAGES.keynote}
-                      download="HMOS-Keynote-16x9-LinkedIn.jpg"
-                      className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg bg-[#FAF9F5]/10 hover:bg-[#FAF9F5]/20 text-[#FAF9F5] text-xs font-mechanik font-medium cursor-pointer"
-                    >
-                      <Download className="w-3.5 h-3.5" />
-                      <span>Download 16:9 Visual (.JPG)</span>
-                    </a>
-                  </div>
-                </div>
-              </div>
-
-              <div>
-                <p className="text-xs font-mono uppercase tracking-widest text-[#94A3B8] mb-4">
-                  Catalogues &amp; Saved Wishlist ({wishlist.length})
-                </p>
-                <div className="space-y-3">
-                  {filteredChapters.map((chap) => {
-                    const isSaved = wishlist.includes(chap.id);
-                    return (
-                      <div
-                        key={chap.id}
-                        className="p-4 rounded-xl bg-[#0F172A] border border-[#FAF9F5]/10 flex items-center justify-between gap-3"
-                      >
-                        <div
-                          onClick={() => {
-                            setMenuDrawerOpen(false);
-                            setSelectedDossier(chap);
-                          }}
-                          className="cursor-pointer"
-                        >
-                          <div className="text-xs text-[#94A3B8] font-mono">
-                            {chap.number} · {chap.dossierCode}
-                          </div>
-                          <div className="text-base font-mechanik font-medium text-[#FAF9F5]">
-                            {chap.dossierTitle}
-                          </div>
-                        </div>
-                        <div className="flex items-center gap-2">
-                          <button
-                            type="button"
-                            onClick={() => toggleWishlist(chap.id)}
-                            className={`p-2 rounded-lg border transition-colors cursor-pointer ${
-                              isSaved
-                                ? 'bg-[#DAF462] text-[#141413] border-[#DAF462]'
-                                : 'border-[#FAF9F5]/20 text-[#94A3B8]'
-                            }`}
-                            title="Save to Wishlist"
-                          >
-                            <Bookmark className="w-4 h-4" />
-                          </button>
-                          <button
-                            type="button"
-                            onClick={() => handleDownloadDossierSpec(chap)}
-                            className="p-2 rounded-lg bg-[#FAF9F5]/10 hover:bg-[#FAF9F5]/20 text-[#FAF9F5] cursor-pointer"
-                            title="Download Catalogue"
-                          >
-                            <Download className="w-4 h-4" />
-                          </button>
-                        </div>
-                      </div>
-                    );
-                  })}
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
+      <MenuDrawer
+        open={menuDrawerOpen}
+        onClose={() => setMenuDrawerOpen(false)}
+        accentHex={curtainAndFooterHex}
+        searchQuery={searchQuery}
+        onSearchChange={setSearchQuery}
+        chapters={filteredChapters}
+        wishlistIds={wishlist}
+        onToggleWishlist={toggleWishlist}
+        onOpenDossier={(chap) => {
+          setMenuDrawerOpen(false);
+          setSelectedDossier(chap);
+        }}
+        onTogglePalette={() =>
+          setPaletteMode((prev) => (prev === 'editorial' ? 'dark-slate' : 'editorial'))
+        }
+        paletteLabel={isEditorial ? 'Editorial' : 'Dark Slate'}
+        onNavigate={handleMenuNavigate}
+        linkedinUrl={LINKEDIN_URL}
+        storiveUrl={STORIVE_URL}
+      />
 
       {/* =====================================================================
           INTERACTIVE OVERLAY 2: CATALOGUE / DOSSIER MODAL
@@ -1681,14 +1573,19 @@ ${dossier.specifications.map((s) => `- ${s.label}: ${s.value}`).join('\n')}
       {selectedDossier && (
         <div
           onClick={() => setSelectedDossier(null)}
+          role="dialog"
+          aria-modal="true"
+          aria-label={`${selectedDossier.dossierTitle} dossier`}
           className="fixed inset-0 z-50 bg-[#090D16]/80 backdrop-blur-md flex items-center justify-center p-4"
         >
           <div
             onClick={(e) => e.stopPropagation()}
-            className="bg-[#F2F1EA] text-[#141413] rounded-2xl max-w-xl w-full p-6 sm:p-8 shadow-2xl relative"
+            data-lenis-prevent
+            className="bg-[#F2F1EA] text-[#141413] rounded-2xl max-w-xl w-full p-6 sm:p-8 shadow-2xl relative max-h-[88dvh] overflow-y-auto overscroll-contain"
           >
             <button
               type="button"
+              aria-label="Close"
               onClick={() => setSelectedDossier(null)}
               className="absolute top-5 right-5 w-9 h-9 rounded-full bg-[#141413]/10 flex items-center justify-center hover:bg-[#141413] hover:text-[#FAF9F5] transition-colors cursor-pointer"
             >
@@ -1728,27 +1625,23 @@ ${dossier.specifications.map((s) => `- ${s.label}: ${s.value}`).join('\n')}
               ))}
             </div>
 
-            <div className="flex flex-wrap items-center justify-between gap-3">
-              <button
-                type="button"
-                onClick={() => handleDownloadDossierSpec(selectedDossier)}
-                className="flex-1 bg-[#141413] text-[#FAF9F5] hover:bg-[#1D4ED8] transition-colors rounded-full py-3.5 px-6 text-xs font-mechanik font-medium uppercase tracking-wider inline-flex items-center justify-center gap-2 cursor-pointer"
+            {selectedDossier.catalogPdf && (
+              <a
+                href={selectedDossier.catalogPdf}
+                download
+                className="mb-3 w-full rounded-full bg-[#1D4ED8] hover:bg-[#2563EB] text-[#FAF9F5] py-3.5 text-xs font-mechanik font-medium uppercase tracking-wider inline-flex items-center justify-center gap-2 transition-colors"
               >
-                <Download className="w-4 h-4" />
-                <span>Download {selectedDossier.dossierTitle} (.TXT)</span>
-              </button>
-
-              <button
-                type="button"
-                onClick={() => {
-                  setSelectedDossier(null);
-                  setCodeModalOpen(true);
-                }}
-                className="px-5 py-3.5 rounded-full border border-[#141413]/25 text-xs font-mechanik font-medium uppercase tracking-wider hover:bg-[#141413]/5 cursor-pointer"
-              >
-                .HTML / .CSS
-              </button>
-            </div>
+                <TrayDownloadIcon className="w-4 h-4" />
+                <span>Download Catalog (PDF)</span>
+              </a>
+            )}
+            <button
+              type="button"
+              onClick={() => setSelectedDossier(null)}
+              className="w-full rounded-full bg-[#141413] text-[#FAF9F5] py-3.5 text-xs font-mechanik font-medium uppercase tracking-wider cursor-pointer"
+            >
+              Close
+            </button>
           </div>
         </div>
       )}
@@ -1759,14 +1652,19 @@ ${dossier.specifications.map((s) => `- ${s.label}: ${s.value}`).join('\n')}
       {selectedInsight && (
         <div
           onClick={() => setSelectedInsight(null)}
+          role="dialog"
+          aria-modal="true"
+          aria-label={selectedInsight.title}
           className="fixed inset-0 z-50 bg-[#090D16]/80 backdrop-blur-md flex items-center justify-center p-4"
         >
           <div
             onClick={(e) => e.stopPropagation()}
-            className="bg-[#ECEAE2] text-[#141413] rounded-2xl max-w-2xl w-full p-6 sm:p-8 shadow-2xl max-h-[88vh] overflow-y-auto relative"
+            data-lenis-prevent
+            className="bg-[#ECEAE2] text-[#141413] rounded-2xl max-w-2xl w-full p-6 sm:p-8 shadow-2xl max-h-[88dvh] overflow-y-auto overscroll-contain relative"
           >
             <button
               type="button"
+              aria-label="Close"
               onClick={() => setSelectedInsight(null)}
               className="float-right w-9 h-9 rounded-full bg-[#141413]/10 flex items-center justify-center hover:bg-[#141413] hover:text-[#FAF9F5] transition-colors cursor-pointer"
             >
@@ -1805,14 +1703,19 @@ ${dossier.specifications.map((s) => `- ${s.label}: ${s.value}`).join('\n')}
       {selectedCollectionModal && (
         <div
           onClick={() => setSelectedCollectionModal(null)}
+          role="dialog"
+          aria-modal="true"
+          aria-label={`${selectedCollectionModal.name} collection`}
           className="fixed inset-0 z-50 bg-[#090D16]/80 backdrop-blur-md flex items-center justify-center p-4"
         >
           <div
             onClick={(e) => e.stopPropagation()}
-            className="bg-[#F2F1EA] text-[#141413] rounded-2xl max-w-lg w-full p-6 sm:p-8 shadow-2xl relative"
+            data-lenis-prevent
+            className="bg-[#F2F1EA] text-[#141413] rounded-2xl max-w-lg w-full p-6 sm:p-8 shadow-2xl relative max-h-[88dvh] overflow-y-auto overscroll-contain"
           >
             <button
               type="button"
+              aria-label="Close"
               onClick={() => setSelectedCollectionModal(null)}
               className="absolute top-5 right-5 w-9 h-9 rounded-full bg-[#141413]/10 flex items-center justify-center hover:bg-[#141413] hover:text-[#FAF9F5] transition-colors cursor-pointer"
             >
@@ -1851,199 +1754,8 @@ ${dossier.specifications.map((s) => `- ${s.label}: ${s.value}`).join('\n')}
               onClick={() => setSelectedCollectionModal(null)}
               className="w-full rounded-full bg-[#141413] text-[#FAF9F5] py-3.5 text-xs font-mechanik uppercase tracking-wider cursor-pointer"
             >
-              Close Collection Inspector
+              Close
             </button>
-          </div>
-        </div>
-      )}
-
-      {/* =====================================================================
-          INTERACTIVE OVERLAY 5: STANDALONE .HTML & .CSS CODE EXPORTER MODAL
-         ===================================================================== */}
-      {codeModalOpen && (
-        <div
-          onClick={() => setCodeModalOpen(false)}
-          className="fixed inset-0 z-50 bg-[#090D16]/85 backdrop-blur-md flex items-center justify-center p-4"
-        >
-          <div
-            onClick={(e) => e.stopPropagation()}
-            className="bg-[#0F172A] text-[#F8FAFC] border border-[#F8FAFC]/15 rounded-2xl max-w-4xl w-full p-6 shadow-2xl max-h-[90vh] flex flex-col"
-          >
-            <div className="flex items-center justify-between pb-4 border-b border-[#F8FAFC]/10">
-              <div className="flex items-center gap-2.5">
-                <FileCode className="w-5 h-5 text-[#DAF462]" />
-                <h3 className="font-mechanik text-lg font-medium">
-                  HMOS® — Deploy Repo to storive.in &amp; Standalone Code Bundle
-                </h3>
-              </div>
-              <button
-                type="button"
-                onClick={() => setCodeModalOpen(false)}
-                className="w-8 h-8 rounded-full bg-[#F8FAFC]/10 flex items-center justify-center hover:bg-[#F8FAFC]/20 cursor-pointer"
-              >
-                <X className="w-4 h-4" />
-              </button>
-            </div>
-
-            <div className="flex flex-wrap items-center justify-between gap-3 my-4">
-              <div className="flex items-center gap-2">
-                <button
-                  type="button"
-                  onClick={() => setActiveCodeTab('storive')}
-                  className={`px-4 py-2 rounded-lg text-xs font-mono uppercase cursor-pointer ${
-                    activeCodeTab === 'storive'
-                      ? 'bg-[#DAF462] text-[#141413] font-semibold'
-                      : 'bg-[#090D16] text-[#94A3B8]'
-                  }`}
-                >
-                  Deploy to storive.in
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setActiveCodeTab('html')}
-                  className={`px-4 py-2 rounded-lg text-xs font-mono uppercase cursor-pointer ${
-                    activeCodeTab === 'html'
-                      ? 'bg-[#DAF462] text-[#141413] font-semibold'
-                      : 'bg-[#090D16] text-[#94A3B8]'
-                  }`}
-                >
-                  index.html
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setActiveCodeTab('css')}
-                  className={`px-4 py-2 rounded-lg text-xs font-mono uppercase cursor-pointer ${
-                    activeCodeTab === 'css'
-                      ? 'bg-[#DAF462] text-[#141413] font-semibold'
-                      : 'bg-[#090D16] text-[#94A3B8]'
-                  }`}
-                >
-                  styles.css
-                </button>
-              </div>
-
-              {activeCodeTab !== 'storive' && (
-                <div className="flex items-center gap-2">
-                  <button
-                    type="button"
-                    onClick={() => handleCopyCode(activeCodeTab)}
-                    className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg bg-[#F8FAFC]/10 hover:bg-[#F8FAFC]/20 text-xs font-mono cursor-pointer"
-                  >
-                    {copiedCode === activeCodeTab ? (
-                      <>
-                        <Check className="w-3.5 h-3.5 text-[#10B981]" />
-                        <span>Copied!</span>
-                      </>
-                    ) : (
-                      <>
-                        <Copy className="w-3.5 h-3.5" />
-                        <span>Copy {activeCodeTab.toUpperCase()}</span>
-                      </>
-                    )}
-                  </button>
-
-                  <button
-                    type="button"
-                    onClick={() =>
-                      handleDownloadFile(
-                        activeCodeTab === 'html' ? 'index.html' : 'styles.css',
-                        activeCodeTab === 'html' ? STANDALONE_HTML : STANDALONE_CSS,
-                        activeCodeTab === 'html' ? 'text/html' : 'text/css'
-                      )
-                    }
-                    className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-[#1D4ED8] hover:bg-[#2563EB] text-xs font-mono cursor-pointer"
-                  >
-                    <Download className="w-3.5 h-3.5" />
-                    <span>Download {activeCodeTab === 'html' ? 'index.html' : 'styles.css'}</span>
-                  </button>
-                </div>
-              )}
-            </div>
-
-            {activeCodeTab === 'storive' ? (
-              <div className="flex-1 overflow-auto rounded-xl bg-[#090D16] p-5 text-sm text-[#CBD5E1] space-y-5 border border-[#F8FAFC]/10">
-                <div className="p-4 rounded-xl bg-[#0F172A] border border-[#DAF462]/40 space-y-3">
-                  <div className="text-xs font-mono uppercase tracking-wider text-[#DAF462]">
-                    1. Your Live Working Links (Ready Right Now)
-                  </div>
-
-                  <div className="flex flex-wrap items-center justify-between gap-2 p-3 rounded-lg bg-[#090D16] border border-[#F8FAFC]/15">
-                    <code className="text-xs text-[#DAF462] break-all font-mono">
-                      https://www.storive.in
-                    </code>
-                    <button
-                      type="button"
-                      onClick={() =>
-                        navigator.clipboard.writeText(
-                          'https://www.storive.in'
-                        )
-                      }
-                      className="px-3 py-1.5 rounded bg-[#DAF462] text-[#141413] font-mono text-xs font-semibold cursor-pointer"
-                    >
-                      Copy Live Link
-                    </button>
-                  </div>
-
-                  <div className="flex flex-wrap items-center justify-between gap-2 p-3 rounded-lg bg-[#090D16] border border-[#F8FAFC]/15">
-                    <code className="text-xs text-[#60A5FA] break-all font-mono">
-                      https://starlit-creponne-c41889.netlify.app
-                    </code>
-                    <button
-                      type="button"
-                      onClick={() =>
-                        navigator.clipboard.writeText(
-                          'https://starlit-creponne-c41889.netlify.app'
-                        )
-                      }
-                      className="px-3 py-1.5 rounded bg-[#F8FAFC]/10 hover:bg-[#F8FAFC]/20 text-[#F8FAFC] font-mono text-xs cursor-pointer"
-                    >
-                      Copy Netlify Link
-                    </button>
-                  </div>
-                </div>
-
-                <div className="space-y-3">
-                  <h4 className="font-mechanik font-semibold text-[#FAF9F5] text-base">
-                    2. storive.in DNS Records in GoDaddy (Customer ID 926584664)
-                  </h4>
-                  <p className="text-xs text-[#94A3B8]">
-                    Go to <strong>GoDaddy → My Products → storive.in → DNS → DNS Records</strong> and make sure these 2 records point to Netlify:
-                  </p>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-2.5">
-                    <div className="p-3 rounded-lg bg-[#0F172A] border border-[#F8FAFC]/10 flex items-center justify-between gap-2">
-                      <div className="font-mono text-[11px]">
-                        <div className="text-[#94A3B8]">TYPE: <span className="text-[#FAF9F5]">A</span> · NAME: <span className="text-[#FAF9F5]">@</span></div>
-                        <div className="text-[#DAF462] font-semibold mt-0.5">75.2.60.5</div>
-                      </div>
-                      <button
-                        type="button"
-                        onClick={() => navigator.clipboard.writeText('75.2.60.5')}
-                        className="px-2.5 py-1.5 rounded bg-[#F8FAFC]/10 hover:bg-[#F8FAFC]/20 text-[10px] font-mono uppercase cursor-pointer"
-                      >
-                        Copy IP
-                      </button>
-                    </div>
-                    <div className="p-3 rounded-lg bg-[#0F172A] border border-[#F8FAFC]/10 flex items-center justify-between gap-2">
-                      <div className="font-mono text-[11px]">
-                        <div className="text-[#94A3B8]">TYPE: <span className="text-[#FAF9F5]">CNAME</span> · NAME: <span className="text-[#FAF9F5]">www</span></div>
-                        <div className="text-[#DAF462] font-semibold mt-0.5">starlit-creponne-c41889.netlify.app</div>
-                      </div>
-                      <button
-                        type="button"
-                        onClick={() => navigator.clipboard.writeText('starlit-creponne-c41889.netlify.app')}
-                        className="px-2.5 py-1.5 rounded bg-[#F8FAFC]/10 hover:bg-[#F8FAFC]/20 text-[10px] font-mono uppercase cursor-pointer"
-                      >
-                        Copy CNAME
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            ) : (
-              <pre className="flex-1 overflow-auto rounded-xl bg-[#090D16] p-4 text-xs font-mono text-[#CBD5E1] leading-relaxed border border-[#F8FAFC]/10">
-                <code>{activeCodeTab === 'html' ? STANDALONE_HTML : STANDALONE_CSS}</code>
-              </pre>
-            )}
           </div>
         </div>
       )}

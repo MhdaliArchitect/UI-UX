@@ -185,7 +185,7 @@ export const RiveMetaballButton: React.FC<{
       {/* Right Softly Rounded Squircle Pill (rounded-[14px] matching 00:04, 00:07, 00:09) */}
       <span
         ref={pillRef}
-        className="h-[46px] sm:h-[48px] px-5 sm:px-6 rounded-[14px] bg-[#FAF9F5] text-[#141413] inline-flex items-center justify-center text-[11.5px] sm:text-[12.5px] font-mechanik font-normal tracking-[0.02em] uppercase relative z-10 will-change-transform"
+        className="h-[46px] sm:h-[48px] px-5 sm:px-6 rounded-[14px] bg-[#FAF9F5] text-[#141413] inline-flex items-center justify-center text-[11.5px] sm:text-[12.5px] font-mechanik font-medium tracking-[0.02em] uppercase relative z-10 will-change-transform"
       >
         {label}
       </span>

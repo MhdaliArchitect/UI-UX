@@ -44,3 +44,9 @@
 .balance-text {
   text-wrap: balance;
 }
+
+/* Pause looping SVG icon animations while their section is off-screen (toggled by App.tsx) */
+.is-offscreen svg,
+.is-offscreen svg * {
+  animation-play-state: paused !important;
+}
