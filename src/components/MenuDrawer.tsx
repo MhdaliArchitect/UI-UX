@@ -84,44 +84,44 @@ export const MenuDrawer: React.FC<MenuDrawerProps> = ({
       tl.fromTo(
         '[data-d="accent"]',
         { clipPath: 'inset(0% 0% 100% 0%)' },
-        { clipPath: 'inset(0% 0% 0% 0%)', duration: 0.62, ease: 'power4.inOut' },
+        { clipPath: 'inset(0% 0% 0% 0%)', duration: 0.28, ease: 'power3.inOut' },
         0
       )
         .fromTo(
           '[data-d="panel"]',
           { clipPath: 'inset(0% 0% 100% 0%)' },
-          { clipPath: 'inset(0% 0% 0% 0%)', duration: 0.68, ease: 'power4.inOut' },
-          0.1
+          { clipPath: 'inset(0% 0% 0% 0%)', duration: 0.32, ease: 'power3.inOut' },
+          0.04
         )
         .fromTo(
           '[data-d="glow"]',
-          { opacity: 0, scale: 0.82 },
-          { opacity: 1, scale: 1, duration: 1.3, ease: 'power2.out' },
-          0.3
+          { opacity: 0, scale: 0.88 },
+          { opacity: 1, scale: 1, duration: 0.45, ease: 'power2.out' },
+          0.1
         )
         .fromTo(
           '[data-d="fade"]',
-          { y: 26, opacity: 0 },
-          { y: 0, opacity: 1, duration: 0.8, ease: 'power3.out', stagger: 0.055 },
-          0.42
+          { y: 18, opacity: 0 },
+          { y: 0, opacity: 1, duration: 0.32, ease: 'power3.out', stagger: 0.025 },
+          0.12
         )
         .fromTo(
           '[data-d="mask"]',
-          { yPercent: 112 },
-          { yPercent: 0, duration: 0.95, ease: 'power4.out', stagger: 0.085 },
-          0.46
+          { yPercent: 100 },
+          { yPercent: 0, duration: 0.35, ease: 'power3.out', stagger: 0.035 },
+          0.14
         )
         .fromTo(
           '[data-d="line"]',
           { scaleX: 0, transformOrigin: 'left center' },
-          { scaleX: 1, duration: 1.05, ease: 'power3.inOut', stagger: 0.09 },
-          0.5
+          { scaleX: 1, duration: 0.34, ease: 'power2.out', stagger: 0.03 },
+          0.16
         )
         .fromTo(
           '[data-d="card"]',
-          { y: 34, opacity: 0 },
-          { y: 0, opacity: 1, duration: 0.8, ease: 'power3.out', stagger: 0.07 },
-          0.62
+          { y: 20, opacity: 0 },
+          { y: 0, opacity: 1, duration: 0.32, ease: 'power3.out', stagger: 0.025 },
+          0.18
         );
 
       tlRef.current = tl;
@@ -133,7 +133,7 @@ export const MenuDrawer: React.FC<MenuDrawerProps> = ({
     };
   }, [mounted]);
 
-  // Drive the timeline from the `open` prop.
+  // Drive the timeline from the `open` prop with snappy, ultra-responsive speeds.
   useEffect(() => {
     const tl = tlRef.current;
     if (!mounted || !tl) return;
@@ -141,18 +141,18 @@ export const MenuDrawer: React.FC<MenuDrawerProps> = ({
 
     if (open) {
       if (reduce) tl.progress(1);
-      else tl.timeScale(1).play();
+      else tl.timeScale(1.2).play();
       if (window.matchMedia('(pointer: fine)').matches) {
         const id = window.setTimeout(
           () => searchRef.current?.focus({ preventScroll: true }),
-          reduce ? 0 : 700
+          reduce ? 0 : 250
         );
         return () => window.clearTimeout(id);
       }
     } else if (reduce) {
       setMounted(false);
     } else {
-      tl.timeScale(1.7).reverse();
+      tl.timeScale(2.2).reverse();
     }
   }, [open, mounted]);
 

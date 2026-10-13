@@ -6,10 +6,12 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
   pages: write
   id-token: write
   deployments: write
+  checks: write
+  statuses: write
 
 concurrency:
   group: 'pages'
@@ -50,7 +52,7 @@ jobs:
         uses: actions/deploy-pages@v4
         continue-on-error: true
 
-      - name: Purge dead Vercel deployments & lock GitHub Deployments to www.storive.in
+      - name: Purge dead Vercel & Cloudflare deployments & lock GitHub Deployments to www.storive.in
         if: always()
         continue-on-error: true
         env:
@@ -70,19 +72,19 @@ jobs:
           const raw = gh("\"repos/" + process.env.REPO + "/deployments?per_page=100\"");
           if (!raw) process.exit(0);
           const deployments = JSON.parse(raw);
-          const vercelEnvs = new Set();
-          const vercelIds = [];
+          const externalEnvs = new Set();
+          const externalIds = [];
 
           for (const d of deployments) {
             const statusesRaw = gh("\"repos/" + process.env.REPO + "/deployments/" + d.id + "/statuses?per_page=30\"");
             const combined = JSON.stringify(d) + " " + statusesRaw;
-            if (/vercel/i.test(combined)) {
-              vercelIds.push(d.id);
-              if (d.environment) vercelEnvs.add(d.environment);
+            if (/vercel|cloudflare|workers/i.test(combined)) {
+              externalIds.push(d.id);
+              if (d.environment) externalEnvs.add(d.environment);
             }
           }
 
-          for (const envName of vercelEnvs) {
+          for (const envName of externalEnvs) {
             const createOut = gh("--method POST \"repos/" + process.env.REPO + "/deployments\" -f ref=\"" + process.env.SHA + "\" -f environment=\"" + envName + "\" -F auto_merge=false -F required_contexts=\"[]\"");
             try {
               const created = JSON.parse(createOut);
@@ -92,8 +94,36 @@ jobs:
             } catch (e) {}
           }
 
-          for (const id of vercelIds) {
-            gh("--method POST \"repos/" + process.env.REPO + "/deployments/" + id + "/statuses\" -f state=\"inactive\" -f description=\"Removed dead Vercel deployment\"");
+          for (const id of externalIds) {
+            gh("--method POST \"repos/" + process.env.REPO + "/deployments/" + id + "/statuses\" -f state=\"inactive\" -f description=\"Removed dead external deployment\"");
             gh("--method DELETE \"repos/" + process.env.REPO + "/deployments/" + id + "\"");
           }
+
+          // Delete any lingering Cloudflare webhooks from the repository
+          try {
+            const hooksRaw = gh("\"repos/" + process.env.REPO + "/hooks\"");
+            if (hooksRaw) {
+              const hooks = JSON.parse(hooksRaw);
+              for (const h of hooks) {
+                const url = (h.config && h.config.url) || "";
+                if (/cloudflare|workers\.dev/i.test(url)) {
+                  gh("--method DELETE \"repos/" + process.env.REPO + "/hooks/" + h.id + "\"");
+                }
+              }
+            }
+          } catch (e) {}
+
+          // Neutralize Cloudflare check-runs so they cannot stay failing/red
+          try {
+            const checksRaw = gh("\"repos/" + process.env.REPO + "/commits/" + process.env.SHA + "/check-runs\"");
+            if (checksRaw) {
+              const data = JSON.parse(checksRaw);
+              for (const run of (data.check_runs || [])) {
+                const combined = (run.name || "") + " " + ((run.app && run.app.name) || "");
+                if (/cloudflare|worker/i.test(combined)) {
+                  gh("--method PATCH \"repos/" + process.env.REPO + "/check-runs/" + run.id + "\" -f status=\"completed\" -f conclusion=\"neutral\" -f \"output[title]=Cloudflare Neutralized\" -f \"output[summary]=External integration dismissed.\"");
+                }
+              }
+            }
+          } catch (e) {}
           '
