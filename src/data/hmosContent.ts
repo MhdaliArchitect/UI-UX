@@ -83,11 +83,11 @@ export const LOCALE_STRINGS: Record<
 > = {
   EN: {
     heroHeadline: 'Systems for sovereignty,\nmade for certainty.',
-    recentNewsLabel: 'Recent News ↓',
+    recentNewsLabel: 'Latest Insights ↓',
     theCollectionsLabel: 'The Collections',
     exploreBtn: 'EXPLORE →',
     enduranceHeadline: 'Made to last,\ndesigned to endure.',
-    communitySub: 'Join our community Sign up for news,\nupdates and more.',
+    communitySub: 'Join our community.\nSign up for architecture notes and release updates.',
   },
   DE: {
     heroHeadline: 'Systeme für Souveränität,\ngemacht für Gewissheit.',
@@ -107,11 +107,11 @@ export const LOCALE_STRINGS: Record<
   },
   IN: {
     heroHeadline: 'Systems for sovereignty,\nmade for certainty.',
-    recentNewsLabel: 'Recent Dispatches ↓',
+    recentNewsLabel: 'Latest Insights ↓',
     theCollectionsLabel: 'The Collections',
     exploreBtn: 'EXPLORE →',
     enduranceHeadline: 'Made to last,\ndesigned to endure.',
-    communitySub: 'Join our sovereign engineering community\nfor news, updates and more.',
+    communitySub: 'Join our engineering community for\narchitecture notes and release updates.',
   },
 };
 
@@ -125,18 +125,18 @@ export const CHAPTERS: ChapterItem[] = [
     floemaBadgeColor: '#EB5638',
     floemaBadgeText: '#141413',
     iconType: 'vision',
-    headline: 'Deterministic kernels, architecture, and systems for sovereign spaces',
-    ctaLabel: 'SEE VISION SYSTEMS',
+    headline: 'Deterministic kernels for infrastructure that cannot afford to guess',
+    ctaLabel: 'Explore Vision',
     dossierTitle: 'Vision Catalogue',
     dossierCode: 'HMOS-VIS-2026',
     image: IMAGES.kernel,
     defaultScrollMode: 'expanded',
     summary:
-      'HMOS Vision establishes the foundational design language for sovereign computing environments—locking 35/35 enterprise workflow survival at 310ms deterministic latency.',
+      'HMOS Vision sets the design language for sovereign computing: a deterministic kernel that completes all 35 steps of an enterprise workflow (35/35) in 310ms.',
     specifications: [
-      { label: 'Survival Integrity', value: '100.0% (35/35 Steps)' },
-      { label: 'Execution Latency', value: '310ms Deterministic (15.5x)' },
-      { label: 'Structural Materiality', value: 'Zero-Trust Slate & Cobalt' },
+      { label: 'Workflow Survival', value: '100.0% (35/35 steps)' },
+      { label: 'Execution Latency', value: '310ms (15.5x faster than 4,820ms)' },
+      { label: 'Design Language', value: 'Slate & Cobalt' },
       { label: 'Principal Architect', value: 'Mahammadali Palsaniya' },
     ],
   },
@@ -149,19 +149,19 @@ export const CHAPTERS: ChapterItem[] = [
     floemaBadgeColor: '#3B82F6',
     floemaBadgeText: '#090D16',
     iconType: 'sovereignty',
-    headline: 'Autonomous infrastructure and cryptographic verification for resilient territories',
-    ctaLabel: 'SEE SOVEREIGNTY SYSTEMS',
+    headline: 'Autonomous infrastructure, verified by cryptography at every state change',
+    ctaLabel: 'Explore Sovereignty',
     dossierTitle: 'Sovereignty Catalogue',
     dossierCode: 'HMOS-SOV-2026',
     image: IMAGES.sovereignty,
     defaultScrollMode: 'progress-line',
     summary:
-      'Designed for institutions that require complete operational independence, HMOS Sovereignty locks state transitions with on-disk SHA-256 cryptographic proof in 7 milliseconds.',
+      'Built for institutions that need complete operational independence. Every state transition is locked by an on-disk SHA-256 proof.',
     specifications: [
-      { label: 'Verification Digest', value: 'SHA-256 On-Disk (7ms)' },
-      { label: 'Database Posture', value: '8-Pillar Zero-Trust Lock' },
-      { label: 'Entropy Ceiling', value: '<= 0.250 Bits' },
-      { label: 'Quorum Topology', value: '5-Node Lamport Vector' },
+      { label: 'Verification', value: 'On-disk SHA-256' },
+      { label: 'Database Lock', value: '8-pillar zero-trust lock' },
+      { label: 'Entropy Ceiling', value: '≤ 0.250 bits' },
+      { label: 'Quorum', value: '5 nodes · Lamport vector clocks' },
     ],
   },
   {
@@ -173,19 +173,19 @@ export const CHAPTERS: ChapterItem[] = [
     floemaBadgeColor: '#60A5FA',
     floemaBadgeText: '#090D16',
     iconType: 'architecture',
-    headline: 'Four-corner symmetrical weave engineered for zero-entropy continuity',
-    ctaLabel: 'SEE ARCHITECTURE SYSTEMS',
+    headline: 'Four-corner symmetry, engineered for continuity without drift',
+    ctaLabel: 'Explore Architecture',
     dossierTitle: 'Architecture Catalogue',
     dossierCode: 'HMOS-ARC-2026',
     image: IMAGES.architecture,
     defaultScrollMode: 'progress-line',
     summary:
-      'Anchored by our 45-degree rotated faceted diamond core, HMOS Architecture strips away 41.7% of structural bloat while mathematically proving 100% safety guard parity.',
+      'Anchored by a 45° faceted diamond core, HMOS Architecture removes 37.7–41.7% of redundant wrapper code and mathematically proves that 100% of safety guard clauses are retained.',
     specifications: [
-      { label: 'Structural De-Bloat', value: '37.7% – 41.7% Reduction' },
-      { label: 'Safety Guard Parity', value: '100.0% Mathematically Proven' },
-      { label: 'Core Geometry', value: '45° Faceted Diamond Core' },
-      { label: 'Wrapper Overhead', value: '0 Executable Classes' },
+      { label: 'Wrapper Code Removed', value: '37.7% – 41.7%' },
+      { label: 'Safety Guard Parity', value: '100.0% (mathematically proven)' },
+      { label: 'Core Geometry', value: '45° faceted diamond core' },
+      { label: 'Executable Classes', value: '0' },
     ],
   },
   {
@@ -197,19 +197,19 @@ export const CHAPTERS: ChapterItem[] = [
     floemaBadgeColor: '#8FB98B',
     floemaBadgeText: '#141413',
     iconType: 'ecosystem',
-    headline: 'Revamp your foundation with distributed quorum locks and sovereign telemetry',
-    ctaLabel: 'SEE ECOSYSTEM SYSTEMS',
+    headline: 'Distributed quorum locks that keep every node in agreement',
+    ctaLabel: 'Explore Ecosystem',
     dossierTitle: 'Ecosystem Catalogue',
     dossierCode: 'HMOS-ECO-2026',
     image: IMAGES.ecosystem,
     defaultScrollMode: 'expanded',
     summary:
-      'A unified family of sovereign monoliths, deterministic execution nodes, and precision interfaces synchronized via monotonic Lamport vector clocks across 5 worker nodes.',
+      'A unified family of deterministic execution nodes and precision interfaces, kept in sync by monotonic Lamport vector clocks across 5 worker nodes.',
     specifications: [
-      { label: 'Speedup Factor', value: '15.5x Faster (310ms vs 4,820ms)' },
-      { label: 'Node Synchronization', value: 'Monotonic Vector Clocks' },
-      { label: 'Entropy Bound', value: '<= 0.250 Bits Shannon Ceiling' },
-      { label: 'Deployment Lifecycle', value: 'Multi-Decade Endurance' },
+      { label: 'Speedup', value: '15.5x (310ms vs 4,820ms)' },
+      { label: 'Synchronization', value: 'Monotonic vector clocks' },
+      { label: 'Entropy Bound', value: '≤ 0.250 bits (Shannon ceiling)' },
+      { label: 'Design Intent', value: 'Long-lived deployments' },
     ],
   },
   {
@@ -221,55 +221,55 @@ export const CHAPTERS: ChapterItem[] = [
     floemaBadgeColor: '#D1D1CD',
     floemaBadgeText: '#141413',
     iconType: 'details',
-    headline: 'Precision-engineered custom sovereign hardware and invariant locks',
-    ctaLabel: 'SEE DETAILS SYSTEMS',
+    headline: 'Precision hardware, sealed by invariant locks',
+    ctaLabel: 'Explore Details',
     dossierTitle: 'Details Catalogue',
     dossierCode: 'HMOS-DET-2026',
     image: IMAGES.hardware,
     defaultScrollMode: 'expanded',
     summary:
-      'Every chamfer, fastener, and cryptographic seal in the HMOS hardware and software ecosystem is tailored to harmonize human clarity with uncompromising zero-trust durability.',
+      'Every chamfer, fastener and cryptographic seal is specified for human clarity and zero-trust durability, in both the hardware and the software.',
     specifications: [
-      { label: 'Custom Fabrication', value: 'Anodized Cobalt & Slate Carbon' },
-      { label: 'Invariant Audit', value: '8 / 8 SHA-256 Verified (7ms)' },
-      { label: 'Fault Tolerance', value: 'Zero-Split-Brain Quorum Lock' },
+      { label: 'Fabrication', value: 'Anodized cobalt & slate carbon' },
+      { label: 'Invariant Audit', value: '8 / 8 SHA-256 verified' },
+      { label: 'Split-Brain Protection', value: 'Quorum lock' },
       { label: 'Design Origin', value: 'HMOS Sovereign Studio, India' },
     ],
   },
 ];
 
 export const MANIFESTO_TEXT =
-  'Sovereignty is our calling. It demands architecture to be aligned with strict mathematical principles and answer to the highest standards. It keeps us on a journey of innovation, crafting each system to keep certainty on our side.';
+  'Sovereignty is our calling. It demands architecture grounded in mathematical rigor and held to the highest standard. Every system we craft is built to keep certainty on your side.';
 
 export const INSIGHTS: InsightArticle[] = [
   {
     id: 'sovereign-territories',
-    title: 'Why 98% single-step AI wrappers drop to 49.3% survival across 35 enterprise steps—and how HMOS® locks 100%',
+    title: 'Why a 98%-reliable AI step fails half the time over 35 steps, and how HMOS® holds 100%',
     date: 'October 2026',
     location: 'HMOS Sovereign Research Studio',
     readTime: '4 min read',
     image: IMAGES.keynote,
     excerpt:
-      'Analyzing compounding probabilistic drift in 35-step enterprise workflows and how the HMOS Deterministic Kernel executes 35/35 steps in 310ms.',
+      'How small per-step errors compound across a 35-step enterprise workflow, and how the HMOS Deterministic Kernel completes 35/35 steps in 310ms.',
     body: [
-      'When enterprise infrastructure is built on fragile, probabilistic wrappers, institutions inherit silent compounding failure. At 98% single-step reliability, a 35-step workflow drops to a 49.3% survival rate (0.98 ^ 35 = 49.3%), typically crashing around Step 14 due to loose optional state and race conditions.',
-      'HMOS® (Hybrid Master Operating System) replaces probabilistic luck with a deterministic kernel lock. Across all 35 production steps, HMOS achieves 100.0% survival at 310ms vs. 4,820ms—a 15.5x execution speedup.',
-      'Founded and architected by Mahammadali Palsaniya, HMOS treats software and physical monoliths with the same architectural permanence: zero unnecessary wrapper bloat, 100% safety guard parity, and cryptographic proof at every state boundary.',
+      'Enterprise infrastructure built on probabilistic wrappers inherits silent, compounding failure. At 98% single-step reliability, a 35-step workflow survives only 49.3% of the time (0.98^35 = 49.3%), typically failing around Step 14 because of loose optional state and race conditions.',
+      'HMOS® (Hybrid Master Operating System) replaces probabilistic luck with a deterministic kernel lock. Across all 35 production steps it achieves 100.0% survival at 310ms against a 4,820ms baseline, a 15.5x speedup.',
+      'Founded and architected by Mahammadali Palsaniya, HMOS applies the same discipline to software and to physical hardware: no unnecessary wrapper code, 100% safety guard parity, and cryptographic proof at every state boundary.',
     ],
   },
   {
     id: 'diamond-core-architecture',
-    title: 'Inside Stage 05 & Stage 07: Stripping 41.7% wrapper bloat while locking Shannon Entropy under 0.250 bits',
+    title: 'Stage 05 and Stage 07: removing up to 41.7% of wrapper code while holding entropy to 0.250 bits or less',
     date: 'September 2026',
     location: 'DeepTech & Sovereign AI Infrastructure, India',
     readTime: '3 min read',
     image: IMAGES.architecture,
     excerpt:
-      'How the 4-corner interlocking ribbon weave and 45-degree rotated faceted diamond core enforce zero-trust invariants in 7 milliseconds.',
+      'How AST de-bloating and distributed quorum locking enforce zero-trust invariants, with on-disk verification.',
     body: [
-      'True architectural elegance comes from what you remove without compromising safety. The HMOS Stage 05 AST De-Bloat Compiler strips 37.7% to 41.7% of bloated OOP wrapper lines (0 executable classes) while mathematically proving 100% safety guard-clause retention.',
-      'In distributed multi-agent execution, Stage 07 eliminates split-brain corruption using monotonic Lamport Vector Clocks and a strict Shannon Entropy ceiling of <= 0.250 bits across 5 worker nodes.',
-      'Backed by 8-invariant on-disk SHA-256 verification in 7ms, every state transition is permanently auditable and tamper-proof.',
+      'Good architecture is defined by what you can remove without compromising safety. The Stage 05 AST De-Bloat Compiler strips 37.7% to 41.7% of redundant OOP wrapper lines (0 executable classes) while mathematically proving that 100% of safety guard clauses are retained.',
+      'In distributed multi-agent execution, Stage 07 prevents split-brain corruption with monotonic Lamport vector clocks and a strict Shannon entropy ceiling of ≤ 0.250 bits across 5 worker nodes.',
+      'Backed by 8-invariant, on-disk SHA-256 verification, every state transition is auditable and tamper-evident.',
     ],
   },
 ];
@@ -287,12 +287,12 @@ export const COLLECTIONS: CollectionItem[] = [
     thumbType: 'monolith-post',
     thumbImage: IMAGES.monolith,
     monolithImage: IMAGES.monolith,
-    tagline: '35-Step Deterministic Survival Series',
+    tagline: '35-step deterministic workflow survival',
     description:
-      'Sovereign kernel modules and architectural monoliths engineered for 100.0% workflow survival at 310ms execution latency (15.5x faster).',
+      'Sovereign kernel modules engineered for 100.0% workflow survival at 310ms execution latency, 15.5x faster than the 4,820ms baseline.',
     metrics: [
-      { label: 'Workflow Survival', value: '35 / 35 Steps (100%)' },
-      { label: 'Execution Time', value: '310ms vs 4,820ms' },
+      { label: 'Workflow Survival', value: '35 / 35 steps (100%)' },
+      { label: 'Execution Time', value: '310ms vs 4,820ms baseline' },
     ],
   },
   {
@@ -306,12 +306,12 @@ export const COLLECTIONS: CollectionItem[] = [
     thumbType: 'slatted-planter',
     thumbImage: IMAGES.sovereignty,
     monolithImage: IMAGES.monolith,
-    tagline: '8-Invariant Zero-Trust Cryptographic Lock',
+    tagline: '8-invariant zero-trust cryptographic lock',
     description:
-      'On-disk SHA-256 invariant verification in 7ms with an 8-pillar zero-trust database lock (status == verified, no delete, no merge).',
+      'On-disk SHA-256 verification of all 8 invariants, backed by an 8-pillar zero-trust database lock (status == verified; no delete, no merge).',
     metrics: [
-      { label: 'Invariant Lock', value: '8 / 8 SHA-256 Verified' },
-      { label: 'Audit Latency', value: '7ms On-Disk Proof' },
+      { label: 'Invariant Lock', value: '8 / 8 SHA-256 verified' },
+      { label: 'Audit Method', value: 'On-disk proof' },
     ],
   },
   {
@@ -325,12 +325,12 @@ export const COLLECTIONS: CollectionItem[] = [
     thumbType: 'clock-totem',
     thumbImage: IMAGES.architecture,
     monolithImage: IMAGES.monolith,
-    tagline: 'Stage 05 Guard-Parity & Stage 07 Quorum Systems',
+    tagline: 'Stage 05 guard parity and Stage 07 quorum lock',
     description:
-      'Precision systems stripping 41.7% wrapper overhead while locking 5 worker nodes under a <= 0.250-bit Shannon entropy ceiling.',
+      'Systems that strip up to 41.7% of wrapper overhead while holding 5 worker nodes under a ≤ 0.250-bit Shannon entropy ceiling.',
     metrics: [
-      { label: 'Bloat Reduction', value: '41.7% Stripped' },
-      { label: 'Guard Retention', value: '100.0% Proven' },
+      { label: 'Wrapper Overhead Removed', value: 'Up to 41.7%' },
+      { label: 'Guard Retention', value: '100.0% (proven)' },
     ],
   },
   {
@@ -344,12 +344,12 @@ export const COLLECTIONS: CollectionItem[] = [
     thumbType: 'custom-plaque',
     thumbImage: IMAGES.ecosystem,
     monolithImage: IMAGES.monolith,
-    tagline: 'Zero-Executable-Class Pure Architecture',
+    tagline: 'Pure architecture with zero executable classes',
     description:
-      'Custom sovereign interfaces, monotonic Lamport clock enclosures, and zero-bloat modules architected by Mahammadali Palsaniya.',
+      'Custom interfaces, Lamport-clock enclosures and lean, wrapper-free modules, architected by Mahammadali Palsaniya.',
     metrics: [
-      { label: 'Entropy Ceiling', value: '<= 0.250 Bits' },
-      { label: 'Executable Classes', value: '00 (Pure Functional)' },
+      { label: 'Entropy Ceiling', value: '≤ 0.250 bits' },
+      { label: 'Executable Classes', value: '00 (pure functional)' },
     ],
   },
 ];
@@ -357,19 +357,19 @@ export const COLLECTIONS: CollectionItem[] = [
 export const CRAFT_STEPS = [
   {
     step: 'We design',
-    description: 'Every kernel and architectural interface is designed to guarantee 100% deterministic viability',
+    description: 'We design every kernel and interface so its behavior is fully determined before it runs',
     image: IMAGES.vision,
     caption: 'HMOS® Sovereign Coastal Pavilion — Architectural Proportion & Light Study',
   },
   {
     step: 'We build',
-    description: 'Stripping structural wrapper bloat while ensuring 100% safety guard parity stays unaltered',
+    description: 'We strip wrapper bloat and prove that every safety guard clause survives: 100% parity',
     image: IMAGES.architecture,
     caption: '45° Faceted Diamond Core Sanctuary — Structural Verification',
   },
   {
     step: 'We implement',
-    description: 'Every deployment is crafted to endure, locked with 7ms SHA-256 verification and zero drift',
+    description: 'Every deployment is locked by on-disk SHA-256 verification, so nothing drifts from its verified state',
     image: IMAGES.ecosystem,
     caption: 'Precision Anodized Cobalt & Slate Assembly — Sovereign Craftsmanship',
   },

@@ -17,4 +17,4 @@ Official architectural showcase and interactive 3D/kinetic web studio for **HMOS
 3. **Stage 07 Distributed Entropy & Quorum Lock:**
    Enforces monotonic Lamport Vector Clocks and a strict **Shannon Entropy ceiling (`<= 0.250 bits`)** across 5 distributed worker nodes.
 4. **8-Invariant On-Disk Cryptographic Verification:**
-   Verifies all 8 core architecture invariants via **SHA-256 digests in 7ms** with an 8-Pillar Zero-Trust lock (`status == 'verified'`, no delete / no merge).
+   Verifies all 8 core architecture invariants via **SHA-256 digests** with an 8-Pillar Zero-Trust lock (`status == 'verified'`, no delete / no merge).

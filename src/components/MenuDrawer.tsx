@@ -246,7 +246,7 @@ export const MenuDrawer: React.FC<MenuDrawerProps> = ({
               type="text"
               value={searchQuery}
               onChange={(e) => onSearchChange(e.target.value)}
-              placeholder="Search HMOS pillars, catalogues, Three.js monoliths..."
+              placeholder="Search pillars, catalogues and collections…"
               className="w-full rounded-full bg-[#0F172A]/80 border border-[#FAF9F5]/15 pl-13 pr-6 py-4 text-base font-medium text-[#FAF9F5] placeholder:text-[#94A3B8] focus:outline-none transition-colors"
               onFocus={(e) => (e.currentTarget.style.borderColor = accent)}
               onBlur={(e) => (e.currentTarget.style.borderColor = '')}
@@ -260,7 +260,7 @@ export const MenuDrawer: React.FC<MenuDrawerProps> = ({
                 data-d="fade"
                 className="text-xs font-mono uppercase tracking-widest text-[#94A3B8] mb-5"
               >
-                Navigation &amp; Founder Profile
+                Navigate
               </p>
 
               <nav className="flex flex-col">
@@ -322,7 +322,7 @@ export const MenuDrawer: React.FC<MenuDrawerProps> = ({
                   className="inline-flex items-center gap-2 px-4 py-2.5 rounded-full bg-[#1D4ED8] text-[#FAF9F5] text-xs font-mechanik font-medium uppercase tracking-wider cursor-pointer transition-transform duration-300 hover:-translate-y-0.5"
                 >
                   <Code2 className="w-4 h-4" />
-                  <span>Deploy to storive.in / Code</span>
+                  <span>Deployment &amp; Code</span>
                 </button>
 
                 <button
@@ -330,7 +330,7 @@ export const MenuDrawer: React.FC<MenuDrawerProps> = ({
                   onClick={onTogglePalette}
                   className="inline-flex items-center gap-2 px-4 py-2.5 rounded-full border border-[#FAF9F5]/25 hover:border-[#FAF9F5]/60 text-xs font-mechanik font-medium uppercase tracking-wider cursor-pointer transition-colors duration-300"
                 >
-                  <span>Palette: {paletteLabel}</span>
+                  <span>Theme: {paletteLabel}</span>
                 </button>
               </div>
 
@@ -345,9 +345,9 @@ export const MenuDrawer: React.FC<MenuDrawerProps> = ({
                     className="text-[11px] font-mono uppercase tracking-widest"
                     style={{ color: accent }}
                   >
-                    LinkedIn Live Launch Studio
+                    Share on LinkedIn
                   </span>
-                  <span className="text-[11px] font-mono text-[#94A3B8]">16:9 + Live Link</span>
+                  <span className="text-[11px] font-mono text-[#94A3B8]">Link + 16:9 visual</span>
                 </div>
                 <div className="flex flex-wrap gap-2.5">
                   <a
@@ -358,7 +358,7 @@ export const MenuDrawer: React.FC<MenuDrawerProps> = ({
                     rel="noopener noreferrer"
                     className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg bg-[#0A66C2] text-white text-xs font-mechanik font-medium cursor-pointer hover:opacity-90"
                   >
-                    <span>Post www.storive.in on LinkedIn</span>
+                    <span>Post storive.in on LinkedIn</span>
                     <ExternalLink className="w-3.5 h-3.5" />
                   </a>
                   <a
@@ -367,7 +367,7 @@ export const MenuDrawer: React.FC<MenuDrawerProps> = ({
                     className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg bg-[#FAF9F5]/10 hover:bg-[#FAF9F5]/20 text-[#FAF9F5] text-xs font-mechanik font-medium cursor-pointer"
                   >
                     <Download className="w-3.5 h-3.5" />
-                    <span>Download 16:9 Visual (.JPG)</span>
+                    <span>Download 16:9 visual (.JPG)</span>
                   </a>
                 </div>
               </div>
@@ -379,7 +379,7 @@ export const MenuDrawer: React.FC<MenuDrawerProps> = ({
                 data-d="fade"
                 className="text-xs font-mono uppercase tracking-widest text-[#94A3B8] mb-5"
               >
-                Catalogues &amp; Saved Wishlist ({wishlistIds.length})
+                Catalogues · Saved ({wishlistIds.length})
               </p>
               <div className="space-y-3">
                 {chapters.length === 0 && (

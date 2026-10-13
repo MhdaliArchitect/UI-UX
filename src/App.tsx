@@ -791,7 +791,7 @@ ${dossier.specifications.map((s) => `- ${s.label}: ${s.value}`).join('\n')}
                       onClick={() => toggleCardCollapse(chap.id)}
                       className="text-[11px] font-mechanik uppercase tracking-wider text-[#FAF9F5]/65 hover:text-[#FAF9F5] px-2.5 py-1 rounded-full border border-[#FAF9F5]/20 bg-[#090D16]/40 cursor-pointer transition-colors"
                     >
-                      {isCollapsed ? '+ Expand Card' : '— Progress View'}
+                      {isCollapsed ? '+ Expand' : '— Collapse'}
                     </button>
                   </div>
 
@@ -845,7 +845,7 @@ ${dossier.specifications.map((s) => `- ${s.label}: ${s.value}`).join('\n')}
                           </h3>
                         </div>
                         <span className="inline-flex items-center gap-2 text-[14px] font-mechanik font-medium text-[#141413] group-hover:translate-x-1 transition-transform">
-                          <span>Download Now</span>
+                          <span>Download Dossier</span>
                           <TrayDownloadIcon className="w-4 h-4" />
                         </span>
                       </div>
@@ -1122,25 +1122,25 @@ ${dossier.specifications.map((s) => `- ${s.label}: ${s.value}`).join('\n')}
           <div className="max-w-5xl mx-auto">
             <div className="max-w-xl space-y-5 text-[18px] sm:text-[21px] leading-[1.34] mb-14 sm:mb-20 font-mechanik font-medium">
               <p className="text-[#FAF9F5]">
-                HMOS® (Hybrid Master Operating System) architects sovereign deep-tech
-                infrastructure and deterministic execution kernels that eliminate probabilistic
-                drift across mission-critical environments.
+                HMOS® (Hybrid Master Operating System) builds sovereign deep-tech
+                infrastructure around a deterministic execution kernel, so mission-critical
+                systems behave the same way every time.
               </p>
               <p className="text-[#8FA89E]">
-                Founded and architected by Mahammadali Palsaniya in India, our systems establish a
-                new benchmark for institutional permanence, cryptographic verification, and
-                zero-trust resilience.
+                Founded and architected by Mahammadali Palsaniya in India, HMOS® pairs
+                cryptographic verification with zero-trust design for institutions that need
+                their systems to last.
               </p>
             </div>
 
             <blockquote className="font-mechanik font-medium text-[33px] sm:text-[46px] md:text-[54px] leading-[1.06] tracking-[-0.03em] text-[#FAF9F5] mb-10 sm:mb-14 balance-text">
-              “We believe sovereign systems should be mathematically certain, architecturally pure,
-              and built to endure for decades”
+              “Sovereign systems should be mathematically certain, architecturally pure, and
+              built to last”
             </blockquote>
 
             <CurtainRevealImage
               src={IMAGES.vision}
-              alt="HMOS Sovereign Architecture Studio, India"
+              alt="HMOS® architectural concept study"
               curtainColor={curtainAndFooterHex}
               aspectClass="aspect-[1/1] sm:aspect-[16/10]"
               revealStart="top 74%"
@@ -1149,9 +1149,9 @@ ${dossier.specifications.map((s) => `- ${s.label}: ${s.value}`).join('\n')}
             >
               <div className="absolute inset-0 bg-gradient-to-t from-[#090D16]/65 via-transparent to-transparent pointer-events-none" />
               <figcaption className="absolute bottom-3.5 left-3.5 sm:bottom-5 sm:left-5 text-[13px] sm:text-[14px] font-mechanik font-medium text-[#FAF9F5] leading-snug z-10">
-                HMOS® Sovereign Sanctuary,
+                HMOS® architectural
                 <br />
-                India
+                concept study
               </figcaption>
             </CurtainRevealImage>
           </div>
@@ -1335,20 +1335,20 @@ ${dossier.specifications.map((s) => `- ${s.label}: ${s.value}`).join('\n')}
                 <span>Founder &amp; Principal Systems Architect</span>
               </p>
               <p className="text-[#687528] text-[14px]">
-                35/35 Deterministic Kernel · Zero-Trust Lock
+                35/35 steps verified · Zero-trust lock
               </p>
             </div>
 
             <div>
-              <p className="text-[#687528]">Stage 05 &amp; Stage 07 Research</p>
-              <p className="text-[#141413]">AST Guard-Parity &amp; Lamport Quorum Lab</p>
+              <p className="text-[#687528]">Research · Stage 05 &amp; Stage 07</p>
+              <p className="text-[#141413]">AST guard-parity compiler · Lamport quorum lock</p>
             </div>
 
             <div>
               <p className="text-[#141413]">
-                Sovereign Cryptographic Verification
+                Cryptographic verification
                 <br />
-                8-Invariant SHA-256 Audit (7ms)
+                8-invariant SHA-256 audit
                 <br />
                 <a
                   href={STORIVE_URL}
@@ -1358,7 +1358,7 @@ ${dossier.specifications.map((s) => `- ${s.label}: ${s.value}`).join('\n')}
                 >
                   www.storive.in
                 </a>{' '}
-                · Global Sovereign Operations
+                · India
                 <br />
                 <a
                   href={LINKEDIN_URL}
@@ -1376,13 +1376,13 @@ ${dossier.specifications.map((s) => `- ${s.label}: ${s.value}`).join('\n')}
 
           <nav className="flex flex-col gap-1.5 text-[19px] sm:text-[21px] font-mechanik font-medium mb-8 text-[#141413]">
             <a href="#showcases" className="hover:opacity-65 transition-opacity w-fit">
-              Products
+              Pillars
             </a>
             <a href="#about" className="hover:opacity-65 transition-opacity w-fit">
               About
             </a>
             <a href="#collections" className="hover:opacity-65 transition-opacity w-fit">
-              Sovereignty
+              Collections
             </a>
             <a href="#journal" className="hover:opacity-65 transition-opacity w-fit">
               Journal
@@ -1396,7 +1396,7 @@ ${dossier.specifications.map((s) => `- ${s.label}: ${s.value}`).join('\n')}
               rel="noopener noreferrer"
               className="text-left hover:underline w-fit cursor-pointer"
             >
-              Founder LinkedIn Profile
+              Founder on LinkedIn
             </a>
             <button
               type="button"
@@ -1496,10 +1496,10 @@ ${dossier.specifications.map((s) => `- ${s.label}: ${s.value}`).join('\n')}
           </div>
 
           <div className="flex flex-wrap items-center justify-between gap-4 pt-3 text-[9px] font-mechanik font-semibold tracking-wider text-[#141413]/70 uppercase">
-            <span>HMOS® 35/35 SURVIVAL</span>
+            <span>HMOS® 35/35 STEPS</span>
             <span>STAGE 05 GUARD PARITY</span>
             <span>STAGE 07 QUORUM LOCK</span>
-            <span>SHA-256 7MS VERIFIED · INDIA</span>
+            <span>SHA-256 · INDIA</span>
           </div>
         </div>
       </footer>
@@ -1530,7 +1530,7 @@ ${dossier.specifications.map((s) => `- ${s.label}: ${s.value}`).join('\n')}
         onTogglePalette={() =>
           setPaletteMode((prev) => (prev === 'editorial' ? 'dark-slate' : 'editorial'))
         }
-        paletteLabel={isEditorial ? 'Editorial Contrast' : 'HMOS Dark Slate'}
+        paletteLabel={isEditorial ? 'Editorial' : 'Dark Slate'}
         onNavigate={handleMenuNavigate}
         linkedinUrl={LINKEDIN_URL}
         storiveUrl={STORIVE_URL}
@@ -1608,7 +1608,7 @@ ${dossier.specifications.map((s) => `- ${s.label}: ${s.value}`).join('\n')}
                 }}
                 className="px-5 py-3.5 rounded-full border border-[#141413]/25 text-xs font-mechanik font-medium uppercase tracking-wider hover:bg-[#141413]/5 cursor-pointer"
               >
-                .HTML / .CSS
+                Export HTML / CSS
               </button>
             </div>
           </div>
@@ -1713,7 +1713,7 @@ ${dossier.specifications.map((s) => `- ${s.label}: ${s.value}`).join('\n')}
               onClick={() => setSelectedCollectionModal(null)}
               className="w-full rounded-full bg-[#141413] text-[#FAF9F5] py-3.5 text-xs font-mechanik uppercase tracking-wider cursor-pointer"
             >
-              Close Collection Inspector
+              Close
             </button>
           </div>
         </div>
