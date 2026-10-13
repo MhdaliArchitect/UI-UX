@@ -23,6 +23,8 @@ import {
   CatalogueBookCover,
   TrayDownloadIcon,
 } from './components/HmosVectors';
+import { StageErrorBoundary } from './components/StageErrorBoundary';
+
 // Three.js is only needed by the 3D monolith stage far below the fold, so it loads as its own
 // chunk right after first paint instead of inside the main bundle.
 const ThreeMonolithScene = lazy(() =>
@@ -992,17 +994,31 @@ export default function App() {
             </div>
 
             <div className="flex flex-col items-center justify-center">
-              <Suspense
-                fallback={<div className="relative w-full max-w-[360px] h-[340px] sm:h-[380px] mx-auto" />}
+              <StageErrorBoundary
+                fallback={
+                  <button
+                    type="button"
+                    onClick={() => setSelectedCollectionModal(activeStageCollection)}
+                    className="w-48 h-80 mx-auto flex items-center justify-center rounded-xl bg-[#27272A] text-[#FAF9F5] shadow-2xl cursor-pointer"
+                  >
+                    <span className="font-mechanik text-sm">
+                      HMOS® {activeStageCollection.name} Monolith
+                    </span>
+                  </button>
+                }
               >
-                <ThreeMonolithScene
-                  activePillarIndex={activeStageIndex}
-                  plaqueNumber={activeStageCollection.plaqueNumber}
-                  pillarName={activeStageCollection.name}
-                  accentColor={activeStageCollection.badgeBg}
-                  onSelectPillar={() => setSelectedCollectionModal(activeStageCollection)}
-                />
-              </Suspense>
+                <Suspense
+                  fallback={<div className="relative w-full max-w-[360px] h-[340px] sm:h-[380px] mx-auto" />}
+                >
+                  <ThreeMonolithScene
+                    activePillarIndex={activeStageIndex}
+                    plaqueNumber={activeStageCollection.plaqueNumber}
+                    pillarName={activeStageCollection.name}
+                    accentColor={activeStageCollection.badgeBg}
+                    onSelectPillar={() => setSelectedCollectionModal(activeStageCollection)}
+                  />
+                </Suspense>
+              </StageErrorBoundary>
 
               <button
                 type="button"
