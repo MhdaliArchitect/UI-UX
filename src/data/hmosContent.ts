@@ -1,6 +1,4 @@
 import visionImg from '../assets/images/hmos_vision_architecture_1791646745243.jpg';
-import architectureImg from '../assets/images/hmos_diamond_core_pavilion_1791646782021.jpg';
-import ecosystemImg from '../assets/images/hmos_ecosystem_infrastructure_1791646794737.jpg';
 import monolithImg from '../assets/images/hmos_monolith_sculpture_1791646805793.jpg';
 import kernelImg from '../assets/images/hmos_kernel_engine_die_1792000000001.jpg';
 import secureGateImg from '../assets/images/hmos_secure_gate_1792000000002.jpg';
@@ -65,8 +63,6 @@ export const IMAGES = {
   kernel: kernelImg,
   sovereignty: secureGateImg,
   hardware: hardwareImg,
-  architecture: architectureImg,
-  ecosystem: ecosystemImg,
   monolith: monolithImg,
 };
 
@@ -177,7 +173,7 @@ export const CHAPTERS: ChapterItem[] = [
     ctaLabel: 'Explore Architecture',
     dossierTitle: 'Architecture Catalogue',
     dossierCode: 'HMOS-ARC-2026',
-    image: IMAGES.architecture,
+    image: IMAGES.monolith,
     defaultScrollMode: 'progress-line',
     summary:
       'Anchored by a 45° faceted diamond core, HMOS Architecture removes 37.7–41.7% of redundant wrapper code and mathematically proves that 100% of safety guard clauses are retained.',
@@ -201,7 +197,7 @@ export const CHAPTERS: ChapterItem[] = [
     ctaLabel: 'Explore Ecosystem',
     dossierTitle: 'Ecosystem Catalogue',
     dossierCode: 'HMOS-ECO-2026',
-    image: IMAGES.ecosystem,
+    image: IMAGES.hardware,
     defaultScrollMode: 'expanded',
     summary:
       'A unified family of deterministic execution nodes and precision interfaces, kept in sync by monotonic Lamport vector clocks across 5 worker nodes.',
@@ -264,7 +260,7 @@ export const INSIGHTS: InsightArticle[] = [
     date: 'September 2026',
     location: 'DeepTech & Sovereign AI Infrastructure, India',
     readTime: '3 min read',
-    image: IMAGES.architecture,
+    image: IMAGES.hardware,
     excerpt:
       'How AST de-bloating and distributed quorum locking enforce zero-trust invariants, with on-disk verification.',
     body: [
@@ -324,7 +320,7 @@ export const COLLECTIONS: CollectionItem[] = [
     badgeBg: '#8FB98B',
     badgeText: '#141413',
     thumbType: 'clock-totem',
-    thumbImage: IMAGES.architecture,
+    thumbImage: IMAGES.kernel,
     monolithImage: IMAGES.monolith,
     tagline: 'Stage 05 guard parity and Stage 07 quorum lock',
     description:
@@ -343,7 +339,7 @@ export const COLLECTIONS: CollectionItem[] = [
     badgeBg: '#D1D1CD',
     badgeText: '#141413',
     thumbType: 'custom-plaque',
-    thumbImage: IMAGES.ecosystem,
+    thumbImage: IMAGES.sovereignty,
     monolithImage: IMAGES.monolith,
     tagline: 'Pure architecture with zero executable classes',
     description:
@@ -359,19 +355,19 @@ export const CRAFT_STEPS = [
   {
     step: 'We design',
     description: 'We design every kernel and interface so its behavior is fully determined before it runs',
-    image: IMAGES.vision,
-    caption: 'HMOS® Sovereign Coastal Pavilion — Architectural Proportion & Light Study',
+    image: IMAGES.kernel,
+    caption: 'HMOS® Deterministic Kernel Engine Die — Core-0 to Core-3',
   },
   {
     step: 'We build',
     description: 'We strip wrapper bloat and prove that every safety guard clause survives: 100% parity',
-    image: IMAGES.architecture,
-    caption: '45° Faceted Diamond Core Sanctuary — Structural Verification',
+    image: IMAGES.sovereignty,
+    caption: 'HMOS® Secure Gate — Hardware Security Module Rack',
   },
   {
     step: 'We implement',
     description: 'Every deployment is locked by on-disk cryptographic verification, so nothing drifts from its verified state',
-    image: IMAGES.ecosystem,
-    caption: 'Precision Anodized Cobalt & Slate Assembly — Sovereign Craftsmanship',
+    image: IMAGES.hardware,
+    caption: 'HMOS® Sovereign Hardware Component — Precision Anodized Assembly',
   },
 ];
