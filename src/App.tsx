@@ -578,7 +578,7 @@ ${dossier.specifications.map((s) => `- ${s.label}: ${s.value}`).join('\n')}
             <button
               type="button"
               onClick={() => setLangMenuOpen((prev) => !prev)}
-              className={`flex items-center gap-1 text-[13px] sm:text-[14px] font-mechanik font-normal px-1.5 py-1 rounded whitespace-nowrap shrink-0 cursor-pointer transition-colors duration-200 ${headerTextColor}`}
+              className={`flex items-center gap-1 text-[13px] sm:text-[14px] font-mechanik font-medium px-1.5 py-1 rounded whitespace-nowrap shrink-0 cursor-pointer transition-colors duration-200 ${headerTextColor}`}
               aria-label="Select Language"
             >
               <span>{locale}</span>
@@ -675,7 +675,7 @@ ${dossier.specifications.map((s) => `- ${s.label}: ${s.value}`).join('\n')}
           >
             <h1
               ref={heroWordsRef}
-              className="font-mechanik font-normal text-[35px] sm:text-[54px] md:text-[64px] leading-[1.06] tracking-[-0.035em] balance-text"
+              className="font-mechanik font-medium text-[35px] sm:text-[54px] md:text-[64px] leading-[1.06] tracking-[-0.035em] balance-text"
             >
               {heroWords.map((w, i) => (
                 <React.Fragment key={i}>
@@ -751,7 +751,7 @@ ${dossier.specifications.map((s) => `- ${s.label}: ${s.value}`).join('\n')}
                             : chap.badgeColor,
                           color: isEditorial ? chap.floemaBadgeText : chap.badgeTextColor,
                         }}
-                        className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-[6px] text-[13px] font-mechanik font-normal shadow-sm"
+                        className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-[6px] text-[13px] font-mechanik font-medium shadow-sm"
                       >
                         <CategoryIcon type={chap.iconType} className="w-3.5 h-3.5" />
                         <span>{chap.badgeLabel}</span>
@@ -774,7 +774,7 @@ ${dossier.specifications.map((s) => `- ${s.label}: ${s.value}`).join('\n')}
 
                   {/* Ghosted Section Title below the progress line (1:1 with 00:05 "Sovereignty" watermark) */}
                   <div className="flex items-center justify-between">
-                    <span className="font-mechanik font-normal text-[28px] sm:text-[38px] tracking-[-0.03em] text-[#FAF9F5]/40 select-none">
+                    <span className="font-mechanik font-medium text-[28px] sm:text-[38px] tracking-[-0.03em] text-[#FAF9F5]/40 select-none">
                       {chap.badgeLabel}
                     </span>
                   </div>
@@ -783,7 +783,7 @@ ${dossier.specifications.map((s) => `- ${s.label}: ${s.value}`).join('\n')}
                 {/* BOTTOM ZONE: Live Scroll-Animated Headline + Rive Metaball Button + #F5F4EE 3D Hardcover Catalogue Card */}
                 {!isCollapsed && (
                   <div className="relative z-10 max-w-5xl w-full mx-auto px-4 sm:px-8 pt-16 sm:pt-24 pb-8 sm:pb-12">
-                    <h2 className="gpu-layer gsap-card-headline font-mechanik font-normal text-[33px] sm:text-[46px] md:text-[52px] leading-[1.06] tracking-[-0.03em] text-[#FAF9F5] max-w-xl mb-7 balance-text will-change-transform">
+                    <h2 className="gpu-layer gsap-card-headline font-mechanik font-medium text-[33px] sm:text-[46px] md:text-[52px] leading-[1.06] tracking-[-0.03em] text-[#FAF9F5] max-w-xl mb-7 balance-text will-change-transform">
                       {chap.headline}
                     </h2>
 
@@ -812,11 +812,11 @@ ${dossier.specifications.map((s) => `- ${s.label}: ${s.value}`).join('\n')}
                           <span className="block text-[10px] font-mono uppercase tracking-widest text-[#787772] mb-0.5">
                             {chap.number} · {chap.dossierCode}
                           </span>
-                          <h3 className="font-mechanik font-normal text-[19px] sm:text-[20px] tracking-[-0.02em] text-[#141413]">
+                          <h3 className="font-mechanik font-medium text-[19px] sm:text-[20px] tracking-[-0.02em] text-[#141413]">
                             {chap.dossierTitle}
                           </h3>
                         </div>
-                        <span className="inline-flex items-center gap-2 text-[14px] font-mechanik font-normal text-[#141413] group-hover:translate-x-1 transition-transform">
+                        <span className="inline-flex items-center gap-2 text-[14px] font-mechanik font-medium text-[#141413] group-hover:translate-x-1 transition-transform">
                           <span>Download Now</span>
                           <TrayDownloadIcon className="w-4 h-4" />
                         </span>
@@ -841,7 +841,7 @@ ${dossier.specifications.map((s) => `- ${s.label}: ${s.value}`).join('\n')}
           <div className="max-w-5xl mx-auto">
             <p
               ref={manifestoRef}
-              className="font-mechanik font-normal text-[30px] sm:text-[42px] md:text-[48px] leading-[1.13] tracking-[-0.03em] mb-12 sm:mb-16"
+              className="font-mechanik font-medium text-[30px] sm:text-[42px] md:text-[48px] leading-[1.13] tracking-[-0.03em] mb-12 sm:mb-16"
             >
               {words.map((word, idx) => (
                 <React.Fragment key={idx}>
@@ -855,7 +855,7 @@ ${dossier.specifications.map((s) => `- ${s.label}: ${s.value}`).join('\n')}
             <div className="mb-6">
               <a
                 href="#news-feed"
-                className="inline-flex items-center gap-1 text-[12px] font-mechanik font-normal hover:opacity-70 transition-opacity"
+                className="inline-flex items-center gap-1 text-[12px] font-mechanik font-medium hover:opacity-70 transition-opacity"
               >
                 <span>{t.recentNewsLabel}</span>
               </a>
@@ -893,7 +893,7 @@ ${dossier.specifications.map((s) => `- ${s.label}: ${s.value}`).join('\n')}
                       )}
                     </div>
 
-                    <h3 className="font-mechanik font-normal text-[19px] sm:text-[22px] leading-[1.22] tracking-[-0.02em] mb-6 group-hover:opacity-75 transition-opacity">
+                    <h3 className="font-mechanik font-medium text-[19px] sm:text-[22px] leading-[1.22] tracking-[-0.02em] mb-6 group-hover:opacity-75 transition-opacity">
                       {article.title}
                     </h3>
                   </div>
@@ -923,7 +923,7 @@ ${dossier.specifications.map((s) => `- ${s.label}: ${s.value}`).join('\n')}
                   backgroundColor: activeStageCollection.badgeBg,
                   color: activeStageCollection.badgeText,
                 }}
-                className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-[6px] text-[13px] font-mechanik font-normal cursor-pointer whitespace-nowrap shrink-0 transition-colors shadow-sm"
+                className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-[6px] text-[13px] font-mechanik font-medium cursor-pointer whitespace-nowrap shrink-0 transition-colors shadow-sm"
               >
                 <CategoryIcon type={activeStageCollection.iconType} className="w-3.5 h-3.5" />
                 <span>{activeStageCollection.name}</span>
@@ -975,7 +975,7 @@ ${dossier.specifications.map((s) => `- ${s.label}: ${s.value}`).join('\n')}
           className={`contain-paint relative z-10 ${canvasBg} ${canvasText} py-16 sm:py-24 px-2 sm:px-6 overflow-hidden`}
         >
           <div className="max-w-5xl mx-auto text-center">
-            <p className="text-[12px] font-mechanik font-normal mb-12 sm:mb-16">
+            <p className="text-[12px] font-mechanik font-medium mb-12 sm:mb-16">
               {t.theCollectionsLabel}
             </p>
 
@@ -985,7 +985,7 @@ ${dossier.specifications.map((s) => `- ${s.label}: ${s.value}`).join('\n')}
                 <button
                   type="button"
                   onClick={() => setSelectedCollectionModal(COLLECTIONS[0])}
-                  className="inline-flex items-center gap-2 font-mechanik font-normal text-[36px] sm:text-[54px] md:text-[64px] leading-none tracking-[-0.035em] cursor-pointer"
+                  className="inline-flex items-center gap-2 font-mechanik font-medium text-[36px] sm:text-[54px] md:text-[64px] leading-none tracking-[-0.035em] cursor-pointer"
                 >
                   <CategoryIcon type="vision" className="w-7 h-7 sm:w-9 sm:h-9" />
                   <span>Vision</span>
@@ -1003,7 +1003,7 @@ ${dossier.specifications.map((s) => `- ${s.label}: ${s.value}`).join('\n')}
                 <button
                   type="button"
                   onClick={() => setSelectedCollectionModal(COLLECTIONS[0])}
-                  className="font-mechanik font-normal text-[36px] sm:text-[54px] md:text-[64px] leading-none tracking-[-0.035em] cursor-pointer"
+                  className="font-mechanik font-medium text-[36px] sm:text-[54px] md:text-[64px] leading-none tracking-[-0.035em] cursor-pointer"
                 >
                   Kernel (35)
                 </button>
@@ -1014,7 +1014,7 @@ ${dossier.specifications.map((s) => `- ${s.label}: ${s.value}`).join('\n')}
                 <button
                   type="button"
                   onClick={() => setSelectedCollectionModal(COLLECTIONS[1])}
-                  className="inline-flex items-center gap-2 font-mechanik font-normal text-[36px] sm:text-[54px] md:text-[64px] leading-none tracking-[-0.035em] cursor-pointer"
+                  className="inline-flex items-center gap-2 font-mechanik font-medium text-[36px] sm:text-[54px] md:text-[64px] leading-none tracking-[-0.035em] cursor-pointer"
                 >
                   <CategoryIcon type="sovereignty" className="w-7 h-7 sm:w-9 sm:h-9" />
                   <span>Sovereignty (08)</span>
@@ -1044,7 +1044,7 @@ ${dossier.specifications.map((s) => `- ${s.label}: ${s.value}`).join('\n')}
                 <button
                   type="button"
                   onClick={() => setSelectedCollectionModal(COLLECTIONS[2])}
-                  className="inline-flex items-center gap-2 font-mechanik font-normal text-[36px] sm:text-[54px] md:text-[64px] leading-none tracking-[-0.035em] cursor-pointer"
+                  className="inline-flex items-center gap-2 font-mechanik font-medium text-[36px] sm:text-[54px] md:text-[64px] leading-none tracking-[-0.035em] cursor-pointer"
                 >
                   <CategoryIcon type="ecosystem" className="w-7 h-7 sm:w-9 sm:h-9" />
                   <span>Ecosystem (41)</span>
@@ -1056,7 +1056,7 @@ ${dossier.specifications.map((s) => `- ${s.label}: ${s.value}`).join('\n')}
                 <button
                   type="button"
                   onClick={() => setSelectedCollectionModal(COLLECTIONS[3])}
-                  className="inline-flex items-center gap-2 font-mechanik font-normal text-[36px] sm:text-[54px] md:text-[64px] leading-none tracking-[-0.035em] cursor-pointer"
+                  className="inline-flex items-center gap-2 font-mechanik font-medium text-[36px] sm:text-[54px] md:text-[64px] leading-none tracking-[-0.035em] cursor-pointer"
                 >
                   <CategoryIcon type="details" className="w-7 h-7 sm:w-9 sm:h-9" />
                   <span>Details</span>
@@ -1074,7 +1074,7 @@ ${dossier.specifications.map((s) => `- ${s.label}: ${s.value}`).join('\n')}
                 <button
                   type="button"
                   onClick={() => setSelectedCollectionModal(COLLECTIONS[3])}
-                  className="font-mechanik font-normal text-[36px] sm:text-[54px] md:text-[64px] leading-none tracking-[-0.035em] cursor-pointer"
+                  className="font-mechanik font-medium text-[36px] sm:text-[54px] md:text-[64px] leading-none tracking-[-0.035em] cursor-pointer"
                 >
                   (00)
                 </button>
@@ -1092,7 +1092,7 @@ ${dossier.specifications.map((s) => `- ${s.label}: ${s.value}`).join('\n')}
           className={`contain-paint relative z-10 ${storyBg} text-[#FAF9F5] py-16 sm:py-24 px-4 sm:px-8`}
         >
           <div className="max-w-5xl mx-auto">
-            <div className="max-w-xl space-y-5 text-[18px] sm:text-[21px] leading-[1.34] mb-14 sm:mb-20 font-mechanik font-normal">
+            <div className="max-w-xl space-y-5 text-[18px] sm:text-[21px] leading-[1.34] mb-14 sm:mb-20 font-mechanik font-medium">
               <p className="text-[#FAF9F5]">
                 HMOS® (Hybrid Master Operating System) architects sovereign deep-tech
                 infrastructure and deterministic execution kernels that eliminate probabilistic
@@ -1105,7 +1105,7 @@ ${dossier.specifications.map((s) => `- ${s.label}: ${s.value}`).join('\n')}
               </p>
             </div>
 
-            <blockquote className="font-mechanik font-normal text-[33px] sm:text-[46px] md:text-[54px] leading-[1.06] tracking-[-0.03em] text-[#FAF9F5] mb-10 sm:mb-14 balance-text">
+            <blockquote className="font-mechanik font-medium text-[33px] sm:text-[46px] md:text-[54px] leading-[1.06] tracking-[-0.03em] text-[#FAF9F5] mb-10 sm:mb-14 balance-text">
               “We believe sovereign systems should be mathematically certain, architecturally pure,
               and built to endure for decades”
             </blockquote>
@@ -1120,7 +1120,7 @@ ${dossier.specifications.map((s) => `- ${s.label}: ${s.value}`).join('\n')}
               initialCoverRatio={0.91}
             >
               <div className="absolute inset-0 bg-gradient-to-t from-[#090D16]/65 via-transparent to-transparent pointer-events-none" />
-              <figcaption className="absolute bottom-3.5 left-3.5 sm:bottom-5 sm:left-5 text-[13px] sm:text-[14px] font-mechanik font-normal text-[#FAF9F5] leading-snug z-10">
+              <figcaption className="absolute bottom-3.5 left-3.5 sm:bottom-5 sm:left-5 text-[13px] sm:text-[14px] font-mechanik font-medium text-[#FAF9F5] leading-snug z-10">
                 HMOS® Sovereign Sanctuary,
                 <br />
                 India
@@ -1151,11 +1151,11 @@ ${dossier.specifications.map((s) => `- ${s.label}: ${s.value}`).join('\n')}
                 </div>
 
                 <div className="grid grid-cols-12 gap-4 items-start pt-1">
-                  <h3 className="col-span-5 sm:col-span-4 font-mechanik font-normal text-[17px] sm:text-[20px] tracking-[-0.02em] leading-tight">
+                  <h3 className="col-span-5 sm:col-span-4 font-mechanik font-medium text-[17px] sm:text-[20px] tracking-[-0.02em] leading-tight">
                     {item.step}
                   </h3>
                   <p
-                    className={`col-span-7 sm:col-span-8 font-mechanik font-normal text-[17px] sm:text-[20px] leading-[1.28] ${canvasMuted}`}
+                    className={`col-span-7 sm:col-span-8 font-mechanik font-medium text-[17px] sm:text-[20px] leading-[1.28] ${canvasMuted}`}
                   >
                     {item.description}
                   </p>
@@ -1172,11 +1172,11 @@ ${dossier.specifications.map((s) => `- ${s.label}: ${s.value}`).join('\n')}
           className={`contain-paint relative z-10 ${canvasBg} ${canvasText} pt-2 pb-16 sm:pb-24 px-4 sm:px-8`}
         >
           <div className="max-w-5xl mx-auto">
-            <h2 className="font-mechanik font-normal text-[35px] sm:text-[52px] leading-[1.06] tracking-[-0.035em] mb-5 whitespace-pre-line">
+            <h2 className="font-mechanik font-medium text-[35px] sm:text-[52px] leading-[1.06] tracking-[-0.035em] mb-5 whitespace-pre-line">
               {t.enduranceHeadline}
             </h2>
 
-            <p className="font-mechanik font-normal text-[19px] sm:text-[23px] leading-[1.3] mb-7 whitespace-pre-line">
+            <p className="font-mechanik font-medium text-[19px] sm:text-[23px] leading-[1.3] mb-7 whitespace-pre-line">
               {t.communitySub}
             </p>
 
@@ -1346,7 +1346,7 @@ ${dossier.specifications.map((s) => `- ${s.label}: ${s.value}`).join('\n')}
 
           <div className="w-full h-[1px] bg-[#141413]/35 my-7" />
 
-          <nav className="flex flex-col gap-1.5 text-[19px] sm:text-[21px] font-mechanik font-normal mb-8 text-[#141413]">
+          <nav className="flex flex-col gap-1.5 text-[19px] sm:text-[21px] font-mechanik font-medium mb-8 text-[#141413]">
             <a href="#showcases" className="hover:opacity-65 transition-opacity w-fit">
               Products
             </a>
@@ -1461,7 +1461,7 @@ ${dossier.specifications.map((s) => `- ${s.label}: ${s.value}`).join('\n')}
               href={LINKEDIN_URL}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-[13px] font-mechanik font-normal text-[#141413] hover:underline"
+              className="text-[13px] font-mechanik font-medium text-[#141413] hover:underline"
             >
               Architected by Mahammadali Palsaniya
             </a>
