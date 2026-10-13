@@ -194,9 +194,9 @@ export const RiveMetaballButton: React.FC<{
 };
 
 /**
- * 180+FPS Desynchronized GPU Canvas Motion Overlay for Cards 01 - 05
- * - Uses desynchronized: true for direct GPU scanout bypassing main-thread latency
- * - Frame-rate independent delta timing for silky 180Hz / 240Hz / ProMotion displays
+ * 180+FPS GPU Canvas Motion Overlay for Cards 01 - 05
+ * - Alpha-safe context with mix-blend-mode: screen to guarantee the underlying photo never gets obscured
+ * - Viewport-gated rendering for maximum 120Hz/180Hz smooth frame rates
  */
 export const LiveCardMotionCanvas: React.FC<{
   accentHex?: string;
@@ -209,12 +209,11 @@ export const LiveCardMotionCanvas: React.FC<{
     if (!canvas) return;
     const ctx = canvas.getContext('2d', {
       alpha: true,
-      desynchronized: true,
     }) as CanvasRenderingContext2D | null;
     if (!ctx) return;
 
-    const W = 280;
-    const H = 180;
+    const W = 640;
+    const H = 360;
     canvas.width = W;
     canvas.height = H;
 
@@ -223,12 +222,12 @@ export const LiveCardMotionCanvas: React.FC<{
     let t = Math.random() * 50;
     let lastNow = performance.now();
 
-    const particles = Array.from({ length: 16 }, (_, i) => ({
+    const particles = Array.from({ length: 18 }, (_, i) => ({
       x: ((i * 67) % 100) * 0.01 * W,
       y: ((i * 37) % 100) * 0.01 * H,
-      r: 0.95 + (i % 3) * 0.5,
-      vx: 0.14 + (i % 4) * 0.04,
-      vy: -0.09 - (i % 3) * 0.03,
+      r: 1.1 + (i % 3) * 0.6,
+      vx: 0.12 + (i % 4) * 0.03,
+      vy: -0.08 - (i % 3) * 0.03,
       phase: i * 0.8,
     }));
 
@@ -243,8 +242,8 @@ export const LiveCardMotionCanvas: React.FC<{
 
       const sweepX = W * (0.5 + Math.sin(t * 0.65) * 0.34);
       const grad = ctx.createRadialGradient(sweepX, H * 0.3, 4, sweepX, H * 0.5, W * 0.68);
-      grad.addColorStop(0, `${accentHex}30`);
-      grad.addColorStop(0.5, `${accentHex}10`);
+      grad.addColorStop(0, `${accentHex}35`);
+      grad.addColorStop(0.5, `${accentHex}12`);
       grad.addColorStop(1, 'transparent');
       ctx.fillStyle = grad;
       ctx.fillRect(0, 0, W, H);
@@ -253,7 +252,7 @@ export const LiveCardMotionCanvas: React.FC<{
         const p = particles[i];
         p.x = (p.x + p.vx * stepScale + W) % W;
         p.y = (p.y + p.vy * stepScale + H) % H;
-        const alpha = (0.24 + Math.sin(t * 1.8 + p.phase) * 0.14) * intensity;
+        const alpha = (0.28 + Math.sin(t * 1.8 + p.phase) * 0.16) * intensity;
         ctx.fillStyle = `rgba(250, 249, 245, ${alpha.toFixed(2)})`;
         ctx.beginPath();
         ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
@@ -291,7 +290,7 @@ export const LiveCardMotionCanvas: React.FC<{
   return (
     <canvas
       ref={canvasRef}
-      className="gpu-layer absolute inset-0 w-full h-full pointer-events-none z-[2]"
+      className="absolute inset-0 w-full h-full pointer-events-none z-[2] mix-blend-screen opacity-90"
       aria-hidden="true"
     />
   );

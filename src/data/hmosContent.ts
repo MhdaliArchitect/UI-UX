@@ -3,6 +3,10 @@ import monolithImg from '../assets/images/hmos_monolith_sculpture_1791646805793.
 import kernelImg from '../assets/images/hmos_kernel_engine_die_1792000000001.jpg';
 import secureGateImg from '../assets/images/hmos_secure_gate_1792000000002.jpg';
 import hardwareImg from '../assets/images/hmos_sovereign_hardware_hsc_1792000000003.jpg';
+import detailsMacroImg from '../assets/images/hmos_details_macro_1791914163659.jpg';
+import craftDesignImg from '../assets/images/hmos_craft_design_1791914183358.jpg';
+import craftBuildImg from '../assets/images/hmos_craft_build_1791914183836.jpg';
+import craftImplementImg from '../assets/images/hmos_craft_implement_1791914186620.jpg';
 
 export const LINKEDIN_URL =
   'https://www.linkedin.com/in/mhdali-palsaniya-68233923b?utm_source=share_via&utm_content=profile&utm_medium=member_android';
@@ -64,6 +68,10 @@ export const IMAGES = {
   sovereignty: secureGateImg,
   hardware: hardwareImg,
   monolith: monolithImg,
+  details: detailsMacroImg,
+  craftDesign: craftDesignImg,
+  craftBuild: craftBuildImg,
+  craftImplement: craftImplementImg,
 };
 
 export const LOCALE_STRINGS: Record<
@@ -221,7 +229,7 @@ export const CHAPTERS: ChapterItem[] = [
     ctaLabel: 'Explore Details',
     dossierTitle: 'Details Catalogue',
     dossierCode: 'HMOS-DET-2026',
-    image: IMAGES.hardware,
+    image: IMAGES.details,
     defaultScrollMode: 'expanded',
     catalogPdf: '/catalogs/HMOS_Details_Catalog_Navy.pdf',
     summary:
@@ -260,7 +268,7 @@ export const INSIGHTS: InsightArticle[] = [
     date: 'September 2026',
     location: 'DeepTech & Sovereign AI Infrastructure, India',
     readTime: '3 min read',
-    image: IMAGES.hardware,
+    image: IMAGES.details,
     excerpt:
       'How AST de-bloating and distributed quorum locking enforce zero-trust invariants, with on-disk verification.',
     body: [
@@ -339,7 +347,7 @@ export const COLLECTIONS: CollectionItem[] = [
     badgeBg: '#D1D1CD',
     badgeText: '#141413',
     thumbType: 'custom-plaque',
-    thumbImage: IMAGES.sovereignty,
+    thumbImage: IMAGES.details,
     monolithImage: IMAGES.monolith,
     tagline: 'Pure architecture with zero executable classes',
     description:
@@ -355,19 +363,19 @@ export const CRAFT_STEPS = [
   {
     step: 'We design',
     description: 'We design every kernel and interface so its behavior is fully determined before it runs',
-    image: IMAGES.kernel,
-    caption: 'HMOS® Deterministic Kernel Engine Die — Core-0 to Core-3',
+    image: IMAGES.craftDesign,
+    caption: 'HMOS® Deterministic Architecture Drafting Study',
   },
   {
     step: 'We build',
     description: 'We strip wrapper bloat and prove that every safety guard clause survives: 100% parity',
-    image: IMAGES.sovereignty,
-    caption: 'HMOS® Secure Gate — Hardware Security Module Rack',
+    image: IMAGES.craftBuild,
+    caption: 'HMOS® Sovereign Core Micro-Assembly & Fabrication',
   },
   {
     step: 'We implement',
     description: 'Every deployment is locked by on-disk cryptographic verification, so nothing drifts from its verified state',
-    image: IMAGES.hardware,
-    caption: 'HMOS® Sovereign Hardware Component — Precision Anodized Assembly',
+    image: IMAGES.craftImplement,
+    caption: 'HMOS® Sovereign Vault Enclosure Installation',
   },
 ];

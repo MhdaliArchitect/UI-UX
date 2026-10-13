@@ -32,13 +32,18 @@
 }
 
 .gpu-layer {
-  transform: translate3d(0, 0, 0);
   backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
 }
 
 .contain-paint {
-  contain: layout paint;
+  /* Layout containment without paint clipping so mobile Chrome never drops image tiles */
+  contain: layout style;
+}
+
+img {
+  image-rendering: -webkit-optimize-contrast;
+  image-rendering: auto;
 }
 
 .balance-text {

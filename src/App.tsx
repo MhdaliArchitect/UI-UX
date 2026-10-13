@@ -67,9 +67,9 @@ const CurtainRevealImage: React.FC<{
   alt,
   curtainColor,
   aspectClass = 'aspect-[16/10]',
-  revealStart = 'top 74%',
-  revealEnd = 'top 22%',
-  initialCoverRatio = 0.91,
+  revealStart = 'top 92%',
+  revealEnd = 'top 45%',
+  initialCoverRatio = 0.5,
   children,
 }) => {
   const containerRef = useRef<HTMLDivElement | null>(null);
@@ -95,15 +95,15 @@ const CurtainRevealImage: React.FC<{
 
       tl.fromTo(
         curtain,
-        { scaleY: initialCoverRatio, transformOrigin: 'bottom center', force3D: true },
-        { scaleY: 0, transformOrigin: 'bottom center', ease: 'power2.inOut', force3D: true },
+        { scaleY: initialCoverRatio, opacity: 0.8, transformOrigin: 'bottom center', force3D: true },
+        { scaleY: 0, opacity: 0, transformOrigin: 'bottom center', ease: 'power2.inOut', force3D: true },
         0
       );
 
       if (img) {
         tl.fromTo(
           img,
-          { scale: 1.09, force3D: true },
+          { scale: 1.06, force3D: true },
           { scale: 1.0, ease: 'none', force3D: true },
           0
         );
@@ -135,7 +135,7 @@ const CurtainRevealImage: React.FC<{
 
       {children}
 
-      {/* Solid High-Contrast Curtain Block (Matches 00:14 & 00:16 in video with top photo strip peeking) */}
+      {/* Solid High-Contrast Curtain Block with smooth opacity-wipe */}
       <div
         ref={curtainRef}
         style={{ backgroundColor: curtainColor }}
@@ -225,7 +225,7 @@ export default function App() {
       lenis.raf(time * 1000);
     };
     gsap.ticker.add(updateTicker);
-    gsap.ticker.lagSmoothing(0);
+    gsap.ticker.lagSmoothing(500, 33);
 
     return () => {
       gsap.ticker.remove(updateTicker);
@@ -309,24 +309,6 @@ export default function App() {
         });
       }
 
-      // A2. The hero is `sticky` so the first showcase can slide over it like a curtain. Once that
-      // showcase covers the screen the hero is invisible, but a sticky element still forces a
-      // layout pass on every scroll frame. Release it at that exact point (nothing visible changes)
-      // and re-pin it when scrolling back up.
-      if (showcasesRef.current && heroSectionRef.current) {
-        const hero = heroSectionRef.current;
-        ScrollTrigger.create({
-          trigger: showcasesRef.current,
-          start: 'top top',
-          onEnter: () => {
-            hero.style.position = 'relative';
-          },
-          onLeaveBack: () => {
-            hero.style.position = '';
-          },
-        });
-      }
-
       // B. Hero initial kinetic word entrance
       if (heroWordsRef.current) {
         const spans = heroWordsRef.current.querySelectorAll('.hero-word-span');
@@ -368,16 +350,17 @@ export default function App() {
       // D. Deep GPU Parallax & Scale on 01-05 Full-Bleed Card Backgrounds (Direct 1:1 scrub: true)
       const parallaxImages = document.querySelectorAll('.gsap-parallax-bg');
       parallaxImages.forEach((img) => {
+        const cardTrigger = img.closest('article') || img.parentElement;
         gsap.fromTo(
           img,
-          { yPercent: -7, scale: 1.09, force3D: true },
+          { yPercent: -5, scale: 1.05, force3D: true },
           {
-            yPercent: 7,
+            yPercent: 5,
             scale: 1.0,
             force3D: true,
             ease: 'none',
             scrollTrigger: {
-              trigger: img.parentElement,
+              trigger: cardTrigger,
               start: 'top bottom',
               end: 'bottom top',
               scrub: true,
