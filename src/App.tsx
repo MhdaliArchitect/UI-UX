@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, lazy, Suspense } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import Lenis from 'lenis';
@@ -23,7 +23,11 @@ import {
   CatalogueBookCover,
   TrayDownloadIcon,
 } from './components/HmosVectors';
-import { ThreeMonolithScene } from './components/ThreeMonolithScene';
+// Three.js is only needed by the 3D monolith stage far below the fold, so it loads as its own
+// chunk right after first paint instead of inside the main bundle.
+const ThreeMonolithScene = lazy(() =>
+  import('./components/ThreeMonolithScene').then((m) => ({ default: m.ThreeMonolithScene }))
+);
 import { MenuDrawer } from './components/MenuDrawer';
 import {
   RiveMetaballButton,
@@ -303,6 +307,24 @@ export default function App() {
         });
       }
 
+      // A2. The hero is `sticky` so the first showcase can slide over it like a curtain. Once that
+      // showcase covers the screen the hero is invisible, but a sticky element still forces a
+      // layout pass on every scroll frame. Release it at that exact point (nothing visible changes)
+      // and re-pin it when scrolling back up.
+      if (showcasesRef.current && heroSectionRef.current) {
+        const hero = heroSectionRef.current;
+        ScrollTrigger.create({
+          trigger: showcasesRef.current,
+          start: 'top top',
+          onEnter: () => {
+            hero.style.position = 'relative';
+          },
+          onLeaveBack: () => {
+            hero.style.position = '';
+          },
+        });
+      }
+
       // B. Hero initial kinetic word entrance
       if (heroWordsRef.current) {
         const spans = heroWordsRef.current.querySelectorAll('.hero-word-span');
@@ -495,7 +517,22 @@ export default function App() {
 
     return () => {
       ctx.revert();
+      if (heroSectionRef.current) heroSectionRef.current.style.position = '';
     };
+  }, []);
+
+  // 3b. Looping icon animations (pulse / spin) only run while their section is on screen.
+  // Off-screen they would still invalidate style every frame during scroll.
+  useEffect(() => {
+    const blocks = document.querySelectorAll<HTMLElement>('main article, main section');
+    const io = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((e) => e.target.classList.toggle('is-offscreen', !e.isIntersecting));
+      },
+      { rootMargin: '120px 0px' }
+    );
+    blocks.forEach((b) => io.observe(b));
+    return () => io.disconnect();
   }, []);
 
   const handleNewsletterSubmit = (e: React.FormEvent) => {
@@ -708,6 +745,8 @@ export default function App() {
                       src={chap.image}
                       alt={chap.headline}
                       decoding="async"
+                      loading={idx < 2 ? undefined : 'lazy'}
+                      fetchPriority={idx === 0 ? 'high' : undefined}
                       referrerPolicy="no-referrer"
                       onError={() => handleImgError(chap.id)}
                       className="gpu-layer gsap-parallax-bg w-full h-full object-cover will-change-transform"
@@ -953,13 +992,17 @@ export default function App() {
             </div>
 
             <div className="flex flex-col items-center justify-center">
-              <ThreeMonolithScene
-                activePillarIndex={activeStageIndex}
-                plaqueNumber={activeStageCollection.plaqueNumber}
-                pillarName={activeStageCollection.name}
-                accentColor={activeStageCollection.badgeBg}
-                onSelectPillar={() => setSelectedCollectionModal(activeStageCollection)}
-              />
+              <Suspense
+                fallback={<div className="relative w-full max-w-[360px] h-[340px] sm:h-[380px] mx-auto" />}
+              >
+                <ThreeMonolithScene
+                  activePillarIndex={activeStageIndex}
+                  plaqueNumber={activeStageCollection.plaqueNumber}
+                  pillarName={activeStageCollection.name}
+                  accentColor={activeStageCollection.badgeBg}
+                  onSelectPillar={() => setSelectedCollectionModal(activeStageCollection)}
+                />
+              </Suspense>
 
               <button
                 type="button"
