@@ -747,7 +747,6 @@ export default function App() {
                       src={chap.image}
                       alt={chap.headline}
                       decoding="async"
-                      loading={idx < 2 ? undefined : 'lazy'}
                       fetchPriority={idx === 0 ? 'high' : undefined}
                       referrerPolicy="no-referrer"
                       onError={() => handleImgError(chap.id)}
@@ -1050,16 +1049,16 @@ export default function App() {
                 <button
                   type="button"
                   onClick={() => setSelectedCollectionModal(COLLECTIONS[0])}
-                  className="inline-flex items-center gap-2 font-mechanik font-medium text-[28px] max-[359px]:text-[24px] min-[400px]:text-[36px] sm:text-[54px] md:text-[64px] leading-none tracking-[-0.035em] cursor-pointer"
+                  className="inline-flex items-center gap-2 font-mechanik font-medium text-[25px] min-[340px]:text-[30px] min-[370px]:text-[32px] min-[390px]:text-[36px] sm:text-[54px] md:text-[64px] leading-none tracking-[-0.035em] cursor-pointer"
                 >
-                  <CategoryIcon type="vision" className="w-6 h-6 max-[359px]:w-5 max-[359px]:h-5 min-[400px]:w-7 min-[400px]:h-7 sm:w-9 sm:h-9" />
+                  <CategoryIcon type="vision" className="w-7 h-7 sm:w-9 sm:h-9" />
                   <span>Vision</span>
                 </button>
 
                 <button
                   type="button"
                   onClick={() => setSelectedCollectionModal(COLLECTIONS[0])}
-                  className="w-[56px] h-[78px] max-[359px]:w-[48px] max-[359px]:h-[66px] min-[400px]:w-[68px] min-[400px]:h-[94px] sm:w-[86px] sm:h-[116px] rounded-[2px] overflow-hidden shadow-md shrink-0 cursor-pointer hover:scale-110 transition-transform duration-300"
+                  className="w-[68px] h-[94px] sm:w-[86px] sm:h-[116px] rounded-[2px] overflow-hidden shadow-md shrink-0 cursor-pointer hover:scale-110 transition-transform duration-300"
                   aria-label="Inspect Vision Monolith Collection"
                 >
                   <CollectionStudioThumb type="monolith-post" />
@@ -1068,7 +1067,7 @@ export default function App() {
                 <button
                   type="button"
                   onClick={() => setSelectedCollectionModal(COLLECTIONS[0])}
-                  className="font-mechanik font-medium text-[28px] max-[359px]:text-[24px] min-[400px]:text-[36px] sm:text-[54px] md:text-[64px] leading-none tracking-[-0.035em] cursor-pointer"
+                  className="font-mechanik font-medium text-[25px] min-[340px]:text-[30px] min-[370px]:text-[32px] min-[390px]:text-[36px] sm:text-[54px] md:text-[64px] leading-none tracking-[-0.035em] cursor-pointer"
                 >
                   Kernel (35)
                 </button>
@@ -1079,16 +1078,16 @@ export default function App() {
                 <button
                   type="button"
                   onClick={() => setSelectedCollectionModal(COLLECTIONS[1])}
-                  className="inline-flex items-center gap-2 font-mechanik font-medium text-[28px] max-[359px]:text-[24px] min-[400px]:text-[36px] sm:text-[54px] md:text-[64px] leading-none tracking-[-0.035em] cursor-pointer"
+                  className="inline-flex items-center gap-2 font-mechanik font-medium text-[25px] min-[340px]:text-[30px] min-[370px]:text-[32px] min-[390px]:text-[36px] sm:text-[54px] md:text-[64px] leading-none tracking-[-0.035em] cursor-pointer"
                 >
-                  <CategoryIcon type="sovereignty" className="w-6 h-6 max-[359px]:w-5 max-[359px]:h-5 min-[400px]:w-7 min-[400px]:h-7 sm:w-9 sm:h-9" />
+                  <CategoryIcon type="sovereignty" className="w-7 h-7 sm:w-9 sm:h-9" />
                   <span>Sovereignty (08)</span>
                 </button>
 
                 <button
                   type="button"
                   onClick={() => setSelectedCollectionModal(COLLECTIONS[1])}
-                  className="w-[68px] h-[73px] max-[359px]:w-[56px] max-[359px]:h-[60px] min-[400px]:w-[84px] min-[400px]:h-[90px] sm:w-[106px] sm:h-[114px] rounded-[2px] overflow-hidden shadow-md shrink-0 cursor-pointer hover:scale-110 transition-transform duration-300"
+                  className="w-[84px] h-[90px] sm:w-[106px] sm:h-[114px] rounded-[2px] overflow-hidden shadow-md shrink-0 cursor-pointer hover:scale-110 transition-transform duration-300"
                   aria-label="Inspect Sovereignty Collection"
                 >
                   <CollectionStudioThumb type="slatted-planter" />
@@ -1100,7 +1099,7 @@ export default function App() {
                 <button
                   type="button"
                   onClick={() => setSelectedCollectionModal(COLLECTIONS[2])}
-                  className="w-[58px] h-[78px] max-[359px]:w-[50px] max-[359px]:h-[66px] min-[400px]:w-[70px] min-[400px]:h-[94px] sm:w-[90px] sm:h-[118px] rounded-[2px] overflow-hidden shadow-md shrink-0 cursor-pointer hover:scale-110 transition-transform duration-300"
+                  className="w-[70px] h-[94px] sm:w-[90px] sm:h-[118px] rounded-[2px] overflow-hidden shadow-md shrink-0 cursor-pointer hover:scale-110 transition-transform duration-300"
                   aria-label="Inspect Clock Totem Collection"
                 >
                   <CollectionStudioThumb type="clock-totem" />
@@ -1109,9 +1108,9 @@ export default function App() {
                 <button
                   type="button"
                   onClick={() => setSelectedCollectionModal(COLLECTIONS[2])}
-                  className="inline-flex items-center gap-2 font-mechanik font-medium text-[28px] max-[359px]:text-[24px] min-[400px]:text-[36px] sm:text-[54px] md:text-[64px] leading-none tracking-[-0.035em] cursor-pointer"
+                  className="inline-flex items-center gap-2 font-mechanik font-medium text-[25px] min-[340px]:text-[30px] min-[370px]:text-[32px] min-[390px]:text-[36px] sm:text-[54px] md:text-[64px] leading-none tracking-[-0.035em] cursor-pointer"
                 >
-                  <CategoryIcon type="ecosystem" className="w-6 h-6 max-[359px]:w-5 max-[359px]:h-5 min-[400px]:w-7 min-[400px]:h-7 sm:w-9 sm:h-9" />
+                  <CategoryIcon type="ecosystem" className="w-7 h-7 sm:w-9 sm:h-9" />
                   <span>Ecosystem (41)</span>
                 </button>
               </div>
@@ -1121,16 +1120,16 @@ export default function App() {
                 <button
                   type="button"
                   onClick={() => setSelectedCollectionModal(COLLECTIONS[3])}
-                  className="inline-flex items-center gap-2 font-mechanik font-medium text-[28px] max-[359px]:text-[24px] min-[400px]:text-[36px] sm:text-[54px] md:text-[64px] leading-none tracking-[-0.035em] cursor-pointer"
+                  className="inline-flex items-center gap-2 font-mechanik font-medium text-[25px] min-[340px]:text-[30px] min-[370px]:text-[32px] min-[390px]:text-[36px] sm:text-[54px] md:text-[64px] leading-none tracking-[-0.035em] cursor-pointer"
                 >
-                  <CategoryIcon type="details" className="w-6 h-6 max-[359px]:w-5 max-[359px]:h-5 min-[400px]:w-7 min-[400px]:h-7 sm:w-9 sm:h-9" />
+                  <CategoryIcon type="details" className="w-7 h-7 sm:w-9 sm:h-9" />
                   <span>Details</span>
                 </button>
 
                 <button
                   type="button"
                   onClick={() => setSelectedCollectionModal(COLLECTIONS[3])}
-                  className="w-[66px] h-[77px] max-[359px]:w-[54px] max-[359px]:h-[64px] min-[400px]:w-[82px] min-[400px]:h-[96px] sm:w-[104px] sm:h-[120px] rounded-[2px] overflow-hidden shadow-md shrink-0 cursor-pointer hover:scale-110 transition-transform duration-300"
+                  className="w-[82px] h-[96px] sm:w-[104px] sm:h-[120px] rounded-[2px] overflow-hidden shadow-md shrink-0 cursor-pointer hover:scale-110 transition-transform duration-300"
                   aria-label="Inspect Details Plaque Collection"
                 >
                   <CollectionStudioThumb type="custom-plaque" />
@@ -1139,7 +1138,7 @@ export default function App() {
                 <button
                   type="button"
                   onClick={() => setSelectedCollectionModal(COLLECTIONS[3])}
-                  className="font-mechanik font-medium text-[28px] max-[359px]:text-[24px] min-[400px]:text-[36px] sm:text-[54px] md:text-[64px] leading-none tracking-[-0.035em] cursor-pointer"
+                  className="font-mechanik font-medium text-[25px] min-[340px]:text-[30px] min-[370px]:text-[32px] min-[390px]:text-[36px] sm:text-[54px] md:text-[64px] leading-none tracking-[-0.035em] cursor-pointer"
                 >
                   (00)
                 </button>
