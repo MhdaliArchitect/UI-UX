@@ -1,9 +1,11 @@
 import visionImg from '../assets/images/hmos_vision_architecture_1791646745243.jpg';
-import sovereigntyImg from '../assets/images/hmos_sovereignty_monolith_1791646768169.jpg';
 import architectureImg from '../assets/images/hmos_diamond_core_pavilion_1791646782021.jpg';
 import ecosystemImg from '../assets/images/hmos_ecosystem_infrastructure_1791646794737.jpg';
 import monolithImg from '../assets/images/hmos_monolith_sculpture_1791646805793.jpg';
 import keynoteImg from '../assets/images/hmos_keynote_benchmark_card_1791652005530.jpg';
+import kernelImg from '../assets/images/hmos_kernel_engine_die_1792000000001.jpg';
+import shaGateImg from '../assets/images/hmos_sha256_secure_gate_1792000000002.jpg';
+import hardwareImg from '../assets/images/hmos_sovereign_hardware_hsc_1792000000003.jpg';
 
 export const LINKEDIN_URL =
   'https://www.linkedin.com/in/mhdali-palsaniya-68233923b?utm_source=share_via&utm_content=profile&utm_medium=member_android';
@@ -59,7 +61,9 @@ export interface CollectionItem {
 
 export const IMAGES = {
   vision: visionImg,
-  sovereignty: sovereigntyImg,
+  kernel: kernelImg,
+  sovereignty: shaGateImg,
+  hardware: hardwareImg,
   architecture: architectureImg,
   ecosystem: ecosystemImg,
   monolith: monolithImg,
@@ -125,7 +129,7 @@ export const CHAPTERS: ChapterItem[] = [
     ctaLabel: 'SEE VISION SYSTEMS',
     dossierTitle: 'Vision Catalogue',
     dossierCode: 'HMOS-VIS-2026',
-    image: IMAGES.vision,
+    image: IMAGES.kernel,
     defaultScrollMode: 'expanded',
     summary:
       'HMOS Vision establishes the foundational design language for sovereign computing environments—locking 35/35 enterprise workflow survival at 310ms deterministic latency.',
@@ -221,7 +225,7 @@ export const CHAPTERS: ChapterItem[] = [
     ctaLabel: 'SEE DETAILS SYSTEMS',
     dossierTitle: 'Details Catalogue',
     dossierCode: 'HMOS-DET-2026',
-    image: IMAGES.monolith,
+    image: IMAGES.hardware,
     defaultScrollMode: 'expanded',
     summary:
       'Every chamfer, fastener, and cryptographic seal in the HMOS hardware and software ecosystem is tailored to harmonize human clarity with uncompromising zero-trust durability.',
