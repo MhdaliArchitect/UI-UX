@@ -1,6 +1,6 @@
 import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import gsap from 'gsap';
-import { Search, X, Bookmark, ExternalLink, ArrowUpRight } from 'lucide-react';
+import { Search, X, Bookmark, Download, ExternalLink, ArrowUpRight } from 'lucide-react';
 import { HmosEmblem } from './HmosVectors';
 import type { ChapterItem } from '../data/hmosContent';
 
@@ -410,6 +410,17 @@ export const MenuDrawer: React.FC<MenuDrawerProps> = ({
                         >
                           <Bookmark className="w-4 h-4" />
                         </button>
+                        {chap.catalogPdf && (
+                          <a
+                            href={chap.catalogPdf}
+                            download
+                            title="Download catalogue (PDF)"
+                            aria-label={`Download ${chap.dossierTitle} (PDF)`}
+                            className="p-2 rounded-lg bg-[#FAF9F5]/10 hover:bg-[#FAF9F5]/20 text-[#FAF9F5] cursor-pointer transition-colors"
+                          >
+                            <Download className="w-4 h-4" />
+                          </a>
+                        )}
                       </div>
                     </div>
                   );

@@ -21,6 +21,7 @@ import {
   CategoryIcon,
   CollectionStudioThumb,
   CatalogueBookCover,
+  TrayDownloadIcon,
 } from './components/HmosVectors';
 import { ThreeMonolithScene } from './components/ThreeMonolithScene';
 import { MenuDrawer } from './components/MenuDrawer';
@@ -227,14 +228,30 @@ export default function App() {
     };
   }, []);
 
-  // Freeze the page (and any Lenis inertia still running) while the menu drawer is open,
-  // so the wheel never scrolls the site behind it. The drawer itself scrolls natively.
+  // Freeze the page (and any Lenis inertia still running) while the menu drawer or a modal
+  // is open, so the wheel never scrolls the site behind it. Overlays scroll natively
+  // (data-lenis-prevent) when their own content is taller than the screen.
+  const overlayOpen =
+    menuDrawerOpen || !!selectedDossier || !!selectedInsight || !!selectedCollectionModal;
   useEffect(() => {
     const lenis = lenisRef.current;
     if (!lenis) return;
-    if (menuDrawerOpen) lenis.stop();
+    if (overlayOpen) lenis.stop();
     else lenis.start();
-  }, [menuDrawerOpen]);
+  }, [overlayOpen]);
+
+  // Escape closes whichever modal is open (the menu drawer handles its own Escape).
+  useEffect(() => {
+    if (!selectedDossier && !selectedInsight && !selectedCollectionModal) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key !== 'Escape') return;
+      setSelectedDossier(null);
+      setSelectedInsight(null);
+      setSelectedCollectionModal(null);
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [selectedDossier, selectedInsight, selectedCollectionModal]);
 
   // Menu links: close the drawer, then glide to the section with the same Lenis engine.
   const handleMenuNavigate = (hash: string) => {
@@ -792,10 +809,23 @@ export default function App() {
                             {chap.dossierTitle}
                           </h3>
                         </div>
-                        <span className="inline-flex items-center gap-2 text-[14px] font-mechanik font-medium text-[#141413] group-hover:translate-x-1 transition-transform">
-                          <span>View Dossier</span>
-                          <ArrowRight className="w-4 h-4" />
-                        </span>
+                        {chap.catalogPdf ? (
+                          <a
+                            href={chap.catalogPdf}
+                            download
+                            onClick={(e) => e.stopPropagation()}
+                            onKeyDown={(e) => e.stopPropagation()}
+                            className="inline-flex items-center gap-2 text-[14px] font-mechanik font-medium text-[#141413] group-hover:translate-x-1 hover:underline transition-transform"
+                          >
+                            <span>Download PDF</span>
+                            <TrayDownloadIcon className="w-4 h-4" />
+                          </a>
+                        ) : (
+                          <span className="inline-flex items-center gap-2 text-[14px] font-mechanik font-medium text-[#141413] group-hover:translate-x-1 transition-transform">
+                            <span>View Dossier</span>
+                            <ArrowRight className="w-4 h-4" />
+                          </span>
+                        )}
                       </div>
                       <CatalogueBookCover type={chap.iconType} />
                     </div>
@@ -961,16 +991,16 @@ export default function App() {
                 <button
                   type="button"
                   onClick={() => setSelectedCollectionModal(COLLECTIONS[0])}
-                  className="inline-flex items-center gap-2 font-mechanik font-medium text-[36px] sm:text-[54px] md:text-[64px] leading-none tracking-[-0.035em] cursor-pointer"
+                  className="inline-flex items-center gap-2 font-mechanik font-medium text-[28px] max-[359px]:text-[24px] min-[400px]:text-[36px] sm:text-[54px] md:text-[64px] leading-none tracking-[-0.035em] cursor-pointer"
                 >
-                  <CategoryIcon type="vision" className="w-7 h-7 sm:w-9 sm:h-9" />
+                  <CategoryIcon type="vision" className="w-6 h-6 max-[359px]:w-5 max-[359px]:h-5 min-[400px]:w-7 min-[400px]:h-7 sm:w-9 sm:h-9" />
                   <span>Vision</span>
                 </button>
 
                 <button
                   type="button"
                   onClick={() => setSelectedCollectionModal(COLLECTIONS[0])}
-                  className="w-[68px] h-[94px] sm:w-[86px] sm:h-[116px] rounded-[2px] overflow-hidden shadow-md shrink-0 cursor-pointer hover:scale-110 transition-transform duration-300"
+                  className="w-[56px] h-[78px] max-[359px]:w-[48px] max-[359px]:h-[66px] min-[400px]:w-[68px] min-[400px]:h-[94px] sm:w-[86px] sm:h-[116px] rounded-[2px] overflow-hidden shadow-md shrink-0 cursor-pointer hover:scale-110 transition-transform duration-300"
                   aria-label="Inspect Vision Monolith Collection"
                 >
                   <CollectionStudioThumb type="monolith-post" />
@@ -979,7 +1009,7 @@ export default function App() {
                 <button
                   type="button"
                   onClick={() => setSelectedCollectionModal(COLLECTIONS[0])}
-                  className="font-mechanik font-medium text-[36px] sm:text-[54px] md:text-[64px] leading-none tracking-[-0.035em] cursor-pointer"
+                  className="font-mechanik font-medium text-[28px] max-[359px]:text-[24px] min-[400px]:text-[36px] sm:text-[54px] md:text-[64px] leading-none tracking-[-0.035em] cursor-pointer"
                 >
                   Kernel (35)
                 </button>
@@ -990,16 +1020,16 @@ export default function App() {
                 <button
                   type="button"
                   onClick={() => setSelectedCollectionModal(COLLECTIONS[1])}
-                  className="inline-flex items-center gap-2 font-mechanik font-medium text-[36px] sm:text-[54px] md:text-[64px] leading-none tracking-[-0.035em] cursor-pointer"
+                  className="inline-flex items-center gap-2 font-mechanik font-medium text-[28px] max-[359px]:text-[24px] min-[400px]:text-[36px] sm:text-[54px] md:text-[64px] leading-none tracking-[-0.035em] cursor-pointer"
                 >
-                  <CategoryIcon type="sovereignty" className="w-7 h-7 sm:w-9 sm:h-9" />
+                  <CategoryIcon type="sovereignty" className="w-6 h-6 max-[359px]:w-5 max-[359px]:h-5 min-[400px]:w-7 min-[400px]:h-7 sm:w-9 sm:h-9" />
                   <span>Sovereignty (08)</span>
                 </button>
 
                 <button
                   type="button"
                   onClick={() => setSelectedCollectionModal(COLLECTIONS[1])}
-                  className="w-[84px] h-[90px] sm:w-[106px] sm:h-[114px] rounded-[2px] overflow-hidden shadow-md shrink-0 cursor-pointer hover:scale-110 transition-transform duration-300"
+                  className="w-[68px] h-[73px] max-[359px]:w-[56px] max-[359px]:h-[60px] min-[400px]:w-[84px] min-[400px]:h-[90px] sm:w-[106px] sm:h-[114px] rounded-[2px] overflow-hidden shadow-md shrink-0 cursor-pointer hover:scale-110 transition-transform duration-300"
                   aria-label="Inspect Sovereignty Collection"
                 >
                   <CollectionStudioThumb type="slatted-planter" />
@@ -1011,7 +1041,7 @@ export default function App() {
                 <button
                   type="button"
                   onClick={() => setSelectedCollectionModal(COLLECTIONS[2])}
-                  className="w-[70px] h-[94px] sm:w-[90px] sm:h-[118px] rounded-[2px] overflow-hidden shadow-md shrink-0 cursor-pointer hover:scale-110 transition-transform duration-300"
+                  className="w-[58px] h-[78px] max-[359px]:w-[50px] max-[359px]:h-[66px] min-[400px]:w-[70px] min-[400px]:h-[94px] sm:w-[90px] sm:h-[118px] rounded-[2px] overflow-hidden shadow-md shrink-0 cursor-pointer hover:scale-110 transition-transform duration-300"
                   aria-label="Inspect Clock Totem Collection"
                 >
                   <CollectionStudioThumb type="clock-totem" />
@@ -1020,9 +1050,9 @@ export default function App() {
                 <button
                   type="button"
                   onClick={() => setSelectedCollectionModal(COLLECTIONS[2])}
-                  className="inline-flex items-center gap-2 font-mechanik font-medium text-[36px] sm:text-[54px] md:text-[64px] leading-none tracking-[-0.035em] cursor-pointer"
+                  className="inline-flex items-center gap-2 font-mechanik font-medium text-[28px] max-[359px]:text-[24px] min-[400px]:text-[36px] sm:text-[54px] md:text-[64px] leading-none tracking-[-0.035em] cursor-pointer"
                 >
-                  <CategoryIcon type="ecosystem" className="w-7 h-7 sm:w-9 sm:h-9" />
+                  <CategoryIcon type="ecosystem" className="w-6 h-6 max-[359px]:w-5 max-[359px]:h-5 min-[400px]:w-7 min-[400px]:h-7 sm:w-9 sm:h-9" />
                   <span>Ecosystem (41)</span>
                 </button>
               </div>
@@ -1032,16 +1062,16 @@ export default function App() {
                 <button
                   type="button"
                   onClick={() => setSelectedCollectionModal(COLLECTIONS[3])}
-                  className="inline-flex items-center gap-2 font-mechanik font-medium text-[36px] sm:text-[54px] md:text-[64px] leading-none tracking-[-0.035em] cursor-pointer"
+                  className="inline-flex items-center gap-2 font-mechanik font-medium text-[28px] max-[359px]:text-[24px] min-[400px]:text-[36px] sm:text-[54px] md:text-[64px] leading-none tracking-[-0.035em] cursor-pointer"
                 >
-                  <CategoryIcon type="details" className="w-7 h-7 sm:w-9 sm:h-9" />
+                  <CategoryIcon type="details" className="w-6 h-6 max-[359px]:w-5 max-[359px]:h-5 min-[400px]:w-7 min-[400px]:h-7 sm:w-9 sm:h-9" />
                   <span>Details</span>
                 </button>
 
                 <button
                   type="button"
                   onClick={() => setSelectedCollectionModal(COLLECTIONS[3])}
-                  className="w-[82px] h-[96px] sm:w-[104px] sm:h-[120px] rounded-[2px] overflow-hidden shadow-md shrink-0 cursor-pointer hover:scale-110 transition-transform duration-300"
+                  className="w-[66px] h-[77px] max-[359px]:w-[54px] max-[359px]:h-[64px] min-[400px]:w-[82px] min-[400px]:h-[96px] sm:w-[104px] sm:h-[120px] rounded-[2px] overflow-hidden shadow-md shrink-0 cursor-pointer hover:scale-110 transition-transform duration-300"
                   aria-label="Inspect Details Plaque Collection"
                 >
                   <CollectionStudioThumb type="custom-plaque" />
@@ -1050,7 +1080,7 @@ export default function App() {
                 <button
                   type="button"
                   onClick={() => setSelectedCollectionModal(COLLECTIONS[3])}
-                  className="font-mechanik font-medium text-[36px] sm:text-[54px] md:text-[64px] leading-none tracking-[-0.035em] cursor-pointer"
+                  className="font-mechanik font-medium text-[28px] max-[359px]:text-[24px] min-[400px]:text-[36px] sm:text-[54px] md:text-[64px] leading-none tracking-[-0.035em] cursor-pointer"
                 >
                   (00)
                 </button>
@@ -1484,14 +1514,19 @@ export default function App() {
       {selectedDossier && (
         <div
           onClick={() => setSelectedDossier(null)}
+          role="dialog"
+          aria-modal="true"
+          aria-label={`${selectedDossier.dossierTitle} dossier`}
           className="fixed inset-0 z-50 bg-[#090D16]/80 backdrop-blur-md flex items-center justify-center p-4"
         >
           <div
             onClick={(e) => e.stopPropagation()}
-            className="bg-[#F2F1EA] text-[#141413] rounded-2xl max-w-xl w-full p-6 sm:p-8 shadow-2xl relative"
+            data-lenis-prevent
+            className="bg-[#F2F1EA] text-[#141413] rounded-2xl max-w-xl w-full p-6 sm:p-8 shadow-2xl relative max-h-[88dvh] overflow-y-auto overscroll-contain"
           >
             <button
               type="button"
+              aria-label="Close"
               onClick={() => setSelectedDossier(null)}
               className="absolute top-5 right-5 w-9 h-9 rounded-full bg-[#141413]/10 flex items-center justify-center hover:bg-[#141413] hover:text-[#FAF9F5] transition-colors cursor-pointer"
             >
@@ -1531,6 +1566,16 @@ export default function App() {
               ))}
             </div>
 
+            {selectedDossier.catalogPdf && (
+              <a
+                href={selectedDossier.catalogPdf}
+                download
+                className="mb-3 w-full rounded-full bg-[#1D4ED8] hover:bg-[#2563EB] text-[#FAF9F5] py-3.5 text-xs font-mechanik font-medium uppercase tracking-wider inline-flex items-center justify-center gap-2 transition-colors"
+              >
+                <TrayDownloadIcon className="w-4 h-4" />
+                <span>Download Catalog (PDF)</span>
+              </a>
+            )}
             <button
               type="button"
               onClick={() => setSelectedDossier(null)}
@@ -1548,14 +1593,19 @@ export default function App() {
       {selectedInsight && (
         <div
           onClick={() => setSelectedInsight(null)}
+          role="dialog"
+          aria-modal="true"
+          aria-label={selectedInsight.title}
           className="fixed inset-0 z-50 bg-[#090D16]/80 backdrop-blur-md flex items-center justify-center p-4"
         >
           <div
             onClick={(e) => e.stopPropagation()}
-            className="bg-[#ECEAE2] text-[#141413] rounded-2xl max-w-2xl w-full p-6 sm:p-8 shadow-2xl max-h-[88vh] overflow-y-auto relative"
+            data-lenis-prevent
+            className="bg-[#ECEAE2] text-[#141413] rounded-2xl max-w-2xl w-full p-6 sm:p-8 shadow-2xl max-h-[88dvh] overflow-y-auto overscroll-contain relative"
           >
             <button
               type="button"
+              aria-label="Close"
               onClick={() => setSelectedInsight(null)}
               className="float-right w-9 h-9 rounded-full bg-[#141413]/10 flex items-center justify-center hover:bg-[#141413] hover:text-[#FAF9F5] transition-colors cursor-pointer"
             >
@@ -1594,14 +1644,19 @@ export default function App() {
       {selectedCollectionModal && (
         <div
           onClick={() => setSelectedCollectionModal(null)}
+          role="dialog"
+          aria-modal="true"
+          aria-label={`${selectedCollectionModal.name} collection`}
           className="fixed inset-0 z-50 bg-[#090D16]/80 backdrop-blur-md flex items-center justify-center p-4"
         >
           <div
             onClick={(e) => e.stopPropagation()}
-            className="bg-[#F2F1EA] text-[#141413] rounded-2xl max-w-lg w-full p-6 sm:p-8 shadow-2xl relative"
+            data-lenis-prevent
+            className="bg-[#F2F1EA] text-[#141413] rounded-2xl max-w-lg w-full p-6 sm:p-8 shadow-2xl relative max-h-[88dvh] overflow-y-auto overscroll-contain"
           >
             <button
               type="button"
+              aria-label="Close"
               onClick={() => setSelectedCollectionModal(null)}
               className="absolute top-5 right-5 w-9 h-9 rounded-full bg-[#141413]/10 flex items-center justify-center hover:bg-[#141413] hover:text-[#FAF9F5] transition-colors cursor-pointer"
             >

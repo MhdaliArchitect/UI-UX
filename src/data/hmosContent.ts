@@ -27,6 +27,8 @@ export interface ChapterItem {
   dossierCode: string;
   image: string;
   defaultScrollMode: 'expanded' | 'progress-line';
+  /** Optional downloadable PDF catalogue shown wherever this section appears. */
+  catalogPdf?: string;
   summary: string;
   specifications: { label: string; value: string }[];
 }
@@ -227,6 +229,7 @@ export const CHAPTERS: ChapterItem[] = [
     dossierCode: 'HMOS-DET-2026',
     image: IMAGES.hardware,
     defaultScrollMode: 'expanded',
+    catalogPdf: '/catalogs/HMOS_Details_Catalog_Navy.pdf',
     summary:
       'Every chamfer, fastener and cryptographic seal is specified for human clarity and zero-trust durability, in both the hardware and the software.',
     specifications: [
