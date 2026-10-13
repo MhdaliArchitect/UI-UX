@@ -1,6 +1,6 @@
 import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import gsap from 'gsap';
-import { Search, X, Download, Bookmark, ExternalLink, Code2, ArrowUpRight } from 'lucide-react';
+import { Search, X, Bookmark, ExternalLink, ArrowUpRight } from 'lucide-react';
 import { HmosEmblem } from './HmosVectors';
 import type { ChapterItem } from '../data/hmosContent';
 
@@ -31,14 +31,11 @@ export interface MenuDrawerProps {
   wishlistIds: string[];
   onToggleWishlist: (id: string) => void;
   onOpenDossier: (chapter: ChapterItem) => void;
-  onDownloadDossier: (chapter: ChapterItem) => void;
-  onOpenCode: () => void;
   onTogglePalette: () => void;
   paletteLabel: string;
   onNavigate: (hash: string) => void;
   linkedinUrl: string;
   storiveUrl: string;
-  keynoteImage: string;
 }
 
 export const MenuDrawer: React.FC<MenuDrawerProps> = ({
@@ -51,14 +48,11 @@ export const MenuDrawer: React.FC<MenuDrawerProps> = ({
   wishlistIds,
   onToggleWishlist,
   onOpenDossier,
-  onDownloadDossier,
-  onOpenCode,
   onTogglePalette,
   paletteLabel,
   onNavigate,
   linkedinUrl,
   storiveUrl,
-  keynoteImage,
 }) => {
   // Stay mounted while the closing animation plays.
   const [mounted, setMounted] = useState(open);
@@ -318,15 +312,6 @@ export const MenuDrawer: React.FC<MenuDrawerProps> = ({
 
                 <button
                   type="button"
-                  onClick={onOpenCode}
-                  className="inline-flex items-center gap-2 px-4 py-2.5 rounded-full bg-[#1D4ED8] text-[#FAF9F5] text-xs font-mechanik font-medium uppercase tracking-wider cursor-pointer transition-transform duration-300 hover:-translate-y-0.5"
-                >
-                  <Code2 className="w-4 h-4" />
-                  <span>Deployment &amp; Code</span>
-                </button>
-
-                <button
-                  type="button"
                   onClick={onTogglePalette}
                   className="inline-flex items-center gap-2 px-4 py-2.5 rounded-full border border-[#FAF9F5]/25 hover:border-[#FAF9F5]/60 text-xs font-mechanik font-medium uppercase tracking-wider cursor-pointer transition-colors duration-300"
                 >
@@ -334,7 +319,7 @@ export const MenuDrawer: React.FC<MenuDrawerProps> = ({
                 </button>
               </div>
 
-              {/* LinkedIn Live Launch Kit (1-click share live URL + download 16:9 visual) */}
+              {/* LinkedIn share (1-click post of the live URL) */}
               <div
                 data-d="fade"
                 className="mt-8 p-4 rounded-2xl bg-[#0F172A]/80 border space-y-3"
@@ -347,7 +332,6 @@ export const MenuDrawer: React.FC<MenuDrawerProps> = ({
                   >
                     Share on LinkedIn
                   </span>
-                  <span className="text-[11px] font-mono text-[#94A3B8]">Link + 16:9 visual</span>
                 </div>
                 <div className="flex flex-wrap gap-2.5">
                   <a
@@ -360,14 +344,6 @@ export const MenuDrawer: React.FC<MenuDrawerProps> = ({
                   >
                     <span>Post storive.in on LinkedIn</span>
                     <ExternalLink className="w-3.5 h-3.5" />
-                  </a>
-                  <a
-                    href={keynoteImage}
-                    download="HMOS-Keynote-16x9-LinkedIn.jpg"
-                    className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg bg-[#FAF9F5]/10 hover:bg-[#FAF9F5]/20 text-[#FAF9F5] text-xs font-mechanik font-medium cursor-pointer"
-                  >
-                    <Download className="w-3.5 h-3.5" />
-                    <span>Download 16:9 visual (.JPG)</span>
                   </a>
                 </div>
               </div>
@@ -433,14 +409,6 @@ export const MenuDrawer: React.FC<MenuDrawerProps> = ({
                           aria-pressed={isSaved}
                         >
                           <Bookmark className="w-4 h-4" />
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => onDownloadDossier(chap)}
-                          className="p-2 rounded-lg bg-[#FAF9F5]/10 hover:bg-[#FAF9F5]/20 text-[#FAF9F5] cursor-pointer transition-colors"
-                          title="Download Catalogue"
-                        >
-                          <Download className="w-4 h-4" />
                         </button>
                       </div>
                     </div>

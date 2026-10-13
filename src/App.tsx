@@ -16,13 +16,11 @@ import {
   InsightArticle,
   CollectionItem,
 } from './data/hmosContent';
-import { STANDALONE_HTML, STANDALONE_CSS } from './data/standaloneExport';
 import {
   HmosEmblem,
   CategoryIcon,
   CollectionStudioThumb,
   CatalogueBookCover,
-  TrayDownloadIcon,
 } from './components/HmosVectors';
 import { ThreeMonolithScene } from './components/ThreeMonolithScene';
 import { MenuDrawer } from './components/MenuDrawer';
@@ -35,14 +33,9 @@ import {
 import {
   Search,
   X,
-  Download,
   ArrowRight,
   Check,
-  Copy,
-  Code2,
-  FileCode,
   ChevronDown,
-  Bookmark,
   ExternalLink,
 } from 'lucide-react';
 
@@ -181,9 +174,6 @@ export default function App() {
   const [selectedDossier, setSelectedDossier] = useState<ChapterItem | null>(null);
   const [selectedInsight, setSelectedInsight] = useState<InsightArticle | null>(null);
   const [selectedCollectionModal, setSelectedCollectionModal] = useState<CollectionItem | null>(null);
-  const [codeModalOpen, setCodeModalOpen] = useState(false);
-  const [activeCodeTab, setActiveCodeTab] = useState<'storive' | 'html' | 'css'>('storive');
-  const [copiedCode, setCopiedCode] = useState<'html' | 'css' | null>(null);
 
   // Saved Wishlist state
   const [wishlist, setWishlist] = useState<string[]>(['vision', 'ecosystem']);
@@ -490,48 +480,6 @@ export default function App() {
       ctx.revert();
     };
   }, []);
-
-  const handleCopyCode = (type: 'html' | 'css') => {
-    const content = type === 'html' ? STANDALONE_HTML : STANDALONE_CSS;
-    navigator.clipboard.writeText(content);
-    setCopiedCode(type);
-    setTimeout(() => setCopiedCode(null), 2200);
-  };
-
-  const handleDownloadFile = (filename: string, content: string, mimeType: string) => {
-    const blob = new Blob([content], { type: mimeType });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = filename;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
-  };
-
-  const handleDownloadDossierSpec = (dossier: ChapterItem) => {
-    const specContent = `HMOS® SOVEREIGN ARCHITECTURAL DOSSIER
-============================================================
-Title: ${dossier.dossierTitle} (${dossier.dossierCode})
-Pillar: ${dossier.number} — ${dossier.badgeLabel}
-Founder & Principal Systems Architect: Mahammadali Palsaniya
-LinkedIn: ${LINKEDIN_URL}
-Organization: HMOS · DeepTech & Sovereign AI Infrastructure, India
-
-HEADLINE
-${dossier.headline}
-
-EXECUTIVE SUMMARY
-${dossier.summary}
-
-VERIFIED ARCHITECTURAL SPECIFICATIONS
-${dossier.specifications.map((s) => `- ${s.label}: ${s.value}`).join('\n')}
-============================================================
-© 2026 HMOS®. Made to last, designed to endure.
-`;
-    handleDownloadFile(`${dossier.id}-catalogue-hmos.txt`, specContent, 'text/plain;charset=utf-8');
-  };
 
   const handleNewsletterSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -845,8 +793,8 @@ ${dossier.specifications.map((s) => `- ${s.label}: ${s.value}`).join('\n')}
                           </h3>
                         </div>
                         <span className="inline-flex items-center gap-2 text-[14px] font-mechanik font-medium text-[#141413] group-hover:translate-x-1 transition-transform">
-                          <span>Download Dossier</span>
-                          <TrayDownloadIcon className="w-4 h-4" />
+                          <span>View Dossier</span>
+                          <ArrowRight className="w-4 h-4" />
                         </span>
                       </div>
                       <CatalogueBookCover type={chap.iconType} />
@@ -1521,12 +1469,6 @@ ${dossier.specifications.map((s) => `- ${s.label}: ${s.value}`).join('\n')}
           setMenuDrawerOpen(false);
           setSelectedDossier(chap);
         }}
-        onDownloadDossier={handleDownloadDossierSpec}
-        onOpenCode={() => {
-          setMenuDrawerOpen(false);
-          setActiveCodeTab('storive');
-          setCodeModalOpen(true);
-        }}
         onTogglePalette={() =>
           setPaletteMode((prev) => (prev === 'editorial' ? 'dark-slate' : 'editorial'))
         }
@@ -1534,7 +1476,6 @@ ${dossier.specifications.map((s) => `- ${s.label}: ${s.value}`).join('\n')}
         onNavigate={handleMenuNavigate}
         linkedinUrl={LINKEDIN_URL}
         storiveUrl={STORIVE_URL}
-        keynoteImage={IMAGES.keynote}
       />
 
       {/* =====================================================================
@@ -1590,27 +1531,13 @@ ${dossier.specifications.map((s) => `- ${s.label}: ${s.value}`).join('\n')}
               ))}
             </div>
 
-            <div className="flex flex-wrap items-center justify-between gap-3">
-              <button
-                type="button"
-                onClick={() => handleDownloadDossierSpec(selectedDossier)}
-                className="flex-1 bg-[#141413] text-[#FAF9F5] hover:bg-[#1D4ED8] transition-colors rounded-full py-3.5 px-6 text-xs font-mechanik font-medium uppercase tracking-wider inline-flex items-center justify-center gap-2 cursor-pointer"
-              >
-                <Download className="w-4 h-4" />
-                <span>Download {selectedDossier.dossierTitle} (.TXT)</span>
-              </button>
-
-              <button
-                type="button"
-                onClick={() => {
-                  setSelectedDossier(null);
-                  setCodeModalOpen(true);
-                }}
-                className="px-5 py-3.5 rounded-full border border-[#141413]/25 text-xs font-mechanik font-medium uppercase tracking-wider hover:bg-[#141413]/5 cursor-pointer"
-              >
-                Export HTML / CSS
-              </button>
-            </div>
+            <button
+              type="button"
+              onClick={() => setSelectedDossier(null)}
+              className="w-full rounded-full bg-[#141413] text-[#FAF9F5] py-3.5 text-xs font-mechanik font-medium uppercase tracking-wider cursor-pointer"
+            >
+              Close
+            </button>
           </div>
         </div>
       )}
@@ -1715,197 +1642,6 @@ ${dossier.specifications.map((s) => `- ${s.label}: ${s.value}`).join('\n')}
             >
               Close
             </button>
-          </div>
-        </div>
-      )}
-
-      {/* =====================================================================
-          INTERACTIVE OVERLAY 5: STANDALONE .HTML & .CSS CODE EXPORTER MODAL
-         ===================================================================== */}
-      {codeModalOpen && (
-        <div
-          onClick={() => setCodeModalOpen(false)}
-          className="fixed inset-0 z-50 bg-[#090D16]/85 backdrop-blur-md flex items-center justify-center p-4"
-        >
-          <div
-            onClick={(e) => e.stopPropagation()}
-            className="bg-[#0F172A] text-[#F8FAFC] border border-[#F8FAFC]/15 rounded-2xl max-w-4xl w-full p-6 shadow-2xl max-h-[90vh] flex flex-col"
-          >
-            <div className="flex items-center justify-between pb-4 border-b border-[#F8FAFC]/10">
-              <div className="flex items-center gap-2.5">
-                <FileCode className="w-5 h-5 text-[#DAF462]" />
-                <h3 className="font-mechanik text-lg font-medium">
-                  HMOS® — Deploy Repo to storive.in &amp; Standalone Code Bundle
-                </h3>
-              </div>
-              <button
-                type="button"
-                onClick={() => setCodeModalOpen(false)}
-                className="w-8 h-8 rounded-full bg-[#F8FAFC]/10 flex items-center justify-center hover:bg-[#F8FAFC]/20 cursor-pointer"
-              >
-                <X className="w-4 h-4" />
-              </button>
-            </div>
-
-            <div className="flex flex-wrap items-center justify-between gap-3 my-4">
-              <div className="flex items-center gap-2">
-                <button
-                  type="button"
-                  onClick={() => setActiveCodeTab('storive')}
-                  className={`px-4 py-2 rounded-lg text-xs font-mono uppercase cursor-pointer ${
-                    activeCodeTab === 'storive'
-                      ? 'bg-[#DAF462] text-[#141413] font-semibold'
-                      : 'bg-[#090D16] text-[#94A3B8]'
-                  }`}
-                >
-                  Deploy to storive.in
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setActiveCodeTab('html')}
-                  className={`px-4 py-2 rounded-lg text-xs font-mono uppercase cursor-pointer ${
-                    activeCodeTab === 'html'
-                      ? 'bg-[#DAF462] text-[#141413] font-semibold'
-                      : 'bg-[#090D16] text-[#94A3B8]'
-                  }`}
-                >
-                  index.html
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setActiveCodeTab('css')}
-                  className={`px-4 py-2 rounded-lg text-xs font-mono uppercase cursor-pointer ${
-                    activeCodeTab === 'css'
-                      ? 'bg-[#DAF462] text-[#141413] font-semibold'
-                      : 'bg-[#090D16] text-[#94A3B8]'
-                  }`}
-                >
-                  styles.css
-                </button>
-              </div>
-
-              {activeCodeTab !== 'storive' && (
-                <div className="flex items-center gap-2">
-                  <button
-                    type="button"
-                    onClick={() => handleCopyCode(activeCodeTab)}
-                    className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg bg-[#F8FAFC]/10 hover:bg-[#F8FAFC]/20 text-xs font-mono cursor-pointer"
-                  >
-                    {copiedCode === activeCodeTab ? (
-                      <>
-                        <Check className="w-3.5 h-3.5 text-[#10B981]" />
-                        <span>Copied!</span>
-                      </>
-                    ) : (
-                      <>
-                        <Copy className="w-3.5 h-3.5" />
-                        <span>Copy {activeCodeTab.toUpperCase()}</span>
-                      </>
-                    )}
-                  </button>
-
-                  <button
-                    type="button"
-                    onClick={() =>
-                      handleDownloadFile(
-                        activeCodeTab === 'html' ? 'index.html' : 'styles.css',
-                        activeCodeTab === 'html' ? STANDALONE_HTML : STANDALONE_CSS,
-                        activeCodeTab === 'html' ? 'text/html' : 'text/css'
-                      )
-                    }
-                    className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-[#1D4ED8] hover:bg-[#2563EB] text-xs font-mono cursor-pointer"
-                  >
-                    <Download className="w-3.5 h-3.5" />
-                    <span>Download {activeCodeTab === 'html' ? 'index.html' : 'styles.css'}</span>
-                  </button>
-                </div>
-              )}
-            </div>
-
-            {activeCodeTab === 'storive' ? (
-              <div className="flex-1 overflow-auto rounded-xl bg-[#090D16] p-5 text-sm text-[#CBD5E1] space-y-5 border border-[#F8FAFC]/10">
-                <div className="p-4 rounded-xl bg-[#0F172A] border border-[#DAF462]/40 space-y-3">
-                  <div className="text-xs font-mono uppercase tracking-wider text-[#DAF462]">
-                    1. Your Live Working Links (Ready Right Now)
-                  </div>
-
-                  <div className="flex flex-wrap items-center justify-between gap-2 p-3 rounded-lg bg-[#090D16] border border-[#F8FAFC]/15">
-                    <code className="text-xs text-[#DAF462] break-all font-mono">
-                      https://www.storive.in
-                    </code>
-                    <button
-                      type="button"
-                      onClick={() =>
-                        navigator.clipboard.writeText(
-                          'https://www.storive.in'
-                        )
-                      }
-                      className="px-3 py-1.5 rounded bg-[#DAF462] text-[#141413] font-mono text-xs font-semibold cursor-pointer"
-                    >
-                      Copy Live Link
-                    </button>
-                  </div>
-
-                  <div className="flex flex-wrap items-center justify-between gap-2 p-3 rounded-lg bg-[#090D16] border border-[#F8FAFC]/15">
-                    <code className="text-xs text-[#60A5FA] break-all font-mono">
-                      https://starlit-creponne-c41889.netlify.app
-                    </code>
-                    <button
-                      type="button"
-                      onClick={() =>
-                        navigator.clipboard.writeText(
-                          'https://starlit-creponne-c41889.netlify.app'
-                        )
-                      }
-                      className="px-3 py-1.5 rounded bg-[#F8FAFC]/10 hover:bg-[#F8FAFC]/20 text-[#F8FAFC] font-mono text-xs cursor-pointer"
-                    >
-                      Copy Netlify Link
-                    </button>
-                  </div>
-                </div>
-
-                <div className="space-y-3">
-                  <h4 className="font-mechanik font-semibold text-[#FAF9F5] text-base">
-                    2. storive.in DNS Records in GoDaddy (Customer ID 926584664)
-                  </h4>
-                  <p className="text-xs text-[#94A3B8]">
-                    Go to <strong>GoDaddy → My Products → storive.in → DNS → DNS Records</strong> and make sure these 2 records point to Netlify:
-                  </p>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-2.5">
-                    <div className="p-3 rounded-lg bg-[#0F172A] border border-[#F8FAFC]/10 flex items-center justify-between gap-2">
-                      <div className="font-mono text-[11px]">
-                        <div className="text-[#94A3B8]">TYPE: <span className="text-[#FAF9F5]">A</span> · NAME: <span className="text-[#FAF9F5]">@</span></div>
-                        <div className="text-[#DAF462] font-semibold mt-0.5">75.2.60.5</div>
-                      </div>
-                      <button
-                        type="button"
-                        onClick={() => navigator.clipboard.writeText('75.2.60.5')}
-                        className="px-2.5 py-1.5 rounded bg-[#F8FAFC]/10 hover:bg-[#F8FAFC]/20 text-[10px] font-mono uppercase cursor-pointer"
-                      >
-                        Copy IP
-                      </button>
-                    </div>
-                    <div className="p-3 rounded-lg bg-[#0F172A] border border-[#F8FAFC]/10 flex items-center justify-between gap-2">
-                      <div className="font-mono text-[11px]">
-                        <div className="text-[#94A3B8]">TYPE: <span className="text-[#FAF9F5]">CNAME</span> · NAME: <span className="text-[#FAF9F5]">www</span></div>
-                        <div className="text-[#DAF462] font-semibold mt-0.5">starlit-creponne-c41889.netlify.app</div>
-                      </div>
-                      <button
-                        type="button"
-                        onClick={() => navigator.clipboard.writeText('starlit-creponne-c41889.netlify.app')}
-                        className="px-2.5 py-1.5 rounded bg-[#F8FAFC]/10 hover:bg-[#F8FAFC]/20 text-[10px] font-mono uppercase cursor-pointer"
-                      >
-                        Copy CNAME
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            ) : (
-              <pre className="flex-1 overflow-auto rounded-xl bg-[#090D16] p-4 text-xs font-mono text-[#CBD5E1] leading-relaxed border border-[#F8FAFC]/10">
-                <code>{activeCodeTab === 'html' ? STANDALONE_HTML : STANDALONE_CSS}</code>
-              </pre>
-            )}
           </div>
         </div>
       )}
