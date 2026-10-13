@@ -25,6 +25,7 @@ import {
   TrayDownloadIcon,
 } from './components/HmosVectors';
 import { ThreeMonolithScene } from './components/ThreeMonolithScene';
+import { MenuDrawer } from './components/MenuDrawer';
 import {
   RiveMetaballButton,
   LiveCardMotionCanvas,
@@ -204,6 +205,8 @@ export default function App() {
     setImgErrors((prev) => ({ ...prev, [key]: true }));
   };
 
+  const lenisRef = useRef<Lenis | null>(null);
+
   // 1. Initialize Lenis Smooth Inertia Scrolling & sync 1:1 with GSAP Ticker (MAX 180+FPS / 0ms latency)
   useEffect(() => {
     ScrollTrigger.config({
@@ -218,6 +221,7 @@ export default function App() {
       wheelMultiplier: 1.05,
     });
 
+    lenisRef.current = lenis;
     lenis.on('scroll', ScrollTrigger.update);
 
     const updateTicker = (time: number) => {
@@ -229,8 +233,32 @@ export default function App() {
     return () => {
       gsap.ticker.remove(updateTicker);
       lenis.destroy();
+      lenisRef.current = null;
     };
   }, []);
+
+  // Freeze the page (and any Lenis inertia still running) while the menu drawer is open,
+  // so the wheel never scrolls the site behind it. The drawer itself scrolls natively.
+  useEffect(() => {
+    const lenis = lenisRef.current;
+    if (!lenis) return;
+    if (menuDrawerOpen) lenis.stop();
+    else lenis.start();
+  }, [menuDrawerOpen]);
+
+  // Menu links: close the drawer, then glide to the section with the same Lenis engine.
+  const handleMenuNavigate = (hash: string) => {
+    setMenuDrawerOpen(false);
+    const lenis = lenisRef.current;
+    lenis?.start();
+    const target = document.querySelector<HTMLElement>(hash);
+    if (!target) return;
+    if (lenis) {
+      lenis.scrollTo(target, { duration: 1.5, easing: (t: number) => 1 - Math.pow(1 - t, 4) });
+    } else {
+      target.scrollIntoView();
+    }
+  };
 
   // 2. Auto-cycle the 00:12 Three.js 3D Monolith Stage badge every 3.8s
   useEffect(() => {
@@ -1478,202 +1506,36 @@ ${dossier.specifications.map((s) => `- ${s.label}: ${s.value}`).join('\n')}
 
       {/* =====================================================================
           INTERACTIVE OVERLAY 1: FULL-SCREEN MENU, SEARCH & WISHLIST DRAWER (≡ Q)
+          Curtain-wipe open / reverse close, see components/MenuDrawer.tsx
          ===================================================================== */}
-      {menuDrawerOpen && (
-        <div className="fixed inset-0 z-50 bg-[#090D16]/95 text-[#FAF9F5] backdrop-blur-xl flex flex-col justify-between p-6 sm:p-10 overflow-y-auto">
-          <div className="max-w-4xl w-full mx-auto">
-            <div className="flex items-center justify-between pb-8 border-b border-[#FAF9F5]/15">
-              <div className="flex items-center gap-3">
-                <HmosEmblem size={30} />
-                <span className="text-2xl font-mechanik font-semibold tracking-tight">
-                  HMOS®
-                </span>
-              </div>
-              <button
-                type="button"
-                onClick={() => setMenuDrawerOpen(false)}
-                className="w-11 h-11 rounded-full bg-[#FAF9F5] text-[#090D16] flex items-center justify-center hover:bg-[#DAF462] transition-colors cursor-pointer"
-                aria-label="Close Menu"
-              >
-                <X className="w-5 h-5" />
-              </button>
-            </div>
-
-            <div className="my-8 relative">
-              <Search className="w-5 h-5 text-[#94A3B8] absolute left-5 top-1/2 -translate-y-1/2" />
-              <input
-                type="text"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Search HMOS pillars, catalogues, Three.js monoliths..."
-                className="w-full rounded-full bg-[#0F172A] border border-[#FAF9F5]/20 pl-13 pr-6 py-4 text-base text-[#FAF9F5] placeholder:text-[#94A3B8] focus:outline-none focus:border-[#DAF462]"
-              />
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
-              <div>
-                <p className="text-xs font-mono uppercase tracking-widest text-[#94A3B8] mb-4">
-                  Navigation &amp; Founder Profile
-                </p>
-                <nav className="flex flex-col gap-3 text-3xl font-mechanik">
-                  <a
-                    href="#showcases"
-                    onClick={() => setMenuDrawerOpen(false)}
-                    className="hover:text-[#DAF462] transition-colors"
-                  >
-                    01 — Sovereign Pillars
-                  </a>
-                  <a
-                    href="#collections"
-                    onClick={() => setMenuDrawerOpen(false)}
-                    className="hover:text-[#DAF462] transition-colors"
-                  >
-                    02 — The Collections
-                  </a>
-                  <a
-                    href="#about"
-                    onClick={() => setMenuDrawerOpen(false)}
-                    className="hover:text-[#DAF462] transition-colors"
-                  >
-                    03 — Brand Story
-                  </a>
-                  <a
-                    href="#journal"
-                    onClick={() => setMenuDrawerOpen(false)}
-                    className="hover:text-[#DAF462] transition-colors"
-                  >
-                    04 — Journal &amp; Benchmarks
-                  </a>
-                </nav>
-
-                <div className="mt-8 flex flex-wrap gap-3">
-                  <a
-                    href={LINKEDIN_URL}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 px-4 py-2.5 rounded-full bg-[#DAF462] text-[#141413] text-xs font-mechanik font-semibold uppercase tracking-wider cursor-pointer"
-                  >
-                    <span>LinkedIn · Mahammadali Palsaniya</span>
-                    <ExternalLink className="w-3.5 h-3.5" />
-                  </a>
-
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setMenuDrawerOpen(false);
-                      setActiveCodeTab('storive');
-                      setCodeModalOpen(true);
-                    }}
-                    className="inline-flex items-center gap-2 px-4 py-2.5 rounded-full bg-[#1D4ED8] text-[#FAF9F5] text-xs font-mechanik font-medium uppercase tracking-wider cursor-pointer"
-                  >
-                    <Code2 className="w-4 h-4" />
-                    <span>Deploy to storive.in / Code</span>
-                  </button>
-
-                  <button
-                    type="button"
-                    onClick={() =>
-                      setPaletteMode((prev) =>
-                        prev === 'editorial' ? 'dark-slate' : 'editorial'
-                      )
-                    }
-                    className="inline-flex items-center gap-2 px-4 py-2.5 rounded-full border border-[#FAF9F5]/25 text-xs font-mechanik font-medium uppercase tracking-wider cursor-pointer"
-                  >
-                    <span>
-                      Palette: {isEditorial ? 'Editorial Contrast' : 'HMOS Dark Slate'}
-                    </span>
-                  </button>
-                </div>
-
-                {/* LinkedIn Live Launch Kit (1-Click Share Live URL + Download 16:9 Visual) */}
-                <div className="mt-7 p-4 rounded-2xl bg-[#0F172A] border border-[#DAF462]/30 space-y-3">
-                  <div className="flex items-center justify-between">
-                    <span className="text-[11px] font-mono uppercase tracking-widest text-[#DAF462]">
-                      LinkedIn Live Launch Studio
-                    </span>
-                    <span className="text-[11px] font-mono text-[#94A3B8]">16:9 + Live Link</span>
-                  </div>
-                  <div className="flex flex-wrap gap-2.5">
-                    <a
-                      href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(
-                        STORIVE_URL
-                      )}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg bg-[#0A66C2] text-white text-xs font-mechanik font-medium cursor-pointer hover:opacity-90"
-                    >
-                      <span>Post www.storive.in on LinkedIn</span>
-                      <ExternalLink className="w-3.5 h-3.5" />
-                    </a>
-                    <a
-                      href={IMAGES.keynote}
-                      download="HMOS-Keynote-16x9-LinkedIn.jpg"
-                      className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg bg-[#FAF9F5]/10 hover:bg-[#FAF9F5]/20 text-[#FAF9F5] text-xs font-mechanik font-medium cursor-pointer"
-                    >
-                      <Download className="w-3.5 h-3.5" />
-                      <span>Download 16:9 Visual (.JPG)</span>
-                    </a>
-                  </div>
-                </div>
-              </div>
-
-              <div>
-                <p className="text-xs font-mono uppercase tracking-widest text-[#94A3B8] mb-4">
-                  Catalogues &amp; Saved Wishlist ({wishlist.length})
-                </p>
-                <div className="space-y-3">
-                  {filteredChapters.map((chap) => {
-                    const isSaved = wishlist.includes(chap.id);
-                    return (
-                      <div
-                        key={chap.id}
-                        className="p-4 rounded-xl bg-[#0F172A] border border-[#FAF9F5]/10 flex items-center justify-between gap-3"
-                      >
-                        <div
-                          onClick={() => {
-                            setMenuDrawerOpen(false);
-                            setSelectedDossier(chap);
-                          }}
-                          className="cursor-pointer"
-                        >
-                          <div className="text-xs text-[#94A3B8] font-mono">
-                            {chap.number} · {chap.dossierCode}
-                          </div>
-                          <div className="text-base font-mechanik font-medium text-[#FAF9F5]">
-                            {chap.dossierTitle}
-                          </div>
-                        </div>
-                        <div className="flex items-center gap-2">
-                          <button
-                            type="button"
-                            onClick={() => toggleWishlist(chap.id)}
-                            className={`p-2 rounded-lg border transition-colors cursor-pointer ${
-                              isSaved
-                                ? 'bg-[#DAF462] text-[#141413] border-[#DAF462]'
-                                : 'border-[#FAF9F5]/20 text-[#94A3B8]'
-                            }`}
-                            title="Save to Wishlist"
-                          >
-                            <Bookmark className="w-4 h-4" />
-                          </button>
-                          <button
-                            type="button"
-                            onClick={() => handleDownloadDossierSpec(chap)}
-                            className="p-2 rounded-lg bg-[#FAF9F5]/10 hover:bg-[#FAF9F5]/20 text-[#FAF9F5] cursor-pointer"
-                            title="Download Catalogue"
-                          >
-                            <Download className="w-4 h-4" />
-                          </button>
-                        </div>
-                      </div>
-                    );
-                  })}
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
+      <MenuDrawer
+        open={menuDrawerOpen}
+        onClose={() => setMenuDrawerOpen(false)}
+        accentHex={curtainAndFooterHex}
+        searchQuery={searchQuery}
+        onSearchChange={setSearchQuery}
+        chapters={filteredChapters}
+        wishlistIds={wishlist}
+        onToggleWishlist={toggleWishlist}
+        onOpenDossier={(chap) => {
+          setMenuDrawerOpen(false);
+          setSelectedDossier(chap);
+        }}
+        onDownloadDossier={handleDownloadDossierSpec}
+        onOpenCode={() => {
+          setMenuDrawerOpen(false);
+          setActiveCodeTab('storive');
+          setCodeModalOpen(true);
+        }}
+        onTogglePalette={() =>
+          setPaletteMode((prev) => (prev === 'editorial' ? 'dark-slate' : 'editorial'))
+        }
+        paletteLabel={isEditorial ? 'Editorial Contrast' : 'HMOS Dark Slate'}
+        onNavigate={handleMenuNavigate}
+        linkedinUrl={LINKEDIN_URL}
+        storiveUrl={STORIVE_URL}
+        keynoteImage={IMAGES.keynote}
+      />
 
       {/* =====================================================================
           INTERACTIVE OVERLAY 2: CATALOGUE / DOSSIER MODAL
