@@ -1,7 +1,8 @@
 import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import gsap from 'gsap';
 import { Search, X, Bookmark, Download, ExternalLink, ArrowUpRight } from 'lucide-react';
-import { HmosEmblem, TransparentRibbonEmblem } from './HmosVectors';
+import { HmosEmblem } from './HmosVectors';
+import sidebarLogoImg from '../assets/images/hmos_sidebar_logo.jpg';
 import type { ChapterItem } from '../data/hmosContent';
 
 /**
@@ -212,7 +213,14 @@ export const MenuDrawer: React.FC<MenuDrawerProps> = ({
           {/* Top bar */}
           <div className="relative flex items-center justify-between pb-7">
             <div data-d="fade" className="flex items-center gap-3">
-              <TransparentRibbonEmblem size={32} className="shrink-0" />
+              <img
+                src={sidebarLogoImg}
+                alt="HMOS logo"
+                width={32}
+                height={32}
+                draggable={false}
+                className="w-8 h-8 shrink-0 object-contain select-none"
+              />
               <span className="text-2xl font-mechanik font-medium tracking-tight">HMOS</span>
             </div>
             <button
@@ -437,7 +445,7 @@ export const MenuDrawer: React.FC<MenuDrawerProps> = ({
               aria-hidden="true"
               className="absolute left-0 right-0 top-0 h-px bg-[#FAF9F5]/15"
             />
-            <span data-d="fade">© 2026 HMOS® · Made to last, designed to endure.</span>
+            <span data-d="fade">© 2026 HMOS™ · Made to last, designed to endure.</span>
             <span data-d="fade">storive.in · India</span>
           </div>
         </div>

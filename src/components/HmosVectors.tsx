@@ -319,7 +319,7 @@ export const CollectionStudioThumb: React.FC<{
  */
 /**
  * 3D Hardcover Book Catalogue Cover matching the official
- * HMOS® Vision & Sovereignty Charter PDF Files:
+ * HMOS™ Vision & Sovereignty Charter PDF Files:
  * - Details (File 01/05): Sovereign Navy (#1C2536)
  * - Vision (File 02/05): Wine/Crimson Burgundy (#6E1B24)
  * - Ecosystem (File 03/05): Deep Forest Emerald (#144334)

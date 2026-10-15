@@ -535,7 +535,7 @@ export default function App() {
     }
     setNewsletterStatus('success');
     setNewsletterFeedback(
-      'Welcome to the HMOS® sovereign community. You are registered for architectural dispatches.'
+      'Welcome to the HMOS™ sovereign community. You are registered for architectural dispatches.'
     );
     setEmail('');
   };
@@ -577,7 +577,7 @@ export default function App() {
     >
       {/* =====================================================================
           FIXED TOP HEADER (100% Exact 2-Cluster UI/UX Header)
-          Left: HMOS® Wordmark with Baseline ® | Right: EN v + Flat #F7F6F0 [ ≡ Q ] Pill
+          Left: HMOS™ Wordmark with Baseline ™ | Right: EN v + Flat #F7F6F0 [ ≡ Q ] Pill
          ===================================================================== */}
       <header className="gpu-layer fixed top-0 left-0 right-0 z-40 px-4 sm:px-7 py-3.5 flex items-center justify-between pointer-events-none">
         <a
@@ -1353,7 +1353,7 @@ export default function App() {
                 <span>Founder &amp; Principal Systems Architect</span>
               </p>
               <p className="text-[#687528] text-[14px]">
-                35/35 steps verified · Zero-trust lock
+                35/35 on our internal workflow test suite · Zero-trust lock
               </p>
             </div>
 
@@ -1385,6 +1385,24 @@ export default function App() {
                   className="hover:underline"
                 >
                   linkedin.com/in/mhdali-palsaniya
+                </a>
+              </p>
+            </div>
+
+            <div>
+              <h4 className="font-normal text-[#687528] mb-0.5">Contact</h4>
+              <p className="text-[#141413]">
+                Ruwad Enterprises
+                <br />
+                Mahammadali Palsaniya, Founder &amp; CTO
+                <br />
+                Patan, Gujarat, India
+                <br />
+                <a
+                  href="mailto:mhdali@storive.in"
+                  className="hover:underline font-medium"
+                >
+                  mhdali@storive.in
                 </a>
               </p>
             </div>
@@ -1514,11 +1532,18 @@ export default function App() {
           </div>
 
           <div className="flex flex-wrap items-center justify-between gap-4 pt-3 text-[9px] font-mechanik font-semibold tracking-wider text-[#141413]/70 uppercase">
-            <span>HMOS® 35/35 STEPS</span>
+            <span>HMOS™ 35/35 INTERNAL TEST SUITE</span>
             <span>STAGE 05 GUARD PARITY</span>
             <span>STAGE 07 QUORUM LOCK</span>
             <span>ZERO-TRUST · INDIA</span>
           </div>
+
+          <p className="pt-4 text-[13px] font-mechanik text-[#141413]/80">
+            HMOS™ is a product of Ruwad Enterprises, India (GST-registered). Contact:{' '}
+            <a href="mailto:mhdali@storive.in" className="hover:underline">
+              mhdali@storive.in
+            </a>
+          </p>
         </div>
       </footer>
 
