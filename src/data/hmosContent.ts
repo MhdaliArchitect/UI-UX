@@ -137,9 +137,9 @@ export const CHAPTERS: ChapterItem[] = [
     defaultScrollMode: 'expanded',
     catalogPdf: '/catalogs/HMOS_2_Vision_Maroon.pdf',
     summary:
-      'HMOS Vision sets the design language for sovereign computing: a deterministic kernel that completes all 35 steps of an enterprise workflow (35/35).',
+      'HMOS Vision sets the design language for sovereign computing: an architecture prototype of a deterministic kernel that completes all 35 steps of our internal workflow test suite (35/35).',
     specifications: [
-      { label: 'Workflow Survival', value: '100.0% (35/35 steps)' },
+      { label: 'Internal Test Suite', value: '35/35 steps' },
       { label: 'Probabilistic Baseline', value: '49.3% survival (0.98^35)' },
       { label: 'Design Language', value: 'Slate & Cobalt' },
       { label: 'Principal Architect', value: 'Mahammadali Palsaniya' },
@@ -253,16 +253,16 @@ export const MANIFESTO_TEXT =
 export const INSIGHTS: InsightArticle[] = [
   {
     id: 'sovereign-territories',
-    title: 'Why a 98%-reliable AI step fails half the time over 35 steps, and how HMOS® holds 100%',
+    title: 'Why a 98%-reliable AI step fails half the time over 35 steps, and how HMOS™ scored 35/35 on our internal workflow test suite',
     date: 'October 2026',
     location: 'HMOS Sovereign Research Studio',
     readTime: '4 min read',
     image: IMAGES.monolith,
     excerpt:
-      'How small per-step errors compound across a 35-step enterprise workflow, and how the HMOS Deterministic Kernel completes 35/35 steps.',
+      'How small per-step errors compound across a 35-step enterprise workflow, and how the HMOS Deterministic Kernel prototype completes 35/35 steps on our internal workflow test suite.',
     body: [
       'Enterprise infrastructure built on probabilistic wrappers inherits silent, compounding failure. At 98% single-step reliability, a 35-step workflow survives only 49.3% of the time (0.98^35 = 49.3%), typically failing around Step 14 because of loose optional state and race conditions.',
-      'HMOS® (Hybrid Master Operating System) replaces probabilistic luck with a deterministic kernel lock. Across all 35 production steps it achieves 100.0% survival.',
+      'HMOS™ (Hybrid Master Operating System) is an architecture prototype in development that replaces probabilistic luck with a deterministic kernel lock. On our internal workflow test suite it completed all 35 steps (35/35).',
       'Founded and architected by Mahammadali Palsaniya, HMOS applies the same discipline to software and to physical hardware: no unnecessary wrapper code, 100% safety guard parity, and cryptographic proof at every state boundary.',
     ],
   },
@@ -296,11 +296,11 @@ export const COLLECTIONS: CollectionItem[] = [
     thumbType: 'monolith-post',
     thumbImage: IMAGES.monolith,
     monolithImage: IMAGES.monolith,
-    tagline: '35-step deterministic workflow survival',
+    tagline: '35/35 on our internal workflow test suite',
     description:
-      'Sovereign kernel modules engineered for 100.0% workflow survival across a 35-step enterprise workflow.',
+      'Sovereign kernel architecture prototype, in development, tested against a 35-step internal enterprise workflow suite.',
     metrics: [
-      { label: 'Workflow Survival', value: '35 / 35 steps (100%)' },
+      { label: 'Internal Test Suite', value: '35 / 35 steps' },
       { label: 'Probabilistic Baseline', value: '49.3% survival' },
     ],
   },
@@ -368,18 +368,18 @@ export const CRAFT_STEPS = [
     step: 'We design',
     description: 'We design every kernel and interface so its behavior is fully determined before it runs',
     image: IMAGES.craftDesign,
-    caption: 'HMOS® Deterministic Architecture Drafting Study',
+    caption: 'HMOS™ Deterministic Architecture Drafting Study',
   },
   {
     step: 'We build',
     description: 'We strip wrapper bloat and prove that every safety guard clause survives: 100% parity',
     image: IMAGES.craftBuild,
-    caption: 'HMOS® Sovereign Core Micro-Assembly & Fabrication',
+    caption: 'HMOS™ Sovereign Core Micro-Assembly & Fabrication',
   },
   {
     step: 'We implement',
     description: 'Every deployment is locked by on-disk cryptographic verification, so nothing drifts from its verified state',
     image: IMAGES.craftImplement,
-    caption: 'HMOS® Sovereign Vault Enclosure Installation',
+    caption: 'HMOS™ Sovereign Vault Enclosure Installation',
   },
 ];

@@ -319,7 +319,7 @@ export const ThreeMonolithScene: React.FC<ThreeMonolithSceneProps> = ({
         onClick={onSelectPillar}
         className="w-48 h-80 mx-auto flex items-center justify-center rounded-xl bg-[#27272A] text-[#FAF9F5] shadow-2xl cursor-pointer"
       >
-        <span className="font-mechanik text-sm">HMOS® {pillarName} Monolith</span>
+        <span className="font-mechanik text-sm">HMOS™ {pillarName} Monolith</span>
       </div>
     );
   }

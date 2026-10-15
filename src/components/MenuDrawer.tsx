@@ -437,7 +437,7 @@ export const MenuDrawer: React.FC<MenuDrawerProps> = ({
               aria-hidden="true"
               className="absolute left-0 right-0 top-0 h-px bg-[#FAF9F5]/15"
             />
-            <span data-d="fade">© 2026 HMOS® · Made to last, designed to endure.</span>
+            <span data-d="fade">© 2026 HMOS™ · Made to last, designed to endure.</span>
             <span data-d="fade">storive.in · India</span>
           </div>
         </div>
